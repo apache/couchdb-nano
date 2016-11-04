@@ -1,11 +1,11 @@
 {
-  "name": "nano",
-  "description": "The official CouchDB client for Node.js",
+  "name": "cloudant-nano",
+  "description": "A Cloudant-specific fork of the official CouchDB client for Node.js",
   "license": "Apache-2.0",
-  "homepage": "http://github.com/apache/couchdb-nano",
-  "repository": "git://github.com/apache/couchdb-nano",
-  "version": "6.2.0",
-  "author": "Apache CouchDB <dev@couchdb.apache.org> (http://couchdb.apache.org)",
+  "homepage": "http://github.com/cloudant-labs/couchdb-nano",
+  "repository": "git://github.com/cloudant-labs/couchdb-nano",
+  "version": "6.3.0",
+  "author": "Glynn Bird <glynn.bird@gmail.com>",
   "keywords": [
     "couchdb",
     "data",
@@ -45,7 +45,7 @@
   },
   "main": "./lib/nano.js",
   "engines": {
-    "node": ">=0.8.0"
+    "node": ">=0.12"
   },
   "pre-commit": [
     "jshint",
