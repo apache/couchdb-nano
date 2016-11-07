@@ -1,8 +1,19 @@
 [![By](https://img.shields.io/badge/made%20by-yld!-32bbee.svg?style=flat-square)](http://yld.io/contact?source=github-nano)[![Chat](https://img.shields.io/badge/help-gitter-eb9348.svg?style=flat-square)](https://gitter.im/dscape/nano)[![Tests](http://img.shields.io/travis/dscape/nano.svg?style=flat-square)](https://travis-ci.org/dscape/nano)![Coverage](https://img.shields.io/badge/coverage-100%-ff69b4.svg?style=flat-square)[![Dependencies](https://img.shields.io/david/dscape/nano.svg?style=flat-square)](https://david-dm.org/dscape/nano)[![NPM](http://img.shields.io/npm/v/nano.svg?style=flat-square)](http://browsenpm.org/package/nano)
 
-# nano
+# cloudant-nano
 
 minimalistic couchdb driver for node.js
+
+-------------------------------------------------
+
+This is a fork of the [Apache CouchDB Nano](https://github.com/apache/couchdb-nano) project. Which can be used with `npm install nano`. *This* fork
+is maintained here because the [Cloudant Node.js Library](https://github.com/cloudant/nodejs-cloudant) is dependent on the Nano and we (Cloudant)
+needed a version of this library with up-to-date Travis tests, newer dependency versions and some bug fixes. The changes found in this repo may 
+eventually make their way into the Apache project, when Apache CouchDB Nano is properly open for business.
+
+This library is usually consumed by using the [Cloudant npm package](https://www.npmjs.com/package/cloudant) e.g. `npm install cloudant`.
+
+-------------------------------------------------
 
 `nano` features:
 
@@ -31,6 +42,7 @@ minimalistic couchdb driver for node.js
   - [nano.db.replicate(source, target, [opts], [callback])](#nanodbreplicatesource-target-opts-callback)
   - [nano.db.changes(name, [params], [callback])](#nanodbchangesname-params-callback)
   - [nano.db.follow(name, [params], [callback])](#nanodbfollowname-params-callback)
+  - [nano.db.info([callback])](#nanodbinfocallback)
   - [nano.use(name)](#nanousename)
   - [nano.request(opts, [callback])](#nanorequestopts-callback)
   - [nano.config](#nanoconfig)
@@ -60,6 +72,7 @@ minimalistic couchdb driver for node.js
   - [db.search(designname, viewname, [params], [callback])](#dbsearchdesignname-searchname-params-callback)
 - [using cookie authentication](#using-cookie-authentication)
 - [advanced features](#advanced-features)
+  - [getting uuids](#getting-uuids)
   - [extending nano](#extending-nano)
   - [pipes](#pipes)
 - [tests](#tests)
@@ -300,6 +313,16 @@ process.nextTick(function () {
 });
 ```
 
+### nano.db.info([callback])
+
+gets database information.
+
+nano.db.info(function(err, body) {
+  if (!err) {
+    console.log('got database info'', body);
+  }
+});
+
 ### nano.use(name)
 
 creates a scope where you operate inside `name`.
@@ -411,7 +434,7 @@ alice.insert({ crazy: true }, 'rabbit', function(err, body) {
 The `insert` function can also be used with the method signature `db.insert(doc,[callback])`, where the `doc` contains the `_id` field e.g.
 
 ~~~ js
-var alice = cloudant.use('alice')
+var alice = nano.use('alice')
 alice.insert({ _id: 'myid', crazy: true }, function(err, body) {
   if (!err)
     console.log(body)
@@ -421,7 +444,7 @@ alice.insert({ _id: 'myid', crazy: true }, function(err, body) {
 and also used to update an existing document, by including the `_rev` token in the document being saved:
 
 ~~~ js
-var alice = cloudant.use('alice')
+var alice = nano.use('alice')
 alice.insert({ _id: 'myid', _rev: '1-23202479633c2b380f79507a776743d5', crazy: false }, function(err, body) {
   if (!err)
     console.log(body)
@@ -764,6 +787,21 @@ nano.session(function(err, session) {
 
 
 ## advanced features
+
+### getting uuids
+
+if your application needs to generate UUIDs, then CouchDB can provide some for you
+
+```js
+nano.uuids(3, callback);
+// { uuid: [
+// '5d1b3ef2bc7eea51f660c091e3dffa23',
+// '5d1b3ef2bc7eea51f660c091e3e006ff',
+// '5d1b3ef2bc7eea51f660c091e3e007f0',
+//]}
+```
+
+The first parameter is the number of uuids to generate. If omitted, it defaults to 1.
 
 ### extending nano
 
