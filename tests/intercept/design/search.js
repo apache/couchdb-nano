@@ -144,4 +144,27 @@ it('should not encode string sort parameter', function(assert) {
   });
 });
 
+it('should encode unencoded sort parameter', function(assert) {
+  db.search('fake', 'fake', { sort: '-foo<number>' }, function(err, data) {
+      assert.equal(err, null);
+      assert.equal(data.method, 'GET');
+      assert.equal(typeof data.headers, 'object');
+      assert.equal(typeof data.qs, 'object');
+      assert.equal(data.qs.sort, JSON.stringify('-foo<number>'));
+      assert.end();
+  });
+});
+
+it('should not encode encoded string sort parameter', function(assert) {
+  db.search('fake', 'fake', { sort: JSON.stringify('-foo<number>') }, function(err, data) {
+      assert.equal(err, null);
+      assert.equal(data.method, 'GET');
+      assert.equal(typeof data.headers, 'object');
+      assert.equal(typeof data.qs, 'object');
+      assert.equal(data.qs.sort, JSON.stringify('-foo<number>'));
+      assert.end();
+  });
+});
+
+
 console.log('I AM HERE');
