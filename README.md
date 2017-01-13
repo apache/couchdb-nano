@@ -1,19 +1,8 @@
 [![By](https://img.shields.io/badge/made%20by-yld!-32bbee.svg?style=flat-square)](http://yld.io/contact?source=github-nano)[![Chat](https://img.shields.io/badge/help-gitter-eb9348.svg?style=flat-square)](https://gitter.im/dscape/nano)[![Tests](http://img.shields.io/travis/dscape/nano.svg?style=flat-square)](https://travis-ci.org/dscape/nano)![Coverage](https://img.shields.io/badge/coverage-100%-ff69b4.svg?style=flat-square)[![Dependencies](https://img.shields.io/david/dscape/nano.svg?style=flat-square)](https://david-dm.org/dscape/nano)[![NPM](http://img.shields.io/npm/v/nano.svg?style=flat-square)](http://browsenpm.org/package/nano)
 
-# cloudant-nano
+# nano
 
 minimalistic couchdb driver for node.js
-
--------------------------------------------------
-
-This is a fork of the [Apache CouchDB Nano](https://github.com/apache/couchdb-nano) project. Which can be used with `npm install nano`. *This* fork
-is maintained here because the [Cloudant Node.js Library](https://github.com/cloudant/nodejs-cloudant) is dependent on the Nano and we (Cloudant)
-needed a version of this library with up-to-date Travis tests, newer dependency versions and some bug fixes. The changes found in this repo may 
-eventually make their way into the Apache project, when Apache CouchDB Nano is properly open for business.
-
-This library is usually consumed by using the [Cloudant npm package](https://www.npmjs.com/package/cloudant) e.g. `npm install cloudant`.
-
--------------------------------------------------
 
 `nano` features:
 
