@@ -44,7 +44,7 @@ it('should be able to replicate (replicator) three docs', function(assert) {
       setTimeout(function() {
         db.replication.query(data.id, function(error, reply) {
           assert.equal(reply.target, 'database_replica', 'target db should match');
-          assert.equal(reply._replication_state, 'completed', 'replication should have completed');
+          assert.equal(reply._replication_state, 'triggered', 'replication should have triggered');
           replica.list(function(error, list) {
             assert.equal(error, null, 'should be able to invoke list');
             assert.equal(list['total_rows'], 3, 'and have three documents');
@@ -73,7 +73,7 @@ it('should be able to replicate (replicator) to a `nano` object', function(asser
       setTimeout(function() {
         nano.db.replication.query(data.id, function(error, reply) {
           assert.equal(reply.target, 'database_replica2', 'target db should match');
-          assert.equal(reply._replication_state, 'completed', 'replication should have completed');
+          assert.equal(reply._replication_state, 'triggered', 'replication should have triggered');
           replica2.list(function(error, list) {
             assert.equal(error, null, 'should be able to invoke list');
             assert.equal(list['total_rows'], 3, 'and have three documents');
@@ -102,7 +102,7 @@ it('should be able to replicate (replicator) with params', function(assert) {
       setTimeout(function() {
         db.replication.query(data.id, function(error, reply) {
           assert.equal(reply.target, 'database_replica3', 'target db should match');
-          assert.equal(reply._replication_state, 'completed', 'replication should have completed');
+          assert.equal(reply._replication_state, 'triggered', 'replication should have triggered');
           replica3.list(function(error, list) {
             assert.equal(error, null, 'should be able to invoke list');
             assert.equal(list['total_rows'], 3, 'and have three documents');
