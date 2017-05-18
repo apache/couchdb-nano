@@ -6,10 +6,11 @@ branches:
     - next
     - rewrite
 node_js:
-  - "0.12"
-  - "iojs"
-  - "4.2"
   - "node"
+  - "4"
+  - "6"
+  - "7"
+
 services:
   - docker
 os:
