@@ -1,4 +1,4 @@
-[![By](https://img.shields.io/badge/made%20by-yld!-32bbee.svg?style=flat-square)](http://yld.io/contact?source=github-nano)[![Chat](https://img.shields.io/badge/help-gitter-eb9348.svg?style=flat-square)](https://gitter.im/dscape/nano)[![Tests](http://img.shields.io/travis/dscape/nano.svg?style=flat-square)](https://travis-ci.org/dscape/nano)![Coverage](https://img.shields.io/badge/coverage-100%-ff69b4.svg?style=flat-square)[![Dependencies](https://img.shields.io/david/dscape/nano.svg?style=flat-square)](https://david-dm.org/dscape/nano)[![NPM](http://img.shields.io/npm/v/nano.svg?style=flat-square)](http://browsenpm.org/package/nano)
+[![Build Status](https://travis-ci.org/apache/couchdb-nano.svg?branch=master)](https://travis-ci.org/apache/couchdb-nano)![Coverage](https://img.shields.io/badge/coverage-100%-ff69b4.svg)[![dependencies Status](https://david-dm.org/apache/couchdb-nano/status.svg)](https://david-dm.org/apache/couchdb-nano)[![NPM](http://img.shields.io/npm/v/nano.svg?style=flat-square)](https://www.npmjs.com/package/nano)
 
 # nano
 
@@ -963,19 +963,17 @@ where `list_doc_params` is the test name.
         __/       /
        /__.|_|-|_|     cannes est superb
 
-* code: `git clone git://github.com/dscape/nano.git`
-* home: <http://github.com/dscape/nano>
-* bugs: <http://github.com/dscape/nano/issues>
-* build: [![build status](https://secure.travis-ci.org/dscape/nano.png)](http://travis-ci.org/dscape/nano)
-* deps: [![deps status](https://david-dm.org/dscape/nano.png)](https://david-dm.org/dscape/nano)
-* chat: <https://gitter.im/dscape/nano>
-
-`(oo)--',-` in [caos][3]
+* code: `git clone git://github.com/apache/couchdb-nano.git`
+* home: <http://github.com/apache/couchdb-nano>
+* bugs: <http://github.com/apache/couchdb-nano/issues>
+* build: [![Build Status](https://travis-ci.org/apache/couchdb-nano.svg?branch=master)](https://travis-ci.org/apache/couchdb-nano)
+* deps: [![dependencies Status](https://david-dm.org/apache/couchdb-nano/status.svg)](https://david-dm.org/apache/couchdb-nano)
+* chat: [Freenode IRC @ #couchdb-dev][8]
 
 [1]: http://npmjs.org
-[2]: http://github.com/dscape/nano/issues
-[3]: http://caos.di.uminho.pt/
-[4]: https://github.com/dscape/nano/blob/master/cfg/couch.example.js
+[2]: http://github.com/apache/couchdb-nano/issues
+[4]: https://github.com/apache/couchdb-nano/blob/master/cfg/couch.example.js
+[8]: http://webchat.freenode.net?channels=%23couchdb-dev
 [follow]: https://github.com/jhs/follow
 [request]:  https://github.com/request/request
 

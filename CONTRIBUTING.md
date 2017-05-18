@@ -1,10 +1,20 @@
-# DCO
+# Contributing to nano
 
-To contribute to this project you must accept our [developer certificate of origin](https://github.com/dscape/nano/blob/master/README.md)
+Please take a moment to review this document in order to make the contribution
+process easy and effective for everyone involved.
+
+Following these guidelines helps to communicate that you respect the time of
+the developers managing and developing this open source project. In return,
+they should reciprocate that respect in addressing your issue, assessing
+changes, and helping you finalize your pull requests.
+
+Contributions to CouchDB are governed by our [Code of Conduct][6] and a set of
+[Project Bylaws][7]. Apache CouchDB itself also has a [CONTRIBUTING.md][9] if
+you want to help with the larger project. Come join us!
 
 # Contributing
 
-Everyone is welcome to contribute with patches, bug-fixes and new features
+Everyone is welcome to contribute with patches, bug-fixes and new features.
 
 1. Create an [issue][2] on github so the community can comment on your idea
 2. Fork `nano` in github
@@ -15,7 +25,7 @@ Everyone is welcome to contribute with patches, bug-fixes and new features
 7. Push to your branch `git push origin my_branch`
 8. Create a pull request
 
-to run tests make sure you npm test but also run tests without mocks:
+To run tests, make sure you run `npm test` but also run tests without mocks:
 
 ``` sh
 npm run unmocked
@@ -39,4 +49,8 @@ DEBUG=* node your_nano_scripts.js
 
 You can turn nocks on and off using the `NOCK_OFF` environment variable.
 
-[2]: http://github.com/dscape/nano/issues
+[2]: http://github.com/apache/couchdb-nano/issues
+[6]: http://couchdb.apache.org/conduct.html
+[7]: http://couchdb.apache.org/bylaws.html
+[9]: https://github.com/apache/couchdb/blob/master/CONTRIBUTING.md
+
