@@ -1,28 +1,32 @@
 [![Build Status](https://travis-ci.org/apache/couchdb-nano.svg?branch=master)](https://travis-ci.org/apache/couchdb-nano)![Coverage](https://img.shields.io/badge/coverage-100%-ff69b4.svg)[![dependencies Status](https://david-dm.org/apache/couchdb-nano/status.svg)](https://david-dm.org/apache/couchdb-nano)[![NPM](http://img.shields.io/npm/v/nano.svg?style=flat-square)](https://www.npmjs.com/package/nano)
 
-# nano
+# Nano
 
-minimalistic couchdb driver for node.js
+Offical [Apache CouchDB](http://couchdb.apache.org/) library for [Node.js](https://nodejs.org/).
 
-`nano` features:
+Features:
 
-* **minimalistic** - there is only a minimum of abstraction between you and
-  couchdb
-* **pipes** - proxy requests from couchdb directly to your end user
-* **errors** - errors are proxied directly from couchdb: if you know couchdb
+* **Minimalistic** - There is only a minimum of abstraction between you and
+  CouchDB.
+* **Pipes** - Proxy requests from CouchDB directly to your end user.
+* **Errors** - Errors are proxied directly from CouchDB: if you know CouchDB
   you already know `nano`.
 
-## installation
+## Installation
 
-1. install [npm][1]
+1. Install [npm][1]
 2. `npm install nano`
 
-## table of contents
+or save `nano` as a dependency of your project with
 
-- [getting started](#getting-started)
-- [tutorials & screencasts](#tutorials-examples-in-the-wild--screencasts)
-- [configuration](#configuration)
-- [database functions](#database-functions)
+    npm install --save nano
+
+## Table of contents
+
+- [Getting started](#getting-started)
+- [Tutorials & screencasts](#tutorials-examples-in-the-wild--screencasts)
+- [Configuration](#configuration)
+- [Database functions](#database-functions)
   - [nano.db.create(name, [callback])](#nanodbcreatename-callback)
   - [nano.db.get(name, [callback])](#nanodbgetname-callback)
   - [nano.db.destroy(name, [callback])](#nanodbdestroyname-callback)
@@ -40,7 +44,7 @@ minimalistic couchdb driver for node.js
   - [nano.config](#nanoconfig)
   - [nano.updates([params], [callback])](#nanoupdatesparams-callback)
   - [nano.followUpdates([params], [callback])](#nanofollowupdatesparams-callback)
-- [document functions](#document-functions)
+- [Document functions](#document-functions)
   - [db.insert(doc, [params], [callback])](#dbinsertdoc-params-callback)
   - [db.destroy(docname, rev, [callback])](#dbdestroydocname-rev-callback)
   - [db.get(docname, [params], [callback])](#dbgetdocname-params-callback)
@@ -50,56 +54,59 @@ minimalistic couchdb driver for node.js
   - [db.list([params], [callback])](#dblistparams-callback)
   - [db.fetch(docnames, [params], [callback])](#dbfetchdocnames-params-callback)
   - [db.fetchRevs(docnames, [params], [callback])](#dbfetchRevsdocnames-params-callback)
-- [multipart functions](#multipart-functions)
+- [Multipart functions](#multipart-functions)
   - [db.multipart.insert(doc, attachments, [params], [callback])](#dbmultipartinsertdoc-attachments-params-callback)
   - [db.multipart.get(docname, [params], [callback])](#dbmultipartgetdocname-params-callback)
-- [attachments functions](#attachments-functions)
+- [Attachments functions](#attachments-functions)
   - [db.attachment.insert(docname, attname, att, contenttype, [params], [callback])](#dbattachmentinsertdocname-attname-att-contenttype-params-callback)
   - [db.attachment.get(docname, attname, [params], [callback])](#dbattachmentgetdocname-attname-params-callback)
   - [db.attachment.destroy(docname, attname, [params], [callback])](#dbattachmentdestroydocname-attname-rev-callback)
-- [views and design functions](#views-and-design-functions)
+- [Views and design functions](#views-and-design-functions)
   - [db.view(designname, viewname, [params], [callback])](#dbviewdesignname-viewname-params-callback)
   - [db.show(designname, showname, doc_id, [params], [callback])](#dbshowdesignname-showname-doc_id-params-callback)
   - [db.atomic(designname, updatename, docname, [body], [callback])](#dbatomicdesignname-updatename-docname-body-callback)
   - [db.search(designname, viewname, [params], [callback])](#dbsearchdesignname-searchname-params-callback)
-- [using cookie authentication](#using-cookie-authentication)
-- [advanced features](#advanced-features)
+- [Using cookie authentication](#using-cookie-authentication)
+- [Advanced features](#advanced-features)
   - [getting uuids](#getting-uuids)
   - [extending nano](#extending-nano)
   - [pipes](#pipes)
-- [tests](#tests)
+- [Tests](#tests)
 
-## getting started
+## Getting started
 
-to use `nano` you need to connect it to your couchdb install, to do that:
+To use `nano` you need to connect it to your CouchDB install, to do that:
 
 ``` js
 var nano = require('nano')('http://localhost:5984');
 ```
 
-to create a new database:
+The URL you supply may also contain authenication credentials e.g. `http://admin:mypassword@localhost:5984`.
+
+To create a new database:
 
 ``` js
 nano.db.create('alice');
 ```
 
-and to use it:
+and to use an existing database:
 
 ``` js
 var alice = nano.db.use('alice');
 ```
 
-in this examples we didn't specify a `callback` function, the absence of a
+In this examples we didn't specify a `callback` function, the absence of a
 callback means _"do this, ignore what happens"_.
-in `nano` the callback function receives always three arguments:
 
-* `err` - the error, if any
-* `body` - the http _response body_ from couchdb, if no error.
-  json parsed body, binary for non json responses
-* `header` - the http _response header_ from couchdb, if no error
+In `nano` the callback function receives always three arguments:
+
+* `err` - The error, if any.
+* `body` - The HTTP _response body_ from CouchDB, if no error.
+  JSON parsed body, binary for non JSON responses.
+* `header` - The HTTP _response header_ from CouchDB, if no error.
 
 
-a simple but complete example using callbacks is:
+A simple but complete example using callbacks is:
 
 ``` js
 var nano = require('nano')('http://localhost:5984');
@@ -123,97 +130,109 @@ nano.db.destroy('alice', function() {
 });
 ```
 
-if you run this example(after starting couchdb) you will see:
+If you run this example (after starting CouchDB) you will see:
 
-    you have inserted the rabbit.
-    { ok: true,
-      id: 'rabbit',
-      rev: '1-6e4cb465d49c0368ac3946506d26335d' }
-
-you can also see your document in [futon](http://localhost:5984/_utils).
-
-## configuration
-
-configuring nano to use your database server is as simple as:
-
-``` js
-var nano   = require('nano')('http://localhost:5984')
-  , db     = nano.use('foo')
-  ;
+```
+you have inserted the rabbit.
+{ ok: true,
+  id: 'rabbit',
+  rev: '1-6e4cb465d49c0368ac3946506d26335d' }
 ```
 
-however if you don't need to instrument database objects you can simply:
+You can also see your document in [futon](http://localhost:5984/_utils).
 
-``` js
-// nano parses the url and knows this is a database
-var db = require('nano')('http://localhost:5984/foo');
-```
+## Promises
 
-you can also pass options to the require:
-
-``` js
-// nano parses the url and knows this is a database
-var db = require('nano')('http://localhost:5984/foo');
-```
-
-to specify further configuration options you can pass an object literal instead:
-
-``` js
-// nano parses the url and knows this is a database
-var db = require('nano')(
-  { "url"             : "http://localhost:5984/foo"
-  , "requestDefaults" : { "proxy" : "http://someproxy" }
-  , "log"             : function (id, args) {
-      console.log(id, args);
-    }
-  });
-```
-Please check [request] for more information on the defaults. They support features like cookie jar, proxies, ssl, etc.
-
-You can tell nano to not parse the url (maybe the server is behind a proxy, is accessed through a rewrite rule or other):
+Although `nano` is written using the "callback" style, it is easy enough to switch to a "Promises" style, using the [Bluebird](https://www.npmjs.com/package/bluebird) library:
 
 ```js
-// nano does not parse the url and return the server api
+var Promise = require('bluebird');
+var mydb = require('nano')('http://localhost:5984/animaldb');
+
+// create Promise-compatible versions of all functions
+Promise.promisifyAll(mydb);
+
+// now we have "get" (callback compatible) and "getAsync" (Promise compatible)
+animals.getAsync('doc1').then(function(doc) {
+  console.log('the doc is', doc); 
+}).catch(console.error);
+```
+
+## Configuration
+
+Configuring nano to use your database server is as simple as:
+
+``` js
+var nano = require('nano')('http://localhost:5984'),
+  db = nano.use('foo');
+```
+
+If you don't need to instrument database objects you can simply:
+
+``` js
+// nano parses the URL and knows this is a database
+var db = require('nano')('http://localhost:5984/foo');
+```
+
+You can also pass options to the require to specify further configuration options you can pass an object literal instead:
+
+``` js
+// nano parses the URL and knows this is a database
+var opts = {
+  url: "http://localhost:5984/foo",
+  requestDefaults: { "proxy" : "http://someproxy" },
+  log: function(id, args) {
+    console.log(id, args);
+  }
+};
+var db = require('nano')(opts);
+```
+
+Please check [request] for more information on the defaults. They support features like cookie jar, proxies, ssl, etc.
+
+You can tell nano to not parse the URL (maybe the server is behind a proxy, is accessed through a rewrite rule or other):
+
+```js
+// nano does not parse the URL and return the server api
 // "http://localhost:5984/prefix" is the CouchDB server root
 var couch = require('nano')(
-  { "url"      : "http://localhost:5984/prefix"
-    "parseUrl" : false
+  { url : "http://localhost:5984/prefix"
+    parseUrl : false
   });
 var db = couch.use('foo');
 ```
 
-### pool size and open sockets
+### Pool size and open sockets
 
-a very important configuration parameter if you have a high traffic website and are using nano is setting up the `pool.size`. by default, the node.js http global agent (client) has a certain size of active connections that can run simultaneously, while others are kept in a queue. pooling can be disabled by setting the `agent` property in `requestDefaults` to false, or adjust the global pool size using:
+A very important configuration parameter if you have a high traffic website and are using `nano` is setting up the `pool.size`. By default, the Node.js HTTP global agent (client) has a certain size of active connections that can run simultaneously, while others are kept in a queue. Pooling can be disabled by setting the `agent` property in `requestDefaults` to `false`, or adjust the global pool size using:
 
 ``` js
 http.globalAgent.maxSockets = 20;
 ```
 
-you can also increase the size in your calling context using `requestDefaults` if this is problematic. refer to the [request] documentation and examples for further clarification.
+You can also increase the size in your calling context using `requestDefaults` if this is problematic. Refer to the [request] documentation and examples for further clarification.
 
-here's an example explicitly using the keep alive agent (installed using `npm install agentkeepalive`), especially useful to limit your open sockets when doing high-volume access to couchdb on localhost:
+Here's an example explicitly using the keep alive agent (installed using `npm install agentkeepalive`), especially useful to limit your open sockets when doing high-volume access to CouchDB on localhost:
 
 ``` js
 var agentkeepalive = require('agentkeepalive');
 var myagent = new agentkeepalive({
-    maxSockets: 50
-  , maxKeepAliveRequests: 0
-  , maxKeepAliveTime: 30000
-  });
+  maxSockets: 50,
+  maxKeepAliveRequests: 0,
+  maxKeepAliveTime: 30000
+});
 
 var db = require('nano')(
-  { "url"              : "http://localhost:5984/foo"
-  , "requestDefaults" : { "agent" : myagent }
+  { url: "http://localhost:5984/foo",
+    requestDefaults : { "agent" : myagent }
   });
 ```
 
-
-## database functions
+## Database functions
 
 ### nano.db.create(name, [callback])
 
-creates a couchdb database with the given `name`.
+Creates a CouchDB database with the given `name`:
 
 ``` js
 nano.db.create('alice', function(err, body) {
@@ -225,7 +244,7 @@ nano.db.create('alice', function(err, body) {
 
 ### nano.db.get(name, [callback])
 
-get informations about `name`.
+Get information about the database `name`:
 
 ``` js
 nano.db.get('alice', function(err, body) {
@@ -237,17 +256,16 @@ nano.db.get('alice', function(err, body) {
 
 ### nano.db.destroy(name, [callback])
 
-destroys `name`.
+Destroys the database `name`:
 
 ``` js
-nano.db.destroy('alice');
+nano.db.destroy('alice', function(err, body){
+});
 ```
-
-even though this examples looks sync it is an async function.
 
 ### nano.db.list([callback])
 
-lists all the databases in couchdb
+Lists all the CouchDB databases:
 
 ``` js
 nano.db.list(function(err, body) {
@@ -260,14 +278,13 @@ nano.db.list(function(err, body) {
 
 ### nano.db.compact(name, [designname], [callback])
 
-compacts `name`, if `designname` is specified also compacts its
-views.
+Compacts `name`, if `designname` is specified also compacts its views.
 
 ### nano.db.replicate(source, target, [opts], [callback])
 
-replicates `source` on `target` with options `opts`. `target`
+Replicates `source` to `target` with options `opts`. The `target`database
 has to exist, add `create_target:true` to `opts` to create it prior to
-replication.
+replication:
 
 ``` js
 nano.db.replicate('alice', 'http://admin:password@otherhost.com:5984/alice',
@@ -279,10 +296,9 @@ nano.db.replicate('alice', 'http://admin:password@otherhost.com:5984/alice',
 
 ### nano.db.replication.enable(source, target, [opts], [callback])
 
-enables replication using the new couchdb api from `source` to `target`
+Enables replication using the new CouchDB api from `source` to `target`
 with options `opts`. `target` has to exist, add `create_target:true` to
-`opts` to create it prior to replication.
-replication will survive server restarts.
+`opts` to create it prior to replication. Replication will survive server restarts.
 
 ``` js
 nano.db.replication.enable('alice', 'http://admin:password@otherhost.com:5984/alice',
@@ -294,8 +310,8 @@ nano.db.replication.enable('alice', 'http://admin:password@otherhost.com:5984/al
 
 ### nano.db.replication.query(id, [opts], [callback])
 
-queries the state of replication using the new couchdb api. `id` comes from the response
-given by the call to enable.
+Queries the state of replication using the new CouchDB API. The `id` comes from the response
+given by the call to `replication.enable`:
 
 ``` js
 nano.db.replication.enable('alice', 'http://admin:password@otherhost.com:5984/alice',
@@ -311,8 +327,8 @@ nano.db.replication.enable('alice', 'http://admin:password@otherhost.com:5984/al
 
 ### nano.db.replication.disable(id, [opts], [callback])
 
-disables replication using the new couchdb api. `id` comes from the response given
-by the call to enable.
+Disables replication using the new CouchDB API. The `id` comes from the response given
+by the call to `replication.enable`:
 
 ``` js
 nano.db.replication.enable('alice', 'http://admin:password@otherhost.com:5984/alice',
@@ -328,7 +344,7 @@ nano.db.replication.enable('alice', 'http://admin:password@otherhost.com:5984/al
 
 ### nano.db.changes(name, [params], [callback])
 
-asks for the changes feed of `name`, `params` contains additions
+Asks for the changes feed of `name`, `params` contains additions
 to the query string.
 
 ``` js
@@ -341,7 +357,7 @@ nano.db.changes('alice', function(err, body) {
 
 ### nano.db.follow(name, [params], [callback])
 
-Uses [Follow] to create a solid changes feed. please consult follow documentation for more information as this is a very complete API on it's own.
+Uses [Follow] to create a solid changes feed. Please consult `follow` documentation for more information as this is a very complete API on it's own:
 
 ``` js
 var feed = db.follow({since: "now"});
@@ -356,17 +372,19 @@ process.nextTick(function () {
 
 ### nano.db.info([callback])
 
-gets database information.
+Gets database information:
 
+```js
 nano.db.info(function(err, body) {
   if (!err) {
     console.log('got database info'', body);
   }
 });
+```
 
 ### nano.use(name)
 
-creates a scope where you operate inside `name`.
+Returns a database object that allows you to perform operations against that database:
 
 ``` js
 var alice = nano.use('alice');
@@ -377,19 +395,20 @@ alice.insert({ crazy: true }, 'rabbit', function(err, body) {
 
 ### nano.db.use(name)
 
-alias for `nano.use`
+Alias for `nano.use`
 
 ### nano.db.scope(name)
 
-alias for `nano.use`
+Alias for `nano.use`
 
 ### nano.scope(name)
 
-alias for `nano.use`
+Alias for `nano.use`
 
 ### nano.request(opts, [callback])
 
-makes a request to couchdb, the available `opts` are:
+Makes a custom request to CouchDB. This can be used to create your own HTTP request to the CouchDB
+server, to perform operations where there is no `nano` function that encapsulates it. The available `opts` are:
 
 * `opts.db` – the database name
 * `opts.method` – the http method, defaults to `get`
@@ -406,30 +425,18 @@ makes a request to couchdb, the available `opts` are:
 
 ### nano.relax(opts, [callback])
 
-alias for `nano.request`
-
-### nano.dinosaur(opts, [callback])
-
-alias for `nano.request`
-
-                    _
-                  / '_)  WAT U SAY!
-         _.----._/  /
-        /          /
-      _/  (   | ( |
-     /__.-|_|--|_l
+Alias for `nano.request`
 
 ### nano.config
 
-an object containing the nano configurations, possible keys are:
+An object containing the `nano` configurations, possible keys are:
 
-* `url` - the couchdb url
+* `url` - the CouchDB URL
 * `db` - the database name
-
 
 ### nano.updates([params], [callback])
 
-listen to db updates, the available `params` are:
+Listen to db updates, the available `params` are:
 
 * `params.feed` – Type of feed. Can be one of
  * `longpoll`: Closes the connection after the first event.
@@ -437,7 +444,6 @@ listen to db updates, the available `params` are:
  * `eventsource`: Like, continuous, but sends the events in EventSource format.
 * `params.timeout` – Number of seconds until CouchDB closes the connection. Default is 60.
 * `params.heartbeat` – Whether CouchDB will send a newline character (\n) on timeout. Default is true.
-
 
 ### nano.followUpdates([params], [callback])
 
@@ -458,11 +464,11 @@ process.nextTick(function () {
 });
 ```
 
-## document functions
+## Document functions
 
 ### db.insert(doc, [params], [callback])
 
-inserts `doc` in the database with  optional `params`. if params is a string, its assumed as the intended document name. if params is an object, its passed as query string parameters and `docName` is checked for defining the document name.
+Inserts `doc` in the database with optional `params`. If params is a string, it's assumed it is the intended document `_id`. If params is an object, it's passed as query string parameters and `docName` is checked for defining the document `_id`:
 
 ``` js
 var alice = nano.use('alice');
@@ -474,27 +480,27 @@ alice.insert({ crazy: true }, 'rabbit', function(err, body) {
 
 The `insert` function can also be used with the method signature `db.insert(doc,[callback])`, where the `doc` contains the `_id` field e.g.
 
-~~~ js
+```js
 var alice = nano.use('alice')
 alice.insert({ _id: 'myid', crazy: true }, function(err, body) {
   if (!err)
     console.log(body)
 })
-~~~
+```
 
 and also used to update an existing document, by including the `_rev` token in the document being saved:
 
-~~~ js
+```js
 var alice = nano.use('alice')
 alice.insert({ _id: 'myid', _rev: '1-23202479633c2b380f79507a776743d5', crazy: false }, function(err, body) {
   if (!err)
     console.log(body)
 })
-~~~
+```
 
 ### db.destroy(docname, rev, [callback])
 
-removes revision `rev` of `docname` from couchdb.
+Removes a document from CouchDB whose `_id` is `docname` and who's revision is `_rev`:
 
 ``` js
 alice.destroy('rabbit', '3-66c01cdf99e84c83a9b3fe65b88db8c0', function(err, body) {
@@ -505,19 +511,25 @@ alice.destroy('rabbit', '3-66c01cdf99e84c83a9b3fe65b88db8c0', function(err, body
 
 ### db.get(docname, [params], [callback])
 
-gets `docname` from the database with optional query string
-additions `params`.
+Gets a document from CouchDB whose `_id` is `docname`:
+
+``` js
+alice.get('rabbit', function(err, body) {
+  console.log(body);
+});
+```
+
+or with optional query string `params`:
 
 ``` js
 alice.get('rabbit', { revs_info: true }, function(err, body) {
-  if (!err)
-    console.log(body);
+  console.log(body);
 });
 ```
 
 ### db.head(docname, [callback])
 
-same as `get` but lightweight version that returns headers only.
+Same as `get` but lightweight version that returns headers only:
 
 ``` js
 alice.head('rabbit', function(err, _, headers) {
@@ -528,7 +540,7 @@ alice.head('rabbit', function(err, _, headers) {
 
 ### db.copy(src_doc, dest_doc, opts, [callback])
 
-`copy` the contents (and attachments) of a document
+Copies the contents (and attachments) of a document
 to a new document, or overwrite an existing target document
 
 ``` js
@@ -538,15 +550,24 @@ alice.copy('rabbit', 'rabbit2', { overwrite: true }, function(err, _, headers) {
 });
 ```
 
-
 ### db.bulk(docs, [params], [callback])
 
-bulk operations(update/delete/insert) on the database, refer to the
-[couchdb doc](http://wiki.apache.org/couchdb/HTTP_Bulk_Document_API).
+Nulk operations(update/delete/insert) on the database, refer to the
+[CouchDB doc](http://wiki.apache.org/couchdb/HTTP_Bulk_Document_API) e.g:
+
+``` js
+var documents = [
+  { a:1, b:2 },
+  { _id: 'tiger', striped: true}
+];
+alice.bulk({docs:documents}, function(err, body) {
+  console.log(body);
+});
+```
 
 ### db.list([params], [callback])
 
-list all the docs in the database with optional query string additions `params`.
+List all the docs in the database .
 
 ``` js
 alice.list(function(err, body) {
@@ -558,29 +579,48 @@ alice.list(function(err, body) {
 });
 ```
 
+or with optional query string additions `params`:
+
+``` js
+alice.list({include_docs: true}, function(err, body) {
+  if (!err) {
+    body.rows.forEach(function(doc) {
+      // output eacj document's body
+      console.log(doc.doc);
+    });
+  }
+});
+```
+
 ### db.fetch(docnames, [params], [callback])
 
-bulk fetch of the database documents, `docnames` are specified as per
-[couchdb doc](http://wiki.apache.org/couchdb/HTTP_Bulk_Document_API).
+Bulk fetch of the database documents, `docnames` are specified as per
+[CouchDB doc](http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs).
 additional query string `params` can be specified, `include_docs` is always set
 to `true`.
+
+```js
+var keys = ['tiger', 'zebra', 'donkey'];
+alice.fetch({keys: keys}, function(err, data) {
+  console.log(data);
+});
+```
 
 ### db.fetchRevs(docnames, [params], [callback])
 
 ** changed in version 6 **
 
-bulk fetch of the revisions of the database documents, `docnames` are specified as per
-[couchdb doc](http://wiki.apache.org/couchdb/HTTP_Bulk_Document_API).
+Bulk fetch of the revisions of the database documents, `docnames` are specified as per
+[CouchDB doc](http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs).
 additional query string `params` can be specified, this is the same method as fetch but
  `include_docs` is not automatically set to `true`.
 
-## multipart functions
+## Multipart functions
 
 ### db.multipart.insert(doc, attachments, params, [callback])
 
-inserts a `doc` together with `attachments` and `params`. if params is a string, its assumed as the intended document name. if params is an object, its passed as query string parameters and `docName` is checked for defining the document name.
- refer to the [doc](http://wiki.apache.org/couchdb/HTTP_Document_API#Multiple_Attachments) for more details.
- `attachments` must be an array of objects with `name`, `data` and `content_type` properties.
+Inserts a `doc` together with `attachments` and `params`. If params is a string, it's assumed as the intended document `_id`. If params is an object, its passed as query string parameters and `docName` is checked for defining the `_id`. Refer to the [doc](http://wiki.apache.org/couchdb/HTTP_Document_API#Multiple_Attachments) for more details.
+ The `attachments` parameter must be an array of objects with `name`, `data` and `content_type` properties.
 
 ``` js
 var fs = require('fs');
@@ -597,10 +637,8 @@ fs.readFile('rabbit.png', function(err, data) {
 
 ### db.multipart.get(docname, [params], [callback])
 
-get `docname` together with its attachments via `multipart/related` request with optional query string additions
-`params`. refer to the
- [doc](http://wiki.apache.org/couchdb/HTTP_Document_API#Getting_Attachments_With_a_Document) for more details.
- the multipart response body is a `Buffer`.
+Get `docname` together with its attachments via `multipart/related` request with optional query string additions `params`. Refer to the
+ [doc](http://wiki.apache.org/couchdb/HTTP_Document_API#Getting_Attachments_With_a_Document) for more details. The multipart response body is a `Buffer`.
 
 ``` js
 alice.multipart.get('rabbit', function(err, buffer) {
@@ -609,12 +647,12 @@ alice.multipart.get('rabbit', function(err, buffer) {
 });
 ```
 
-## attachments functions
+## Attachments functions
 
 ### db.attachment.insert(docname, attname, att, contenttype, [params], [callback])
 
-inserts an attachment `attname` to `docname`, in most cases
- `params.rev` is required. refer to the
+Inserts an attachment `attname` to `docname`, in most cases
+ `params.rev` is required. Refer to the
  [doc](http://wiki.apache.org/couchdb/HTTP_Document_API) for more details.
 
 ``` js
@@ -643,7 +681,7 @@ fs.createReadStream('rabbit.png').pipe(
 
 ### db.attachment.get(docname, attname, [params], [callback])
 
-get `docname`'s attachment `attname` with optional query string additions
+Get `docname`'s attachment `attname` with optional query string additions
 `params`.
 
 ``` js
@@ -668,7 +706,7 @@ alice.attachment.get('rabbit', 'rabbit.png').pipe(fs.createWriteStream('rabbit.p
 
 **changed in version 6**
 
-destroy attachment `attname` of `docname`'s revision `rev`.
+Destroy attachment `attname` of `docname`'s revision `rev`.
 
 ``` js
 alice.attachment.destroy('rabbit', 'rabbit.png',
@@ -678,12 +716,11 @@ alice.attachment.destroy('rabbit', 'rabbit.png',
 });
 ```
 
-## views and design functions
+## Views and design functions
 
 ### db.view(designname, viewname, [params], [callback])
 
-calls a view of the specified design with optional query string additions
-`params`. if you're looking to filter the view results by key(s) pass an array of keys, e.g
+Calls a view of the specified `designname` with optional query string `params`. If you're looking to filter the view results by key(s) pass an array of keys, e.g
 `{ keys: ['key1', 'key2', 'key_n'] }`, as `params`.
 
 ``` js
@@ -699,6 +736,8 @@ alice.view('characters', 'crazy_ones', {
 });
 ```
 
+or
+
 ``` js
 alice.view('characters', 'soldiers', {
   'keys': ['Hearts', 'Clubs']
@@ -711,7 +750,7 @@ alice.view('characters', 'soldiers', {
 });
 ```
 
-When `params` is not supplied, or no keys are specified, it will simply return all docs in the view.
+When `params` is not supplied, or no keys are specified, it will simply return all documents in the view:
 
 ``` js
 alice.view('characters', 'crazy_ones', function(err, body) {
@@ -735,7 +774,7 @@ alice.view('characters', 'crazy_ones', { include_docs: true }, function(err, bod
 
 ### db.viewWithList(designname, viewname, listname, [params], [callback])
 
-calls a list function feeded by the given view of the specified design document.
+Calls a list function fed by the given view from the specified design document.
 
 ``` js
 alice.viewWithList('characters', 'crazy_ones', 'my_list', function(err, body) {
@@ -747,7 +786,7 @@ alice.viewWithList('characters', 'crazy_ones', 'my_list', function(err, body) {
 
 ### db.show(designname, showname, doc_id, [params], [callback])
 
-calls a show function of the specified design for the document specified by doc_id with
+Calls a show function from the specified design for the document specified by doc_id with
 optional query string additions `params`.
 
 ``` js
@@ -757,12 +796,13 @@ alice.show('characters', 'format_doc', '3621898430', function(err, doc) {
   }
 });
 ```
-take a look at the [couchdb wiki](http://wiki.apache.org/couchdb/Formatting_with_Show_and_List#Showing_Documents)
+
+Take a look at the [couchdb wiki](http://wiki.apache.org/CouchDB/Formatting_with_Show_and_List#Showing_Documents)
 for possible query paramaters and more information on show functions.
 
 ### db.atomic(designname, updatename, docname, [body], [callback])
 
-calls the design's update function with the specified doc in input.
+Calls the design's update function with the specified doc in input.
 
 ``` js
 db.atomic("update", "inplace", "foobar",
@@ -788,7 +828,7 @@ An example update handler follows:
 
 ### db.search(designname, searchname, [params], [callback])
 
-calls a view of the specified design with optional query string additions `params`.
+Calls a view of the specified design with optional query string additions `params`.
 
 ``` js
 alice.search('characters', 'crazy_ones', { q: 'cat' }, function(err, doc) {
@@ -798,19 +838,19 @@ alice.search('characters', 'crazy_ones', { q: 'cat' }, function(err, doc) {
 });
 ```
 
-check out the tests for a fully functioning example.
+Check out the tests for a fully functioning example.
 
 ## using cookie authentication
 
-nano supports making requests using couchdb's [cookie authentication](http://guide.couchdb.org/editions/1/en/security.html#cookies) functionality. there's a [example in coffeescript](http://stackoverflow.com/questions/23100132/using-nano-auth-correctly), but essentially you just:
+Nano supports making requests using CouchDB's [cookie authentication](http://guide.couchdb.org/editions/1/en/security.html#cookies) functionality. There's an [example in coffeescript](http://stackoverflow.com/questions/23100132/using-nano-auth-correctly), but essentially you just:
 
 ``` js
-var nano     = require('nano')('http://localhost:5984')
-  , username = 'user'
-  , userpass = 'pass'
-  , callback = console.log // this would normally be some callback
-  , cookies  = {} // store cookies, normally redis or something
-  ;
+var nano     = require('nano')('http://localhost:5984'),
+  username = 'user',
+  userpass = 'pass',
+  callback = console.log, // this would normally be some callback
+  cookies  = {}; // store cookies, normally redis or something
+  
 
 nano.auth(username, userpass, function (err, body, headers) {
   if (err) {
@@ -825,21 +865,20 @@ nano.auth(username, userpass, function (err, body, headers) {
 });
 ```
 
-reusing a cookie:
+Reusing a cookie:
 
 ``` js
-var auth = "some stored cookie"
-  , callback = console.log // this would normally be some callback
-  , alice = require('nano')(
+var auth = "some stored cookie",
+  callback = console.log, // this would normally be some callback
+  alice = require('nano')(
     { url : 'http://localhost:5984/alice', cookie: 'AuthSession=' + auth });
-  ;
 
 alice.insert(doc, function (err, body, headers) {
   if (err) {
     return callback(err);
   }
 
-  // change the cookie if couchdb tells us to
+  // change the cookie if CouchDB tells us to
   if (headers && headers['set-cookie']) {
     auth = headers['set-cookie'];
   }
@@ -848,7 +887,7 @@ alice.insert(doc, function (err, body, headers) {
 });
 ```
 
-getting current session:
+Getting current session:
 
 ```javascript
 var nano = require('nano')({url: 'http://localhost:5984', cookie: 'AuthSession=' + auth});
@@ -863,12 +902,11 @@ nano.session(function(err, session) {
 });
 ```
 
+## Advanced features
 
-## advanced features
+### Getting uuids
 
-### getting uuids
-
-if your application needs to generate UUIDs, then CouchDB can provide some for you
+If your application needs to generate UUIDs, then CouchDB can provide some for you
 
 ```js
 nano.uuids(3, callback);
@@ -881,12 +919,12 @@ nano.uuids(3, callback);
 
 The first parameter is the number of uuids to generate. If omitted, it defaults to 1.
 
-### extending nano
+### Extending nano
 
-nano is minimalistic but you can add your own features with
+`nano` is minimalistic but you can add your own features with
 `nano.request(opts, callback)`
 
-for example, to create a function to retrieve a specific revision of the
+For example, to create a function to retrieve a specific revision of the
 `rabbit` document:
 
 ``` js
@@ -904,12 +942,10 @@ getrabbitrev('4-2e6cdc4c7e26b745c2881a24e0eeece2', function(err, body) {
   }
 });
 ```
-### pipes
 
-you can pipe in nano like in any other stream.
-for example if our `rabbit` document has an attachment with name `picture.png`
-(with a picture of our white rabbit, of course!) you can pipe it to a `writable
-stream`
+### Pipes
+
+You can pipe in nano like in any other stream. For example if our `rabbit` document has an attachment with name `picture.png` you can pipe it to a `writable stream`:
 
 ``` js
 var fs = require('fs'),
@@ -920,26 +956,25 @@ alice.attachment.get('rabbit', 'picture.png').pipe(fs.createWriteStream('/tmp/ra
 
 then open `/tmp/rabbit.png` and you will see the rabbit picture.
 
+## Tutorials, examples in the wild & screencasts
 
-## tutorials, examples in the wild & screencasts
-
-* article: [nano - a minimalistic couchdb client for nodejs](http://writings.nunojob.com/2011/08/nano-minimalistic-couchdb-client-for-nodejs.html)
-* article: [getting started with node.js and couchdb](http://writings.nunojob.com/2011/09/getting-started-with-nodejs-and-couchdb.html)
+* article: [nano - a minimalistic CouchDB client for nodejs](http://writings.nunojob.com/2011/08/nano-minimalistic-couchdb-client-for-nodejs.html)
+* article: [getting started with Node.js and CouchDB](http://writings.nunojob.com/2011/09/getting-started-with-nodejs-and-couchdb.html)
 * article: [document update handler support](http://jackhq.tumblr.com/post/16035106690/nano-v1-2-x-document-update-handler-support-v1-2-x)
 * article: [nano 3](http://writings.nunojob.com/2012/05/Nano-3.html)
-* article: [securing a site with couchdb cookie authentication using node.js and nano](http://codetwizzle.com/articles/couchdb-cookie-authentication-nodejs-nano/)
+* article: [securing a site with CouchDB cookie authentication using Node.js and nano](http://codetwizzle.com/articles/couchdb-cookie-authentication-nodejs-nano/)
 * article: [adding copy to nano](http://blog.jlank.com/2012/07/04/adding-copy-to-nano/)
 * article: [how to update a document with nano](http://writings.nunojob.com/2012/07/How-To-Update-A-Document-With-Nano-The-CouchDB-Client-for-Node.js.html)
-* article: [thoughts on development using couchdb with node.js](http://tbranyen.com/post/thoughts-on-development-using-couchdb-with-nodejs)
+* article: [thoughts on development using CouchDB with Node.js](http://tbranyen.com/post/thoughts-on-development-using-couchdb-with-nodejs)
 * example in the wild: [nanoblog](https://github.com/grabbeh/nanoblog)
 
-## roadmap
+## Roadmap
 
-check [issues][2]
+Check [issues][2]
 
-## tests
+## Tests
 
-to run (and configure) the test suite simply:
+To run (and configure) the test suite simply:
 
 ``` sh
 cd nano
@@ -947,7 +982,7 @@ npm install
 npm test
 ```
 
-after adding a new test you can run it individually (with verbose output) using:
+After adding a new test you can run it individually (with verbose output) using:
 
 ``` sh
 nano_env=testing node tests/doc/list.js list_doc_params
@@ -955,13 +990,7 @@ nano_env=testing node tests/doc/list.js list_doc_params
 
 where `list_doc_params` is the test name.
 
-## meta
-
-                    _
-                  / _) roar! i'm a vegan!
-           .-^^^-/ /
-        __/       /
-       /__.|_|-|_|     cannes est superb
+## Meta
 
 * code: `git clone git://github.com/apache/couchdb-nano.git`
 * home: <http://github.com/apache/couchdb-nano>
@@ -977,7 +1006,7 @@ where `list_doc_params` is the test name.
 [follow]: https://github.com/jhs/follow
 [request]:  https://github.com/request/request
 
-## license
+## License
 
 copyright 2011 nuno job <nunojob.com> (oo)--',--
 
