@@ -154,7 +154,7 @@ Promise.promisifyAll(mydb);
 
 // now we have "get" (callback compatible) and "getAsync" (Promise compatible)
 animals.getAsync('doc1').then(function(doc) {
-  console.log('the doc is', doc); 
+  console.log('the doc is', doc);
 }).catch(console.error);
 ```
 
@@ -850,7 +850,7 @@ var nano     = require('nano')('http://localhost:5984'),
   userpass = 'pass',
   callback = console.log, // this would normally be some callback
   cookies  = {}; // store cookies, normally redis or something
-  
+
 
 nano.auth(username, userpass, function (err, body, headers) {
   if (err) {
