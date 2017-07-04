@@ -52,10 +52,10 @@ it('should be able to replicate (replicator) three docs', function(assert) {
               assert.true(disabled, 'should not be null');
               assert.true(disabled.ok, 'should have stopped the replication');
               assert.end();
-            });  
+            });
           })
         })
-      }, 
+      },
       3000)
     };
     waitForReplication();
@@ -84,7 +84,7 @@ it('should be able to replicate (replicator) to a `nano` object', function(asser
             });
           });
         })
-      }, 
+      },
       3000)
     };
     waitForReplication();
@@ -111,9 +111,9 @@ it('should be able to replicate (replicator) with params', function(assert) {
               assert.true(disabled.ok, 'should have stopped the replication');
               assert.end();
             });
-          });  
+          });
         })
-      }, 
+      },
       3000)
     };
     waitForReplication();
