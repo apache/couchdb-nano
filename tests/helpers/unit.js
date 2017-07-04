@@ -93,7 +93,6 @@ helpers.unit = function(method, error) {
         assert.deepEqual(req, stub);
         assert.end();
       });
-
       f.apply(null, args);
     });
   };
@@ -109,7 +108,6 @@ function mockClient(code, path, extra) {
         if(error) {
           return cb(error);
         }
-
         if(code === 500) {
           cb(new Error('omg connection failed'));
         } else {
