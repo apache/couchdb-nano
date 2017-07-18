@@ -18,24 +18,26 @@
   ],
   "dependencies": {
     "request": "^2.76.0",
-    "follow": "^0.12.1",
     "errs": "^0.3.2",
     "underscore": "^1.8.3",
     "debug": "^2.2.0"
   },
   "devDependencies": {
     "async": "^2.1.2",
-    "tape": "^4.6.2",
-    "istanbul": "^0.4.5",
-    "jshint": "^2.9.4",
-    "jscs": "^3.0.7",
-    "nock": "^9.0.0",
     "endswith": "^0.0.0",
+    "istanbul": "^0.4.5",
+    "jscs": "^3.0.7",
+    "jshint": "^2.9.4",
+    "nock": "^9.0.0",
+    "tap": "~10.3.2",
+    "tape": "^4.6.2",
     "tape-it": "^0.3.1"
   },
   "scripts": {
-    "test": "bash scripts/run_couchdb_on_travis.sh; npm run mocha; bash scripts/stop_couchdb_on_travis.sh",
+    "test": "npm run coretests; npm run followtests",
+    "coretests": "bash scripts/run_couchdb_on_travis.sh; npm run mocha; bash scripts/stop_couchdb_on_travis.sh",
     "mocha": "DEBUG=* NOCK_OFF=true istanbul cover tape tests/*/*/*.js",
+    "followtests": "bash scripts/run_couchdb16_on_travis.sh; tap follow_tests/*.js; bash scripts/stop_couchdb16_on_travis.sh",
     "unmocked": "NOCK_OFF=true tape tests/*/*/*.js",
     "mocked": "tape tests/*/*/*.js",
     "jshint": "jshint tests/*/*/*.js lib/*.js",
