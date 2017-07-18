@@ -357,7 +357,7 @@ nano.db.changes('alice', function(err, body) {
 
 ### nano.db.follow(name, [params], [callback])
 
-Uses [Follow] to create a solid changes feed. Please consult `follow` documentation for more information as this is a very complete API on it's own:
+Creates a solid changes feed. Please consult [follow documentation](follow.md) for more information as this is a very complete API on it's own:
 
 ``` js
 var feed = db.follow({since: "now"});
@@ -449,9 +449,9 @@ Listen to db updates, the available `params` are:
 
 ** changed in version 6 **
 
-Use [Follow](https://github.com/jhs/follow) to create a solid
+Creates a solid
 [`_db_updates`](http://docs.couchdb.org/en/latest/api/server/common.html?highlight=db_updates#get--_db_updates) feed.
-Please consult follow documentation for more information as this is a very complete api on it's own
+Please consult [follow](follow.md) documentation for more information as this is a very complete api on it's own
 
 ```js
 var feed = nano.followUpdates({since: "now"});
@@ -1003,7 +1003,6 @@ where `list_doc_params` is the test name.
 [2]: http://github.com/apache/couchdb-nano/issues
 [4]: https://github.com/apache/couchdb-nano/blob/master/cfg/couch.example.js
 [8]: http://webchat.freenode.net?channels=%23couchdb-dev
-[follow]: https://github.com/jhs/follow
 [request]:  https://github.com/request/request
 
 ## License
