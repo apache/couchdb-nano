@@ -33,9 +33,9 @@ or save `nano` as a dependency of your project with
   - [nano.db.list([callback])](#nanodblistcallback)
   - [nano.db.compact(name, [designname], [callback])](#nanodbcompactname-designname-callback)
   - [nano.db.replicate(source, target, [opts], [callback])](#nanodbreplicatesource-target-opts-callback)
-  - [nano.db.replication.enable(source, target, [opts], [callback])](#nanodbreplicatorenablesource-target-opts-callback)
-  - [nano.db.replication.query(id, [opts], [callback])](#nanodbreplicatorquery-id-opts-callback)
-  - [nano.db.replication.disable(id, [opts], [callback])](#nanodbreplicatordisable-id-opts-callback)
+  - [nano.db.replication.enable(source, target, [opts], [callback])](#nanodbreplicationenablesource-target-opts-callback)
+  - [nano.db.replication.query(id, [opts], [callback])](#nanodbreplicationenablesource-target-opts-callback)
+  - [nano.db.replication.disable(id, [opts], [callback])](#nanodbreplicationdisableid-opts-callback)
   - [nano.db.changes(name, [params], [callback])](#nanodbchangesname-params-callback)
   - [nano.db.follow(name, [params], [callback])](#nanodbfollowname-params-callback)
   - [nano.db.info([callback])](#nanodbinfocallback)
@@ -53,8 +53,8 @@ or save `nano` as a dependency of your project with
   - [db.bulk(docs, [params], [callback])](#dbbulkdocs-params-callback)
   - [db.list([params], [callback])](#dblistparams-callback)
   - [db.fetch(docnames, [params], [callback])](#dbfetchdocnames-params-callback)
-  - [db.fetchRevs(docnames, [params], [callback])](#dbfetchRevsdocnames-params-callback)
-  - [db.createIndex(indexDef, [params], [callback])](#dbcreateIndexindexDef-params-callback)
+  - [db.fetchRevs(docnames, [params], [callback])](#dbfetchrevsdocnames-params-callback)
+  - [db.createIndex(indexDef, [callback])](#dbcreateindexindexdef-callback)
 - [Multipart functions](#multipart-functions)
   - [db.multipart.insert(doc, attachments, [params], [callback])](#dbmultipartinsertdoc-attachments-params-callback)
   - [db.multipart.get(docname, [params], [callback])](#dbmultipartgetdocname-params-callback)
@@ -616,7 +616,7 @@ Bulk fetch of the revisions of the database documents, `docnames` are specified 
 additional query string `params` can be specified, this is the same method as fetch but
  `include_docs` is not automatically set to `true`.
 
-### db.createIndex(indexDef, [params], [callback])
+### db.createIndex(indexDef, [callback])
 
 Create index on database fields, as specified in
 [CouchDB doc](http://docs.couchdb.org/en/latest/api/database/find.html#db-index).
