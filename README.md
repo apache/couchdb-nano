@@ -54,6 +54,7 @@ or save `nano` as a dependency of your project with
   - [db.list([params], [callback])](#dblistparams-callback)
   - [db.fetch(docnames, [params], [callback])](#dbfetchdocnames-params-callback)
   - [db.fetchRevs(docnames, [params], [callback])](#dbfetchRevsdocnames-params-callback)
+  - [db.createIndex(indexDef, [params], [callback])](#dbcreateIndexindexDef-params-callback)
 - [Multipart functions](#multipart-functions)
   - [db.multipart.insert(doc, attachments, [params], [callback])](#dbmultipartinsertdoc-attachments-params-callback)
   - [db.multipart.get(docname, [params], [callback])](#dbmultipartgetdocname-params-callback)
@@ -614,6 +615,21 @@ Bulk fetch of the revisions of the database documents, `docnames` are specified 
 [CouchDB doc](http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs).
 additional query string `params` can be specified, this is the same method as fetch but
  `include_docs` is not automatically set to `true`.
+
+### db.createIndex(indexDef, [params], [callback])
+
+Create index on database fields, as specified in
+[CouchDB doc](http://docs.couchdb.org/en/latest/api/database/find.html#db-index).
+
+```js
+var indexDef = {
+  index: { fields: ['foo'] },
+  name: 'fooindex'
+};
+alice.createIndex(indexDef, function(err, result) {
+  console.log(result);
+});
+```
 
 ## Multipart functions
 
