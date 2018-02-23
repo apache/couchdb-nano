@@ -378,7 +378,7 @@ Gets database information:
 ```js
 nano.db.info(function(err, body) {
   if (!err) {
-    console.log('got database info'', body);
+    console.log('got database info', body);
   }
 });
 ```
