@@ -1,15 +1,9 @@
 language: "node_js"
 env: DEBUG=*
-branches:
-  only:
-    - master
-    - next
-    - rewrite
 node_js:
   - "node"
-  - "4"
   - "6"
-  - "7"
+  - "8"
 
 services:
   - docker
