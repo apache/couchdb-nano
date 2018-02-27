@@ -73,6 +73,7 @@ or save `nano` as a dependency of your project with
   - [extending nano](#extending-nano)
   - [pipes](#pipes)
 - [Tests](#tests)
+- [Release](#release)
 
 ## Getting started
 
@@ -1021,6 +1022,17 @@ where `list_doc_params` is the test name.
 [8]: http://webchat.freenode.net?channels=%23couchdb-dev
 [follow]: https://github.com/jhs/follow
 [request]:  https://github.com/request/request
+
+## Release
+
+To create a new release of nano. Run the following commands on the master branch
+
+```sh
+  npm version {patch|minor|major}
+  github push  origin master --tags
+  npm publish
+```
+
 
 ## License
 
