@@ -45,7 +45,7 @@
   },
   "main": "./lib/nano.js",
   "engines": {
-    "node": ">=0.12"
+    "node": ">=6"
   },
   "pre-commit": [
     "jshint",

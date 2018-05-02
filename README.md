@@ -21,6 +21,8 @@ or save `nano` as a dependency of your project with
 
     npm install --save nano
 
+Note the minimum required version of Node.js is 6.
+
 ## Table of contents
 
 - [Getting started](#getting-started)
