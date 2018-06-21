@@ -929,7 +929,7 @@ If your application needs to generate UUIDs, then CouchDB can provide some for y
 
 ```js
 nano.uuids(3, callback);
-// { uuid: [
+// { uuids: [
 // '5d1b3ef2bc7eea51f660c091e3dffa23',
 // '5d1b3ef2bc7eea51f660c091e3e006ff',
 // '5d1b3ef2bc7eea51f660c091e3e007f0',
