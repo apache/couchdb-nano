@@ -17,6 +17,7 @@
     "database"
   ],
   "dependencies": {
+    "@types/request": "^2.47.1",
     "cloudant-follow": "~0.17.0",
     "debug": "^2.2.0",
     "errs": "^0.3.2",
@@ -44,6 +45,7 @@
     "checkcoverage": "istanbul check-coverage --statements 100 --functions 100 --lines 100 --branches 100"
   },
   "main": "./lib/nano.js",
+  "types": "./lib/nano.d.ts",
   "engines": {
     "node": ">=6"
   },
