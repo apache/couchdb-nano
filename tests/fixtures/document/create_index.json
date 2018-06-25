@@ -16,4 +16,9 @@
   , "body"     : "{\"name\":\"fooindex\",\"index\":{\"fields\":[\"foo\"]}}"
   , "response" : "{\"result\":\"created\",\"id\":\"_design/a7ee061f1a2c0c6882258b2f1e148b714e79ccea\",\"name\": \"fooindex\"}"
   }
+, { "method"   : "delete"
+  , "path"     : "/document_create_index"
+  , "status"   : 201
+  , "response" : "{ \"ok\": true }"
+  }
 ]
