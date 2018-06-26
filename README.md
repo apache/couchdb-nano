@@ -361,7 +361,7 @@ nano.db.changes('alice', function(err, body) {
 
 ### nano.db.follow(name, [params], [callback])
 
-Uses [Follow] to create a solid changes feed. Please consult `follow` documentation for more information as this is a very complete API on it's own:
+Uses [Follow](https://github.com/cloudant-labs/cloudant-follow/) to create a solid changes feed. Please consult `follow` documentation for more information as this is a very complete API on it's own:
 
 ``` js
 var feed = db.follow({since: "now"});
