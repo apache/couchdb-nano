@@ -557,7 +557,7 @@ alice.copy('rabbit', 'rabbit2', { overwrite: true }, function(err, _, headers) {
 ### db.bulk(docs, [params], [callback])
 
 Bulk operations(update/delete/insert) on the database, refer to the
-[CouchDB doc](http://wiki.apache.org/couchdb/HTTP_Bulk_Document_API) e.g:
+[CouchDB doc](http://docs.couchdb.org/en/2.1.1/api/database/bulk-api.html#db-bulk-docs) e.g:
 
 ``` js
 var documents = [
