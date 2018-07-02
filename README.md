@@ -672,7 +672,7 @@ alice.multipart.get('rabbit', function(err, buffer) {
 
 Inserts an attachment `attname` to `docname`, in most cases
  `params.rev` is required. Refer to the
- [doc](http://wiki.apache.org/couchdb/HTTP_Document_API) for more details.
+ [CouchDB doc](http://docs.couchdb.org/en/latest/api/document/attachments.html#db-doc-attachment) for more details.
 
 ``` js
 var fs = require('fs');
