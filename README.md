@@ -453,7 +453,7 @@ Listen to db updates, the available `params` are:
 
 ** changed in version 6 **
 
-Use [Follow](https://github.com/jhs/follow) to create a solid
+Use [Follow] to create a solid
 [`_db_updates`](http://docs.couchdb.org/en/latest/api/server/common.html?highlight=db_updates#get--_db_updates) feed.
 Please consult follow documentation for more information as this is a very complete api on it's own
 
@@ -1022,7 +1022,7 @@ where `list_doc_params` is the test name.
 [2]: http://github.com/apache/couchdb-nano/issues
 [4]: https://github.com/apache/couchdb-nano/blob/master/cfg/couch.example.js
 [8]: http://webchat.freenode.net?channels=%23couchdb-dev
-[follow]: https://github.com/jhs/follow
+[follow]: https://www.npmjs.com/package/cloudant-follow
 [request]:  https://github.com/request/request
 
 ## Release
