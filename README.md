@@ -26,6 +26,7 @@ Note the minimum required version of Node.js is 6.
 ## Table of contents
 
 - [Getting started](#getting-started)
+- [Promises](#promises)
 - [Tutorials & screencasts](#tutorials-examples-in-the-wild--screencasts)
 - [Configuration](#configuration)
 - [Database functions](#database-functions)
@@ -63,6 +64,7 @@ Note the minimum required version of Node.js is 6.
 - [Attachments functions](#attachments-functions)
   - [db.attachment.insert(docname, attname, att, contenttype, [params], [callback])](#dbattachmentinsertdocname-attname-att-contenttype-params-callback)
   - [db.attachment.get(docname, attname, [params], [callback])](#dbattachmentgetdocname-attname-params-callback)
+  - [db.attachment.getAsStream(docname, attname, [params])](#dbattachmentgetasstreamdocname-attname-params)
   - [db.attachment.destroy(docname, attname, [params], [callback])](#dbattachmentdestroydocname-attname-rev-callback)
 - [Views and design functions](#views-and-design-functions)
   - [db.view(designname, viewname, [params], [callback])](#dbviewdesignname-viewname-params-callback)
@@ -147,19 +149,74 @@ You can also see your document in [futon](http://localhost:5984/_utils).
 
 ## Promises
 
-Although `nano` is written using the "callback" style, it is easy enough to switch to a "Promises" style, using the [Bluebird](https://www.npmjs.com/package/bluebird) library:
+By default, `nano` has a pure callback-style API where every operation takes a callback function with error and result arguments:
 
 ```js
-var Promise = require('bluebird');
-var mydb = require('nano')('http://localhost:5984/animaldb');
+const nano = require('nano')('http://localhost:5984');
+var db = nano.db.use('animals');
 
-// create Promise-compatible versions of all functions
-Promise.promisifyAll(mydb);
+db.get('rabbit', function(err, doc) {
+  if (err) {
+    console.error('An error occured!', err);
+    return;
+  }
+  console.log('Got document:', doc);
+});
+```
 
-// now we have "get" (callback compatible) and "getAsync" (Promise compatible)
-animals.getAsync('doc1').then(function(doc) {
-  console.log('the doc is', doc);
-}).catch(console.error);
+However, `nano` also supports a promised-based API that can be enabled by passing `promise: true` on initialization. In this mode callbacks are still accepted, but if you omit the callback argument, a promise will be returned instead:
+
+```js
+const nano = require('nano')({
+  url: 'http://localhost:5984',
+  promise: true
+});
+
+var db = nano.db.use('animals');
+
+db.get('rabbit')
+  .then(function(err, doc) {
+    console.log('Got document:', doc);
+  })
+  .catch(function(err, doc) {
+    console.error('An error occured!', err);
+  });
+});
+```
+
+This is especially nice when combined with the [async-await syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await) which is supported in Node.js 7.6.0 and above:
+
+```js
+const nano = require('nano')({
+  url: 'http://localhost:5984',
+  promise: true
+});
+
+var db = nano.db.use('animals');
+
+(async function() {
+  try {
+    var doc1 = await db.get('rabbit');
+    var doc2 = await db.get('fox');
+    console.log('Got documents:', doc1, doc2);
+  } catch (error) {
+    console.error('An error occured!', err);;
+  }
+})();
+```
+
+Note that if `promise: true` is not set, you can still call operations without passing a callback, but the result will be a Node.js stream instead of a promise. This is useful for piping document attachments to another stream, for instance:
+
+``` js
+alice.attachment.get('rabbit', 'rabbit.png')
+  .pipe(fs.createWriteStream('rabbit.png'));
+```
+
+If you want to use `promise: true` but still get attachments as streams, you can use `[db.attachment.getAsStream]()`, which works both in promise and callback-only mode:
+
+``` js
+alice.attachment.getAsStream('rabbit', 'rabbit.png')
+  .pipe(fs.createWriteStream('rabbit.png'));
 ```
 
 ## Configuration
@@ -426,6 +483,7 @@ server, to perform operations where there is no `nano` function that encapsulate
 * `opts.body` – the document or attachment body
 * `opts.encoding` – the encoding for attachments
 * `opts.multipart` – array of objects for multipart request
+* `opts.promise` - if true, return a promise when no callback is passed (see [Promises](#promises))
 
 ### nano.relax(opts, [callback])
 
@@ -713,12 +771,24 @@ alice.attachment.get('rabbit', 'rabbit.png', function(err, body) {
 });
 ```
 
-or using `pipe`:
+or using `pipe` (when not using promise mode - see [Promises](#promises)):
 
 ``` js
 var fs = require('fs');
 
 alice.attachment.get('rabbit', 'rabbit.png').pipe(fs.createWriteStream('rabbit.png'));
+```
+
+### db.attachment.getAsStream(docname, attname, [params])
+
+Get `docname`'s attachment `attname` as a stream with optional query string additions
+`params`.
+
+``` js
+var fs = require('fs');
+
+alice.attachment.getAsStream('rabbit', 'rabbit.png')
+  .pipe(fs.createWriteStream('rabbit.png'));
 ```
 
 ### db.attachment.destroy(docname, attname, [params], [callback])
