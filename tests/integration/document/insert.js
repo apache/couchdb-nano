@@ -71,7 +71,7 @@ it('should be able to insert functions in docs', function(assert) {
 
 it('should be able to stream an insert', function(assert) {
   var buffer = '';
-  var foobar = db.insert({'foo': 'bar'});
+  var foobar = db.insertAsStream({'foo': 'bar'});
 
   function runAssertions(error, foobar) {
     assert.equal(error, null, 'should have stored foobar');

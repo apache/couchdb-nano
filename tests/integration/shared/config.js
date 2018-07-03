@@ -112,7 +112,7 @@ it('should accept and handle customer http headers', function(assert) {
     }
   });
 
-  var req = nanoWithDefaultHeaders.db.list(function(err) {
+  var req = nanoWithDefaultHeaders.db.listAsStream(function(err) {
     assert.equal(err, null, 'should list');
     assert.end();
   });
