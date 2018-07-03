@@ -28,12 +28,19 @@ it('should ensure _replicator and _users are created', function(assert) {
 });
 
 it('should list the correct databases', function(assert) {
-  nano.db.list(function(error, list) {
+  var p = nano.db.list(function(error, list) {
     assert.equal(error, null, 'should list databases');
     var filtered = list.filter(function(e) {
       return e === 'database_list' || e === '_replicator' || e === '_users';
     });
     assert.equal(filtered.length, 3, 'should have exactly 3 dbs');
     assert.end();
+  });
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function(list) {
+    assert.ok(true, 'Promise is resolved');
+    assert.equal(filtered.length, 3, 'should have exactly 3 dbs');
+  }).catch(function(error) {
+    assert.ok(false, 'Promise is rejected');
   });
 });

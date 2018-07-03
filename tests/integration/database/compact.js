@@ -30,7 +30,7 @@ it('should store and delete `goofy`', function(assert) {
 });
 
 it('should have run the compaction', function(assert) {
-  db.compact(function(error) {
+  var p = db.compact(function(error) {
     assert.equal(error, null, 'compact should respond');
     db.info(function(error, info) {
       assert.equal(error, null, 'info should respond');
@@ -38,6 +38,14 @@ it('should have run the compaction', function(assert) {
       assert.equal(info['doc_del_count'], 1, 'document should be deleted');
       assert.end();
     });
+  });
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function(response) {
+    assert.ok(true, 'Promise is resolved');
+    assert.equal(info['doc_count'], 0, 'document count is not 3');
+    assert.equal(info['doc_del_count'], 1, 'document should be deleted');
+  }).catch(function(error) {
+    assert.ok(false, 'Promise is rejected');
   });
 });
 
