@@ -26,7 +26,7 @@ it('should be able to insert a doc with att', function(assert) {
     'content_type': 'text/plain'
   };
 
-  db.multipart.insert({'foo': 'baz'}, [att], 'foobaz', function(error, foo) {
+  var p = db.multipart.insert({'foo': 'baz'}, [att], 'foobaz', function(error, foo) {
     assert.equal(error, null, 'should have stored foobaz');
     assert.equal(foo.ok, true, 'response should be ok');
     assert.equal(foo.id, 'foobaz', 'id is foobaz');
@@ -34,10 +34,19 @@ it('should be able to insert a doc with att', function(assert) {
     rev = foo.rev;
     assert.end();
   });
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function(foo) {
+    assert.ok(true, 'Promise is resolved');
+    assert.equal(foo.ok, true, 'response should be ok');
+    assert.equal(foo.id, 'foobaz', 'id is foobaz');
+    assert.ok(foo.rev, 'has rev');
+  }).catch(function(error) {
+    assert.ok(false, 'Promise is rejected');
+  });
 });
 
 it('should be able to get the document with the attachment', function(assert) {
-  db.multipart.get('foobaz', function(error, foobaz, headers) {
+  var p = db.multipart.get('foobaz', function(error, foobaz, headers) {
     assert.equal(error, null, 'should get foobaz');
     if (helpers.unmocked) {
       assert.ok(headers['content-type'], 'should have content type');
@@ -45,5 +54,12 @@ it('should be able to get the document with the attachment', function(assert) {
     }
     assert.equal(typeof foobaz, 'object', 'foobaz should be a buffer');
     assert.end();
+  });
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function(foobaz) {
+    assert.ok(true, 'Promise is resolved');
+    ssert.equal(typeof foobaz, 'object', 'foobaz should be a buffer');
+  }).catch(function(error) {
+    assert.ok(false, 'Promise is rejected');
   });
 });
