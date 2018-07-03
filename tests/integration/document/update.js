@@ -20,19 +20,34 @@ var it = harness.it;
 var rev;
 
 it('should insert one doc', function(assert) {
-  db.insert({'foo': 'baz'}, 'foobar', function(error, foo) {
+  var p = db.insert({'foo': 'baz'}, 'foobar', function(error, foo) {
     assert.equal(error, null, 'stored foo');
     assert.equal(foo.ok, true, 'response ok');
     assert.ok(foo.rev, 'withs rev');
     rev = foo.rev;
     assert.end();
   });
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function(docs) {
+    assert.ok(true, 'Promise is resolved');
+    assert.equal(foo.ok, true, 'response ok');
+    assert.ok(foo.rev, 'withs rev');
+  }).catch(function(error) {
+    assert.ok(false, 'Promise is rejected');
+  });
 });
 
 it('should update the document', function(assert) {
-  db.insert({foo: 'bar', '_rev': rev}, 'foobar', function(error, response) {
+  var p = db.insert({foo: 'bar', '_rev': rev}, 'foobar', function(error, response) {
     assert.equal(error, null, 'should have deleted foo');
     assert.equal(response.ok, true, 'response should be ok');
     assert.end();
+  });
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function(docs) {
+    assert.ok(true, 'Promise is resolved');
+    assert.equal(response.ok, true, 'response should be ok');
+  }).catch(function(error) {
+    assert.ok(false, 'Promise is rejected');
   });
 });

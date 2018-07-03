@@ -20,7 +20,7 @@ var it = harness.it;
 it('should insert a one item', helpers.insertOne);
 
 it ('Should create one simple index', function(assert) {
-  db.createIndex({
+  var p = db.createIndex({
     name: 'fooindex',
     index: { fields: ['foo'] }
   }, function(error, foo) {
@@ -29,5 +29,12 @@ it ('Should create one simple index', function(assert) {
     assert.equal(foo.name, 'fooindex', 'index should have correct name');
 
     assert.end();
+  });
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function(response) {
+    assert.equal(foo.result, 'created', 'index should be created');
+    assert.equal(foo.name, 'fooindex', 'index should have correct name');
+  }).catch(function(error) {
+    assert.ok(false, 'Promise is rejected');
   });
 });

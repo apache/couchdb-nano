@@ -30,17 +30,30 @@ it('should insert a document', function(assert) {
 });
 
 it('should not delete a db', function(assert) {
-  db.destroy(undefined, undefined, function(error, response) {
+  var p = db.destroy(undefined, undefined, function(error, response) {
     assert.equal(error, 'Invalid doc id', 'validated delete parameters');
     assert.equal(response, null, 'ok!');
     assert.end();
   });
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function(response) {
+    assert.ok(false, 'Promise is resolved');
+  }).catch(function(error) {
+    assert.ok(true, 'Promise is rejected');
+  });
 });
 
 it('should delete a document', function(assert) {
-  db.destroy('foobaz', rev, function(error, response) {
+  var p = db.destroy('foobaz', rev, function(error, response) {
     assert.equal(error, null, 'deleted foo');
     assert.equal(response.ok, true, 'ok!');
     assert.end();
+  });
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function(response) {
+    assert.ok(true, 'Promise is resolved');
+    assert.equal(response.ok, true, 'ok!');
+  }).catch(function(error) {
+    assert.ok(false, 'Promise is rejected');
   });
 });

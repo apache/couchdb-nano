@@ -20,11 +20,20 @@ var it = harness.it;
 it('should insert a one item', helpers.insertOne);
 
 it('should get the document', function(assert) {
-  db.get('foobaz', {'revs_info': true}, function(error, foobaz) {
+  var p = db.get('foobaz', {'revs_info': true}, function(error, foobaz) {
     assert.equal(error, null, 'should get foobaz');
     assert.ok(foobaz['_revs_info'], 'got revs info');
     assert.equal(foobaz._id, 'foobaz', 'id is food');
     assert.equal(foobaz.foo, 'baz', 'baz is in foo');
     assert.end();
+  });
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function(docs) {
+    assert.ok(true, 'Promise is resolved');
+    assert.ok(foobaz['_revs_info'], 'got revs info');
+    assert.equal(foobaz._id, 'foobaz', 'id is food');
+    assert.equal(foobaz.foo, 'baz', 'baz is in foo');
+  }).catch(function(error) {
+    assert.ok(false, 'Promise is rejected');
   });
 });

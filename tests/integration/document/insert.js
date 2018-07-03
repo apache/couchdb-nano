@@ -20,26 +20,42 @@ var it = harness.it;
 var rev;
 
 it('should insert one simple document', function(assert) {
-  db.insert({'foo': 'baz'}, 'foobaz', function(error, foo) {
+  var p = db.insert({'foo': 'baz'}, 'foobaz', function(error, foo) {
     rev = foo.rev;
     assert.equal(error, null, 'should have stored foo');
     assert.equal(foo.ok, true, 'response should be ok');
     assert.ok(foo.rev, 'response should have rev');
     assert.end();
   });
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function(foo) {
+    assert.ok(true, 'Promise is resolved');
+    assert.equal(foo.ok, true, 'response should be ok');
+    assert.ok(foo.rev, 'response should have rev');
+  }).catch(function(error) {
+    assert.ok(false, 'Promise is rejected');
+  });
 });
 
 it('should fail to insert again since it already exists', function(assert) {
-  db.insert({}, 'foobaz', function(error) {
+  var p = db.insert({}, 'foobaz', function(error) {
     assert.equal(error['statusCode'], 409, 'should be conflict');
     assert.equal(error.scope, 'couch', 'scope is couch');
     assert.equal(error.error, 'conflict', 'type is conflict');
     assert.end();
   });
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function(foo) {
+    assert.ok(false, 'Promise is resolved');
+  }).catch(function(error) {
+    assert.ok(true, 'Promise is rejected');
+    assert.equal(error.scope, 'couch', 'scope is couch');
+    assert.equal(error.error, 'conflict', 'type is conflict');
+  });
 });
 
 it('should be able to use custom params in insert', function(assert) {
-  db.insert({
+  var p = db.insert({
     foo: 'baz',
     _rev: rev
   }, {
@@ -51,10 +67,18 @@ it('should be able to use custom params in insert', function(assert) {
     assert.ok(foo.rev, 'response should have rev');
     assert.end();
   });
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function(foo) {
+    assert.ok(true, 'Promise is resolved');
+    assert.equal(foo.ok, true, 'response should be ok');
+    assert.ok(foo.rev, 'response should have rev');
+  }).catch(function(error) {
+    assert.ok(false, 'Promise is rejected');
+  });
 });
 
 it('should be able to insert functions in docs', function(assert) {
-  db.insert({
+  var p = db.insert({
     fn: function() { return true; },
     fn2: 'function () { return true; }'
   }, function(error, fns) {
@@ -66,6 +90,14 @@ it('should be able to insert functions in docs', function(assert) {
       assert.equal(error, null, 'should get foo');
       assert.end();
     });
+  });
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function(foo) {
+    assert.ok(true, 'Promise is resolved');
+    assert.equal(fns.ok, true, 'response should be ok');
+    assert.ok(fns.rev, 'response should have rev');
+  }).catch(function(error) {
+    assert.ok(false, 'Promise is rejected');
   });
 });
 

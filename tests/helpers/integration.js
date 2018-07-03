@@ -188,5 +188,9 @@ helpers.insertThree = function insertThree(assert) {
 helpers.unmocked = (process.env.NOCK_OFF === 'true');
 helpers.mocked = !helpers.unmocked;
 
+helpers.isPromise = function(p) {
+  return (p && typeof p === 'object' && typeof p.then === 'function') 
+}
+
 module.exports = helpers;
 
