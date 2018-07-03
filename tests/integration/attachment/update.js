@@ -27,12 +27,19 @@ it('should be able to insert and update attachments', function(assert) {
     assert.equal(error, null, 'should store hello');
     assert.equal(hello.ok, true, 'response ok');
     assert.ok(hello.rev, 'should have a revision');
-    db.attachment.insert('new', 'att', buffer, 'image/bmp',
+    var p = db.attachment.insert('new', 'att', buffer, 'image/bmp',
     {rev: hello.rev}, function(error, bmp) {
       assert.equal(error, null, 'should store the pixel');
       assert.ok(bmp.rev, 'should store a revision');
       rev = bmp.rev;
       assert.end();
+    });
+    assert.ok(helpers.isPromise(p), 'returns Promise')
+    p.then(function(s) {
+      assert.ok(true, 'Promise is resolved');
+      assert.ok(s.rev, 'should store a revision');
+    }).catch(function(error) {
+      assert.ok(false, 'Promise is rejected');
     });
   });
 });
