@@ -54,11 +54,19 @@ it('should be able to insert with a cookie', function(assert) {
   });
   var db = server.use('shared_cookie');
 
-  db.insert({'foo': 'baz'}, null, function(error, response) {
+  var p = db.insert({'foo': 'baz'}, null, function(error, response) {
     assert.equal(error, null, 'should have stored value');
     assert.equal(response.ok, true, 'response should be ok');
     assert.ok(response.rev, 'response should have rev');
     assert.end();
+  });
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function(response) {
+    assert.ok(true, 'Promise is resolved');
+    assert.equal(response.ok, true, 'response should be ok');
+    assert.ok(response.rev, 'response should have rev');
+  }).catch(function(error) {
+    assert.ok(false, 'Promise is rejected');
   });
 });
 
