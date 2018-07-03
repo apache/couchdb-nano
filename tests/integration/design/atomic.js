@@ -20,7 +20,7 @@ var db = harness.locals.db;
 var rev;
 
 it('should be able to insert an atomic design doc', function(assert) {
-  db.insert({
+  var p = db.insert({
     updates: {
       inplace: function(doc, req) {
         var body = JSON.parse(req.body);
@@ -42,10 +42,16 @@ it('should be able to insert an atomic design doc', function(assert) {
       assert.end();
     });
   });
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function(response) {
+    assert.ok(true, 'Promise is resolved');
+  }).catch(function(error) {
+    assert.ok(false, 'Promise is rejected');
+  });
 });
 
 it('should be able to insert atomically', function(assert) {
-  db.atomic('update', 'inplace', 'foobar', {
+  var p = db.atomic('update', 'inplace', 'foobar', {
     field: 'foo',
     value: 'bar'
   }, function(error, response) {
@@ -53,20 +59,34 @@ it('should be able to insert atomically', function(assert) {
     assert.equal(response.foo, 'bar', 'and the right value was set');
     assert.end();
   });
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function(response) {
+    assert.ok(true, 'Promise is resolved');
+    assert.equal(response.foo, 'bar', 'and the right value was set');
+  }).catch(function(error) {
+    assert.ok(false, 'Promise is rejected');
+  });
 });
 
 it('should be able to update atomically without a body', function (assert) {
-  db.insert({}, 'baz', function (error, doc) {
+  var p = db.insert({}, 'baz', function (error, doc) {
     db.atomic('update', 'addbaz', 'baz', function (error, response) {
       assert.equal(error, null, 'should be able to update');
       assert.equal(response.baz, 'biz', 'and the new field is present');
       assert.end();
     });
   });
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function(response) {
+    assert.ok(true, 'Promise is resolved');
+    assert.equal(response.baz, 'biz', 'and the new field is present');
+  }).catch(function(error) {
+    assert.ok(false, 'Promise is rejected');
+  });
 });
 
 it('should be able to update with slashes on the id', function(assert) {
-  db.insert({'wat': 'wat'}, 'wat/wat', function(error, foo) {
+  var p = db.insert({'wat': 'wat'}, 'wat/wat', function(error, foo) {
     assert.equal(error, null, 'stores `wat`');
     assert.equal(foo.ok, true, 'response ok');
     db.atomic('update', 'inplace', 'wat/wat', {
@@ -77,5 +97,12 @@ it('should be able to update with slashes on the id', function(assert) {
       assert.equal(response.wat, 'dawg', 'with the right copy');
       assert.end();
     });
+  });
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function(response) {
+    assert.ok(true, 'Promise is resolved');
+    assert.equal(response.wat, 'dawg', 'with the right copy');
+  }).catch(function(error) {
+    assert.ok(false, 'Promise is rejected');
   });
 });

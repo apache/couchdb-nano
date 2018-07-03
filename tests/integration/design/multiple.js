@@ -18,7 +18,7 @@ var it = harness.it;
 var db = harness.locals.db;
 
 it('should be able to insert docs and design doc', function(assert) {
-  db.insert({
+  var p = db.insert({
     views: {
       'by_id': {
         map: 'function(doc) { emit(doc._id, doc); }'
@@ -29,12 +29,20 @@ it('should be able to insert docs and design doc', function(assert) {
     assert.equal(response.ok, true, 'response ok');
     assert.end();
   });
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function(response) {
+    assert.ok(true, 'Promise is resolved');
+    assert.equal(error, null, 'should create views');
+    assert.equal(response.ok, true, 'response ok');
+  }).catch(function(error) {
+    assert.ok(false, 'Promise is rejected');
+  });
 });
 
 it('should insert a bunch of items', helpers.insertThree);
 
 it('get multiple docs with a composed key', function(assert) {
-  db.view('alice', 'by_id', {
+  var p = db.view('alice', 'by_id', {
     keys: ['foobar', 'barfoo'],
     'include_docs': true
   }, function(err, view) {
@@ -43,5 +51,14 @@ it('get multiple docs with a composed key', function(assert) {
     assert.equal(view.rows[0].id, 'foobar', 'foo is not the first id');
     assert.equal(view.rows[1].id, 'barfoo', 'bar is not the second id');
     assert.end();
+  });
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function(view) {
+    assert.ok(true, 'Promise is resolved');
+    assert.equal(view.rows.length, 2, 'has more or less than two rows');
+    assert.equal(view.rows[0].id, 'foobar', 'foo is not the first id');
+    assert.equal(view.rows[1].id, 'barfoo', 'bar is not the second id');
+  }).catch(function(error) {
+    assert.ok(false, 'Promise is rejected');
   });
 });

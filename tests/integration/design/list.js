@@ -20,7 +20,7 @@ var db = harness.locals.db;
 it('should create a ddoc and insert some docs', helpers.prepareAView);
 
 it('should get the people by running the ddoc', function(assert) {
-  db.viewWithList('people', 'by_name_and_city', 'my_list', {
+  var p = db.viewWithList('people', 'by_name_and_city', 'my_list', {
     key: [
       'Derek',
       'San Francisco'
@@ -29,5 +29,12 @@ it('should get the people by running the ddoc', function(assert) {
     assert.equal(error, null, 'should response');
     assert.equal(list, 'Hello', 'and list should be `hello`');
     assert.end();
+  });
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function(docs) {
+    assert.ok(true, 'Promise is resolved');
+    assert.equal(list, 'Hello', 'and list should be `hello`');
+  }).catch(function(error) {
+    assert.ok(false, 'Promise is rejected');
   });
 });
