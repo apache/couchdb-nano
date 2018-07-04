@@ -28,6 +28,7 @@ it('should get a status code when you do head', function(assert) {
   assert.ok(helpers.isPromise(p), 'returns Promise')
   p.then(function(docs) {
     assert.ok(true, 'Promise is resolved');
+    assert.equal(docs['statusCode'], 200, 'and is ok');
   }).catch(function(error) {
     assert.ok(false, 'Promise is rejected');
   });
