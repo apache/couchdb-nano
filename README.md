@@ -57,6 +57,7 @@ Note the minimum required version of Node.js is 6.
   - [db.fetch(docnames, [params], [callback])](#dbfetchdocnames-params-callback)
   - [db.fetchRevs(docnames, [params], [callback])](#dbfetchrevsdocnames-params-callback)
   - [db.createIndex(indexDef, [callback])](#dbcreateindexindexdef-callback)
+  - [db.find(mango, [callback])](#finddocusingmango-callback)
 - [Multipart functions](#multipart-functions)
   - [db.multipart.insert(doc, attachments, [params], [callback])](#dbmultipartinsertdoc-attachments-params-callback)
   - [db.multipart.get(docname, [params], [callback])](#dbmultipartgetdocname-params-callback)
@@ -630,6 +631,24 @@ var indexDef = {
   name: 'fooindex'
 };
 alice.createIndex(indexDef, function(err, result) {
+  console.log(result);
+});
+```
+
+### db.find(mango, [callback])
+
+Search docs using mango query, as specified in
+[CouchDB doc](http://docs.couchdb.org/en/2.1.1/api/database/find.html).
+
+```js
+var mango = {
+  selector: {
+    name: "test"
+  },
+  fields: ["name"],
+  limit: 10
+};
+alice.find(mango, function(err, result) {
   console.log(result);
 });
 ```
