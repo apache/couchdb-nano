@@ -57,7 +57,7 @@ Note the minimum required version of Node.js is 6.
   - [db.fetch(docnames, [params], [callback])](#dbfetchdocnames-params-callback)
   - [db.fetchRevs(docnames, [params], [callback])](#dbfetchrevsdocnames-params-callback)
   - [db.createIndex(indexDef, [callback])](#dbcreateindexindexdef-callback)
-  - [db.find(mango, [callback])](#finddocusingmango-callback)
+  - [db.find(mango, [callback])](#dbfindmango-callback)
 - [Multipart functions](#multipart-functions)
   - [db.multipart.insert(doc, attachments, [params], [callback])](#dbmultipartinsertdoc-attachments-params-callback)
   - [db.multipart.get(docname, [params], [callback])](#dbmultipartgetdocname-params-callback)
