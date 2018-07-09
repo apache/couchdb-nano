@@ -100,19 +100,3 @@ it('should be able to insert functions in docs', function(assert) {
     assert.ok(false, 'Promise is rejected');
   });
 });
-
-it('should be able to stream an insert', function(assert) {
-  var buffer = '';
-  var foobar = db.insertAsStream({'foo': 'bar'});
-
-  function runAssertions(error, foobar) {
-    assert.equal(error, null, 'should have stored foobar');
-    assert.ok(foobar.ok, 'this is ok');
-    assert.ok(foobar.rev, 'and i got revz');
-    assert.end();
-  }
-
-  foobar.on('data', function(chunk) { buffer += chunk; });
-  foobar.on('end', function() { runAssertions(null, JSON.parse(buffer)); });
-  foobar.on('error', runAssertions);
-});
