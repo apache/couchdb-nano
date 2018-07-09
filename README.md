@@ -8,7 +8,9 @@ Features:
 
 * **Minimalistic** - There is only a minimum of abstraction between you and
   CouchDB.
-* **Pipes** - Proxy requests from CouchDB directly to your end user.
+* **Pipes** - Proxy requests from CouchDB directly to your end user. ( `...AsStream` functions only)
+* **Promises** - The vast majority of library calls return native Promises.
+* **TypeScript** - Detailed TypeScript definitions are built in.
 * **Errors** - Errors are proxied directly from CouchDB: if you know CouchDB
   you already know `nano`.
 
@@ -22,6 +24,8 @@ or save `nano` as a dependency of your project with
     npm install --save nano
 
 Note the minimum required version of Node.js is 6.
+
+See [Migration Guide for switching from Nano 6.x to 7.x](migration_6_to_7.md).
 
 ## Table of contents
 
@@ -73,6 +77,7 @@ Note the minimum required version of Node.js is 6.
   - [db.show(designname, showname, doc_id, [params], [callback])](#dbshowdesignname-showname-doc_id-params-callback)
   - [db.atomic(designname, updatename, docname, [body], [callback])](#dbatomicdesignname-updatename-docname-body-callback)
   - [db.search(designname, viewname, [params], [callback])](#dbsearchdesignname-searchname-params-callback)
+  - [db.find(selector, [callback])](#dbfindselector-callback)
 - [Using cookie authentication](#using-cookie-authentication)
 - [Advanced features](#advanced-features)
   - [getting uuids](#getting-uuids)
@@ -891,6 +896,25 @@ alice.search('characters', 'happy_ones', { q: 'cat' }).then((doc) => {
 ```
 
 Check out the tests for a fully functioning example.
+
+### db.find(selector, [callback])
+
+Perform a ["Mango" query](http://docs.couchdb.org/en/2.1.1/api/database/find.html) by supplying a JavaScript object containing a selector:
+
+```js
+// find documents where the name = "Brian" and age > 25.
+var q = { 
+  selector: {
+    name: { "$eq": "Brian"},
+    age : { "$gt": 25 }
+  },
+  fields: [ "name", "age", "tags", "url" ]
+  limit:50
+};
+alice.find(q).then((doc) => {
+  console.log(doc);
+});
+```
 
 ## using cookie authentication
 
