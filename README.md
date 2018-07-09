@@ -33,6 +33,7 @@ Note the minimum required version of Node.js is 6.
   - [nano.db.get(name, [callback])](#nanodbgetname-callback)
   - [nano.db.destroy(name, [callback])](#nanodbdestroyname-callback)
   - [nano.db.list([callback])](#nanodblistcallback)
+  - [nano.db.listAsStream([callback])](#nanodblistasstreamcallback)
   - [nano.db.compact(name, [designname], [callback])](#nanodbcompactname-designname-callback)
   - [nano.db.replicate(source, target, [opts], [callback])](#nanodbreplicatesource-target-opts-callback)
   - [nano.db.replication.enable(source, target, [opts], [callback])](#nanodbreplicationenablesource-target-opts-callback)
@@ -54,6 +55,7 @@ Note the minimum required version of Node.js is 6.
   - [db.copy(src_doc, dest_doc, opts, [callback])](#dbcopysrc_doc-dest_doc-opts-callback)
   - [db.bulk(docs, [params], [callback])](#dbbulkdocs-params-callback)
   - [db.list([params], [callback])](#dblistparams-callback)
+  - [db.listAsStream([params], [callback])](#dblistasstreamparams-callback)
   - [db.fetch(docnames, [params], [callback])](#dbfetchdocnames-params-callback)
   - [db.fetchRevs(docnames, [params], [callback])](#dbfetchrevsdocnames-params-callback)
   - [db.createIndex(indexDef, [callback])](#dbcreateindexindexdef-callback)
@@ -287,6 +289,14 @@ nano.db.list().then((body) => {
     console.log(db);
   });
 });
+```
+
+### nano.db.listAsStream([callback])
+
+Lists all the CouchDB databases as a stream:
+
+```js
+nano.db.list().pipe(process.stdout);
 ```
 
 ### nano.db.compact(name, [designname], [callback])
@@ -584,6 +594,14 @@ alice.list({include_docs: true}).then((body) => {
     console.log(doc.doc);
   });
 });
+```
+
+### db.listAsStream([params], [callback])
+
+List all the docs in the database as a stream.
+
+```js
+alice.list().pipe(process.stdout)
 ```
 
 ### db.fetch(docnames, [params], [callback])
@@ -915,10 +933,16 @@ then open `/tmp/rabbit.png` and you will see the rabbit picture.
 
 Functions that return streams instead of a Promise are:
 
-- db.insertAsStream
-- db.listAsStream
+- nano.db.listAsStream
+
+attachment functions:
+
 - db.attachment.getAsStream
 - db.attachment.insertAsStream
+
+and document level functions
+
+- db.listAsStream
 
 ## Tutorials, examples in the wild & screencasts
 

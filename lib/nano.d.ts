@@ -61,6 +61,7 @@ declare namespace nano {
     destroy(name: string, callback?: Callback<OkResponse>): Promise<OkResponse>;
     // http://docs.couchdb.org/en/latest/api/server/common.html#get--_all_dbs
     list(callback?: Callback<string[]>): Promise<string[]>;
+    listAsStream(callback?: Callback<string[]>): Request;
     use<D>(db: string): DocumentScope<D>;
     compact(name: string, callback?: Callback<OkResponse>): Promise<OkResponse>;
     // http://docs.couchdb.org/en/latest/api/database/compact.html#post--db-_compact
@@ -151,6 +152,10 @@ declare namespace nano {
     list(callback?: Callback<DocumentListResponse<D>>): Promise<DocumentListResponse<D>>;
     // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#get--db-_all_docs
     list(params: DocumentListParams, callback?: Callback<DocumentListResponse<D>>): Promise<DocumentListResponse<D>>;
+    // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#get--db-_all_docs
+    listAsStream(callback?: Callback<Request>): Request;
+    // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#get--db-_all_docs
+    listAsStream(params: DocumentListParams, callback?: Callback<Request>): Request;
     // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs
     fetch(docnames: BulkFetchDocsWrapper, callback?: Callback<DocumentFetchResponse<D>>): Promise<DocumentFetchResponse<D>>;
     // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs
@@ -304,8 +309,23 @@ declare namespace nano {
       params: any,
       callback?: Callback<DocumentInsertResponse>
     ): Promise<DocumentInsertResponse>;
-    get(docname: string, attname: string): NodeJS.ReadableStream;
+    insertAsStream(
+      docname: string,
+      attname: string,
+      att: any,
+      contenttype: string,
+      callback?: Callback<DocumentInsertResponse>
+    ): Request;
+    insertAsStream(
+      docname: string,
+      attname: string,
+      att: any,
+      contenttype: string,
+      params: any,
+      callback?: Callback<DocumentInsertResponse>
+    ): Request
     get(docname: string, attname: string, callback?: Callback<any>): Promise<any>;
+    getAsStream(docname: string, attname: string): Request;
     get(
       docname: string,
       attname: string,
