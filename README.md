@@ -78,6 +78,7 @@ See [Migration Guide for switching from Nano 6.x to 7.x](migration_6_to_7.md).
   - [db.atomic(designname, updatename, docname, [body], [callback])](#dbatomicdesignname-updatename-docname-body-callback)
   - [db.search(designname, viewname, [params], [callback])](#dbsearchdesignname-searchname-params-callback)
   - [db.find(selector, [callback])](#dbfindselector-callback)
+  - [db.findAsStream(selector, [callback])](#dbfindasstreamselector-callback)
 - [Using cookie authentication](#using-cookie-authentication)
 - [Advanced features](#advanced-features)
   - [getting uuids](#getting-uuids)
@@ -914,6 +915,23 @@ var q = {
 alice.find(q).then((doc) => {
   console.log(doc);
 });
+```
+
+### db.findAsStream(selector, [callback])
+
+Perform a ["Mango" query](http://docs.couchdb.org/en/2.1.1/api/database/find.html) by supplying a JavaScript object containing a selector, but return a stream:
+
+```js
+// find documents where the name = "Brian" and age > 25.
+var q = { 
+  selector: {
+    name: { "$eq": "Brian"},
+    age : { "$gt": 25 }
+  },
+  fields: [ "name", "age", "tags", "url" ]
+  limit:50
+};
+alice.findAsStream(q).pipe(process.stdout);
 ```
 
 ## using cookie authentication
