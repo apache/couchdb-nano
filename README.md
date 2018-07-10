@@ -76,7 +76,8 @@ See [Migration Guide for switching from Nano 6.x to 7.x](migration_6_to_7.md).
   - [db.view(designname, viewname, [params], [callback])](#dbviewdesignname-viewname-params-callback)
   - [db.show(designname, showname, doc_id, [params], [callback])](#dbshowdesignname-showname-doc_id-params-callback)
   - [db.atomic(designname, updatename, docname, [body], [callback])](#dbatomicdesignname-updatename-docname-body-callback)
-  - [db.search(designname, viewname, [params], [callback])](#dbsearchdesignname-searchname-params-callback)
+  - [db.search(designname, viewname, params, [callback])](#dbsearchdesignname-searchname-params-callback)
+  - [db.searchAsStream(designname, viewname, params, [callback])](#dbsearchasstreamdesignname-searchname-params-callback)
   - [db.find(selector, [callback])](#dbfindselector-callback)
   - [db.findAsStream(selector, [callback])](#dbfindasstreamselector-callback)
 - [Using cookie authentication](#using-cookie-authentication)
@@ -886,7 +887,7 @@ An example update handler follows:
 }
 ```
 
-### db.search(designname, searchname, [params], [callback])
+### db.search(designname, searchname, params, [callback])
 
 Calls a view of the specified design with optional query string additions `params`.
 
@@ -897,6 +898,14 @@ alice.search('characters', 'happy_ones', { q: 'cat' }).then((doc) => {
 ```
 
 Check out the tests for a fully functioning example.
+
+### db.searchAsStream(designname, searchname, params, [callback])
+
+Calls a view of the specified design with optional query string additions `params`. Returns stream.
+
+```js
+alice.search('characters', 'happy_ones', { q: 'cat' }).pipe(process.stdout);
+```
 
 ### db.find(selector, [callback])
 
