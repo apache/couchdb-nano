@@ -248,7 +248,7 @@ declare namespace nano {
       designname: string,
       viewname: string,
       callback?: Callback<DocumentViewResponse<V>>
-    ): DocumentViewResponse<V>;
+    ): Promise<DocumentViewResponse<V>>; 
     // http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view
     // http://docs.couchdb.org/en/latest/api/ddoc/views.html#post--db-_design-ddoc-_view-view
     view<V>(
@@ -256,7 +256,22 @@ declare namespace nano {
       viewname: string,
       params: DocumentViewParams,
       callback?: Callback<DocumentViewResponse<V>>
-    ): Request;
+    ): Promise<DocumentViewResponse<V>>;
+    // http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view
+    // http://docs.couchdb.org/en/latest/api/ddoc/views.html#post--db-_design-ddoc-_view-view
+    viewAsStream<V>(
+      designname: string,
+      viewname: string,
+      callback?: Callback<DocumentViewResponse<V>>
+    ): Request; 
+    // http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view
+    // http://docs.couchdb.org/en/latest/api/ddoc/views.html#post--db-_design-ddoc-_view-view
+    viewAsStream<V>(
+      designname: string,
+      viewname: string,
+      params: DocumentViewParams,
+      callback?: Callback<DocumentViewResponse<V>>
+    ): Request;    
     // http://docs.couchdb.org/en/latest/api/ddoc/render.html#db-design-design-doc-list-list-name-view-name
     viewWithList(
       designname: string,

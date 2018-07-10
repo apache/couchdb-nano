@@ -74,6 +74,7 @@ See [Migration Guide for switching from Nano 6.x to 7.x](migration_6_to_7.md).
   - [db.attachment.destroy(docname, attname, [params], [callback])](#dbattachmentdestroydocname-attname-rev-callback)
 - [Views and design functions](#views-and-design-functions)
   - [db.view(designname, viewname, [params], [callback])](#dbviewdesignname-viewname-params-callback)
+  - [db.viewAsStream(designname, viewname, [params], [callback])](#dbviewasstreamdesignname-viewname-params-callback)
   - [db.show(designname, showname, doc_id, [params], [callback])](#dbshowdesignname-showname-doc_id-params-callback)
   - [db.atomic(designname, updatename, docname, [body], [callback])](#dbatomicdesignname-updatename-docname-body-callback)
   - [db.search(designname, viewname, params, [callback])](#dbsearchdesignname-searchname-params-callback)
@@ -835,6 +836,14 @@ alice.view('characters', 'happy_ones', { include_docs: true }).then((body) => {
     console.log(doc.value);
   });
 });
+```
+
+### db.viewAsStream(designname, viewname, [params], [callback])
+
+Same as `db.view` but returns a stream:
+
+```js
+alice.view('characters', 'happy_ones', {reduce: false}).pipe(process.stdout);
 ```
 
 ### db.viewWithList(designname, viewname, listname, [params], [callback])
