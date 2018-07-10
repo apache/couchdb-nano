@@ -44,6 +44,7 @@ See [Migration Guide for switching from Nano 6.x to 7.x](migration_6_to_7.md).
   - [nano.db.replication.query(id, [opts], [callback])](#nanodbreplicationenablesource-target-opts-callback)
   - [nano.db.replication.disable(id, [opts], [callback])](#nanodbreplicationdisableid-opts-callback)
   - [nano.db.changes(name, [params], [callback])](#nanodbchangesname-params-callback)
+  - [nano.db.changesAsStream(name, [params], [callback])](#nanodbchangesasstreamname-params-callback)
   - [nano.db.follow(name, [params], [callback])](#nanodbfollowname-params-callback)
   - [nano.db.info([callback])](#nanodbinfocallback)
   - [nano.use(name)](#nanousename)
@@ -417,6 +418,14 @@ to the query string.
 nano.db.changes('alice').then((body) => {
   console.log(body);
 });
+```
+
+### nano.db.changesAsStream(name, [params], [callback])
+
+Sames as `nano.db.changes` but returns a stream.
+
+```js
+nano.db.changes('alice').pipe(process.stdout);
 ```
 
 ### nano.db.follow(name, [params], [callback])

@@ -83,6 +83,10 @@ declare namespace nano {
     changes(name: string, callback?: Callback<DatabaseChangesResponse>): Promise<DatabaseChangesResponse>;
     // http://docs.couchdb.org/en/latest/api/database/compact.html#post--db-_compact
     changes(name: string, params: DatabaseChangesParams, callback?: Callback<DatabaseChangesResponse>): Promise<DatabaseChangesResponse>;
+    // http://docs.couchdb.org/en/latest/api/database/changes.html#get--db-_changes
+    changesAsStream(name: string, callback?: Callback<DatabaseChangesResponse>): Request;
+    // http://docs.couchdb.org/en/latest/api/database/compact.html#post--db-_compact
+    changesAsStream(name: string, params: DatabaseChangesParams, callback?: Callback<DatabaseChangesResponse>): Request;
     follow(source: string, callback?: Callback<any>): EventEmitter;
     follow(source: string, params: DatabaseScopeFollowUpdatesParams, callback?: Callback<any>): EventEmitter;
     followUpdates(params?: any, callback?: Callback<any>): EventEmitter;

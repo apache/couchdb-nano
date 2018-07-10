@@ -33,3 +33,13 @@ it('should be able to receive changes since seq:0', function(assert) {
     assert.ok(false, 'Promise is rejected');
   });
 });
+
+it('should be able to receive changes since seq:0 as stream', function(assert) {
+  var p = db.changesAsStream({since:0}, function(error, response) {
+    assert.equal(error, null, 'gets response from changes');
+    assert.equal(response.results.length, 3, 'gets three results');
+    assert.end();
+  });
+  assert.ok(!helpers.isPromise(p), 'returns Promise');
+  assert.equal(p.constructor.name, 'Request', 'returns a Request');
+});
