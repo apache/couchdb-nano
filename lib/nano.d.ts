@@ -222,14 +222,15 @@ declare namespace nano {
     search<V>(
       designname: string,
       searchname: string,
+      params: DocumentSearchParams,
       callback?: Callback<DocumentSearchResponse<V>>
     ): Promise<DocumentSearchResponse<V>>;
-    search<V>(
+    searchAsStream<V>(
       designname: string,
       searchname: string,
       params: DocumentSearchParams,
       callback?: Callback<DocumentSearchResponse<V>>
-    ): Promise<DocumentSearchResponse<V>>;
+    ): Request;
     spatial(
       ddoc: string,
       viewname: string,
