@@ -18,7 +18,6 @@ var nano = harness.locals.nano;
 var Nano = helpers.Nano;
 var it = harness.it;
 
-var admin = Nano(helpers.admin);
 var cookie;
 var server;
 
@@ -60,12 +59,12 @@ it('should be able to insert with a cookie', function(assert) {
     assert.ok(response.rev, 'response should have rev');
     assert.end();
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
+  assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(response) {
     assert.ok(true, 'Promise is resolved');
     assert.equal(response.ok, true, 'response should be ok');
     assert.ok(response.rev, 'response should have rev');
-  }).catch(function(error) {
+  }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });
 });

@@ -27,7 +27,7 @@ it('should be able to insert an atomic design doc', function(assert) {
         doc[body.field] = body.value;
         return [doc, JSON.stringify(doc)];
       },
-      addbaz: function (doc, req) {
+      addbaz: function (doc) {
         doc.baz = "biz";
         return [doc, JSON.stringify(doc)];
       }
@@ -42,12 +42,7 @@ it('should be able to insert an atomic design doc', function(assert) {
       assert.end();
     });
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
-  p.then(function(response) {
-    assert.ok(true, 'Promise is resolved');
-  }).catch(function(error) {
-    assert.ok(false, 'Promise is rejected');
-  });
+  assert.ok(helpers.isPromise(p), 'returns Promise');
 });
 
 it('should be able to insert atomically', function(assert) {
@@ -59,30 +54,18 @@ it('should be able to insert atomically', function(assert) {
     assert.equal(response.foo, 'bar', 'and the right value was set');
     assert.end();
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
-  p.then(function(response) {
-    assert.ok(true, 'Promise is resolved');
-    assert.equal(response.foo, 'bar', 'and the right value was set');
-  }).catch(function(error) {
-    assert.ok(false, 'Promise is rejected');
-  });
+  assert.ok(helpers.isPromise(p), 'returns Promise');
 });
 
 it('should be able to update atomically without a body', function (assert) {
-  var p = db.insert({}, 'baz', function (error, doc) {
+  var p = db.insert({}, 'baz', function () {
     db.atomic('update', 'addbaz', 'baz', function (error, response) {
       assert.equal(error, null, 'should be able to update');
       assert.equal(response.baz, 'biz', 'and the new field is present');
       assert.end();
     });
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
-  p.then(function(response) {
-    assert.ok(true, 'Promise is resolved');
-    assert.equal(response.baz, 'biz', 'and the new field is present');
-  }).catch(function(error) {
-    assert.ok(false, 'Promise is rejected');
-  });
+  assert.ok(helpers.isPromise(p), 'returns Promise');
 });
 
 it('should be able to update with slashes on the id', function(assert) {
@@ -98,11 +81,5 @@ it('should be able to update with slashes on the id', function(assert) {
       assert.end();
     });
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
-  p.then(function(response) {
-    assert.ok(true, 'Promise is resolved');
-    assert.equal(response.wat, 'dawg', 'with the right copy');
-  }).catch(function(error) {
-    assert.ok(false, 'Promise is rejected');
-  });
+  assert.ok(helpers.isPromise(p), 'returns Promise');
 });

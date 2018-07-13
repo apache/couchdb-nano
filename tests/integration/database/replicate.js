@@ -40,14 +40,14 @@ it('should be able to replicate three docs', function(assert) {
     replica.list(function(error, list) {
       assert.equal(error, null, 'should be able to invoke list');
       assert.equal(list['total_rows'], 3, 'and have three documents');
-      assert.end();
     });
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
+  assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(list) {
     assert.ok(true, 'Promise is resolved');
     assert.equal(list['total_rows'], 3, 'and have three documents');
-  }).catch(function(error) {
+    assert.end();
+  }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });
 });
@@ -68,12 +68,12 @@ it('should be able to replicate to a `nano` object', function(assert) {
 it('should be able to replicate with params', function(assert) {
   var p = db.replicate('database_replica', {}, function(error) {
     assert.equal(error, null, 'replication should work');
-    assert.end();
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
-  p.then(function(list) {
+  assert.ok(helpers.isPromise(p), 'returns Promise');
+  p.then(function() {
     assert.ok(true, 'Promise is resolved');
-  }).catch(function(error) {
+    assert.end();
+  }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });
 });

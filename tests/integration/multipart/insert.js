@@ -27,14 +27,14 @@ it('should handle crazy encodings', function(assert) {
     assert.equal(error, null, 'should have stored foo and attachment');
     assert.equal(foo.ok, true, 'response should be ok');
     assert.ok(foo.rev, 'response should have rev');
-    assert.end();
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
+  assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(foo) {
     assert.ok(true, 'Promise is resolved');
     assert.equal(foo.ok, true, 'response should be ok');
     assert.ok(foo.rev, 'response should have rev');
-  }).catch(function(error) {
+    assert.end();
+  }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });
 });
@@ -60,12 +60,7 @@ it('should test with presence of attachment', function(assert) {
       });
     });
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
-  p.then(function(foo) {
-    assert.ok(true, 'Promise is resolved');
-  }).catch(function(error) {
-    assert.ok(false, 'Promise is rejected');
-  });
+  assert.ok(helpers.isPromise(p), 'returns Promise');
 });
 
 it('should work with attachment as a buffer', function(assert) {
@@ -78,14 +73,14 @@ it('should work with attachment as a buffer', function(assert) {
     assert.equal(error, null, 'Should have stored foo and attachment');
     assert.equal(foo.ok, true, 'Response should be ok');
     assert.ok(foo.rev, 'Response should have rev');
-    assert.end();
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
+  assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(foo) {
     assert.ok(true, 'Promise is resolved');
     assert.equal(foo.ok, true, 'response should be ok');
     assert.ok(foo.rev, 'response should have rev');
-  }).catch(function(error) {
+    assert.end();
+  }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });
 });

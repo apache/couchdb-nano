@@ -22,14 +22,14 @@ it('should be able to fetch the database', function(assert) {
     assert.equal(error, null, 'should get the db');
     assert.equal(response['doc_count'], 0, 'should be empty');
     assert.equal(response['db_name'], 'database_get', 'name');
-    assert.end();
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
-  p.then(function(docs) {
+  assert.ok(helpers.isPromise(p), 'returns Promise');
+  p.then(function(response) {
     assert.ok(true, 'Promise is resolved');
     assert.equal(response['doc_count'], 0, 'should be empty');
     assert.equal(response['db_name'], 'database_get', 'name');
-  }).catch(function(error) {
+    assert.end();
+  }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });
 });

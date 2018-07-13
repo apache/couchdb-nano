@@ -24,14 +24,14 @@ it('should be able to fetch with one key', function(assert) {
     assert.equal(error, null, 'should work');
     assert.equal(docs.rows.length, 1, 'and get one row');
     assert.equal(docs['total_rows'], 3, 'out of 3');
-    assert.end();
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
+  assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(docs) {
     assert.ok(true, 'Promise is resolved');
     assert.equal(docs.rows.length, 1, 'and get one row');
     assert.equal(docs['total_rows'], 3, 'out of 3');
-  }).catch(function(error) {
+    assert.end();
+  }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });
 });
@@ -41,14 +41,14 @@ it('should be able to fetch with multiple keys', function(assert) {
     assert.equal(error, null, 'no errors');
     assert.equal(docs.rows.length, 2, 'two rows');
     assert.equal(docs['total_rows'], 3, 'out of 3');
-    assert.end();
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
+  assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(docs) {
     assert.ok(true, 'Promise is resolved');
     assert.equal(docs.rows.length, 2, 'two rows');
     assert.equal(docs['total_rows'], 3, 'out of 3');
-  }).catch(function(error) {
+    assert.end();
+  }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });
 });
@@ -58,14 +58,14 @@ it('should be able to fetch with params', function(assert) {
     assert.equal(error, null, 'should work');
     assert.equal(docs.rows.length, 1, 'and get one row');
     assert.equal(docs['total_rows'], 3, 'out of 3');
-    assert.end();
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
+  assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(docs) {
     assert.ok(true, 'Promise is resolved');
     assert.equal(docs.rows.length, 1, 'and get one row');
     assert.equal(docs['total_rows'], 3, 'out of 3');
-  }).catch(function(error) {
+    assert.end();
+  }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });
 });

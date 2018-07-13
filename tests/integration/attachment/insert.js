@@ -23,14 +23,14 @@ it('should be able to insert a simple attachment', function(assert) {
     assert.equal(error, null, 'should store the attachment');
     assert.equal(att.ok, true, 'response ok');
     assert.ok(att.rev, 'should have a revision');
-    assert.end();
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
-  p.then(function(docs) {
+  assert.ok(helpers.isPromise(p), 'returns Promise');
+  p.then(function(att) {
     assert.ok(true, 'Promise is resolved');
     assert.equal(att.ok, true, 'response ok');
     assert.ok(att.rev, 'should have a revision');
-  }).catch(function(error) {
+    assert.end();
+  }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });
 });

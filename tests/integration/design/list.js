@@ -28,13 +28,13 @@ it('should get the people by running the ddoc', function(assert) {
   }, function(error, list) {
     assert.equal(error, null, 'should response');
     assert.equal(list, 'Hello', 'and list should be `hello`');
-    assert.end();
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
-  p.then(function(docs) {
+  assert.ok(helpers.isPromise(p), 'returns Promise');
+  p.then(function(list) {
     assert.ok(true, 'Promise is resolved');
     assert.equal(list, 'Hello', 'and list should be `hello`');
-  }).catch(function(error) {
+    assert.end();
+  }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });
 });

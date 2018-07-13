@@ -16,8 +16,8 @@ var helpers = require('../../helpers/unit');
 var test  = require('tape');
 var debug = require('debug')('nano/tests/unit/shared/error');
 
-var cli = helpers.mockClientDb(debug)
-var db = cli.use('foo')
+var cli = helpers.mockClientDb(debug);
+var db = cli.use('foo');
 
 test('it should not return db info if docName undefined', function(assert) {
   db.get(undefined, function(err) {

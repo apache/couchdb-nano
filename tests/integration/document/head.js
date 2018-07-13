@@ -23,13 +23,13 @@ it('should get a status code when you do head', function(assert) {
   var p = db.head('foobaz', function(error, body, headers) {
     assert.equal(error, null, 'should get the head of foobaz');
     assert.equal(headers['statusCode'], 200, 'and is ok');
-    assert.end();
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
+  assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(docs) {
     assert.ok(true, 'Promise is resolved');
     assert.equal(docs['statusCode'], 200, 'and is ok');
-  }).catch(function(error) {
+    assert.end();
+  }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });
 });

@@ -25,15 +25,15 @@ it('should get the document', function(assert) {
     assert.ok(foobaz['_revs_info'], 'got revs info');
     assert.equal(foobaz._id, 'foobaz', 'id is food');
     assert.equal(foobaz.foo, 'baz', 'baz is in foo');
-    assert.end();
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
-  p.then(function(docs) {
+  assert.ok(helpers.isPromise(p), 'returns Promise');
+  p.then(function(foobaz) {
     assert.ok(true, 'Promise is resolved');
     assert.ok(foobaz['_revs_info'], 'got revs info');
     assert.equal(foobaz._id, 'foobaz', 'id is food');
     assert.equal(foobaz.foo, 'baz', 'baz is in foo');
-  }).catch(function(error) {
+    assert.end();
+  }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });
 });

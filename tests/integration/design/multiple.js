@@ -27,14 +27,13 @@ it('should be able to insert docs and design doc', function(assert) {
   }, '_design/alice', function(error, response) {
     assert.equal(error, null, 'should create views');
     assert.equal(response.ok, true, 'response ok');
-    assert.end();
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
+  assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(response) {
     assert.ok(true, 'Promise is resolved');
-    assert.equal(error, null, 'should create views');
     assert.equal(response.ok, true, 'response ok');
-  }).catch(function(error) {
+    assert.end();
+  }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });
 });
@@ -50,15 +49,15 @@ it('get multiple docs with a composed key', function(assert) {
     assert.equal(view.rows.length, 2, 'has more or less than two rows');
     assert.equal(view.rows[0].id, 'foobar', 'foo is not the first id');
     assert.equal(view.rows[1].id, 'barfoo', 'bar is not the second id');
-    assert.end();
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
+  assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(view) {
     assert.ok(true, 'Promise is resolved');
     assert.equal(view.rows.length, 2, 'has more or less than two rows');
     assert.equal(view.rows[0].id, 'foobar', 'foo is not the first id');
     assert.equal(view.rows[1].id, 'barfoo', 'bar is not the second id');
-  }).catch(function(error) {
+    assert.end();
+  }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });
 });
@@ -74,6 +73,6 @@ it('get multiple docs with a composed key as a stream', function(assert) {
     assert.equal(view.rows[1].id, 'barfoo', 'bar is not the second id');
     assert.end();
   });
-  assert.ok(!helpers.isPromise(p), 'does not returns Promise')
-  assert.equal(p.constructor.name, 'Request', 'returns a Request')
+  assert.ok(!helpers.isPromise(p), 'does not returns Promise');
+  assert.equal(p.constructor.name, 'Request', 'returns a Request');
 });

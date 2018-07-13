@@ -14,7 +14,6 @@
 
 var helpers = require('../../helpers/integration');
 var harness = helpers.harness(__filename);
-var db = harness.locals.db;
 var nano = helpers.nano;
 var it = harness.it;
 
@@ -24,15 +23,15 @@ it('should generate three uuids', function(assert) {
     assert.ok(data, 'got response');
     assert.ok(data.uuids, 'got uuids');
     assert.equal(data.uuids.length, 3, 'got 3');
-    assert.end();
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
+  assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(data) {
     assert.ok(true, 'Promise is resolved');
     assert.ok(data, 'got response');
     assert.ok(data.uuids, 'got uuids');
     assert.equal(data.uuids.length, 3, 'got 3');
-  }).catch(function(error) {
+    assert.end();
+  }).catch(function() {
     assert.ok(true, 'Promise is rejected');
   });
 });
@@ -43,15 +42,15 @@ it('should generate one uuid', function(assert) {
     assert.ok(data, 'got response');
     assert.ok(data.uuids, 'got uuid');
     assert.equal(data.uuids.length, 1, 'got 1');
-    assert.end();
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
+  assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(data) {
     assert.ok(true, 'Promise is resolved');
     assert.ok(data, 'got response');
     assert.ok(data.uuids, 'got uuid');
-    assert.equal(data.uuids.length, 1, 'got 1');
-  }).catch(function(error) {
+    assert.equal(data.uuids.length, 1, 'got 1');    
+    assert.end();
+  }).catch(function() {
     assert.ok(true, 'Promise is rejected');
   });
 });

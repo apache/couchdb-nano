@@ -26,14 +26,14 @@ it('should serve the root when no path is specified', function(assert) {
     nano.relax(function(err, response) {
       assert.equal(err, null, 'relax');
       assert.ok(response.version, 'had version');
-      assert.end();
     });
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
+  assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(response) {
     assert.ok(true, 'Promise is resolved');
     assert.ok(response.version, 'version is defined');
-  }).catch(function(error) {
+    assert.end();
+  }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });
 });

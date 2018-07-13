@@ -37,12 +37,12 @@ it('should be able to copy and overwrite a document', function(assert) {
     assert.equal(error, null,
       'should have copied and overwritten foo_src to foo_dest');
     assert.equal(headers['statusCode'], 201, 'status code should be 201');
-    assert.end();
   });
   assert.ok(helpers.isPromise(p), 'returns Promise');
-  p.then(function(response) {
+  p.then(function() {
     assert.ok(true, 'Promise is resolved');
-  }).catch(function(error) {
+    assert.end();
+  }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });
 });
@@ -51,13 +51,13 @@ it('copy without overwrite should return conflict for exists docs',
 function(assert) {
   var p = db.copy('foo_src', 'foo_dest', function(error) {
     assert.equal(error.error, 'conflict', 'should be a conflict');
-    assert.end();
   });
   assert.ok(helpers.isPromise(p), 'returns Promise');
-  p.then(function(response) {
+  p.then(function() {
     assert.ok(false, 'Promise is resolved');
-  }).catch(function(error) {
+  }).catch(function() {
     assert.ok(true, 'Promise is rejected');
+    assert.end();
   });
 });
 
@@ -65,12 +65,12 @@ it('copy to a new destination should work', function(assert) {
   var p = db.copy('foo_src', 'baz_dest', function(error, response, headers) {
     assert.equal(error, null, 'copies into new document');
     assert.equal(headers['statusCode'], 201, 'Status code should be 201');
-    assert.end();
   });
   assert.ok(helpers.isPromise(p), 'returns Promise');
-  p.then(function(response) {
+  p.then(function() {
     assert.ok(true, 'Promise is resolved');
-  }).catch(function(error) {
+    assert.end();
+  }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });
 });

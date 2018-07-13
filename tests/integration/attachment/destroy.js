@@ -28,15 +28,15 @@ it('should be able to insert a new plain text attachment', function(assert) {
       assert.equal(error, null, 'delete the attachment');
       assert.equal(response.ok, true, 'response ok');
       assert.equal(response.id, 'new', '`id` should be `new`');
-      assert.end();
     });
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
-  p.then(function(docs) {
+  assert.ok(helpers.isPromise(p), 'returns Promise');
+  p.then(function(response) {
     assert.ok(true, 'Promise is resolved');
     assert.equal(response.ok, true, 'response ok');
     assert.equal(response.id, 'new', '`id` should be `new`');
-  }).catch(function(error) {
+    assert.end();
+  }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });
 });
@@ -44,12 +44,12 @@ it('should be able to insert a new plain text attachment', function(assert) {
 it('should fail destroying with a bad filename', function(assert) {
   var p = db.attachment.destroy('new', false, true, function(error, response) {
     assert.equal(response, undefined, 'no response should be given');
-    assert.end();
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
-  p.then(function(docs) {
+  assert.ok(helpers.isPromise(p), 'returns Promise');
+  p.then(function() {
     assert.ok(false, 'Promise is resolved');
-  }).catch(function(error) {
+  }).catch(function() {
     assert.ok(true, 'Promise is rejected');
+    assert.end();
   });
 });

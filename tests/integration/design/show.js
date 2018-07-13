@@ -79,15 +79,15 @@ it('should show the amazing clemens in json', function(assert) {
     assert.equal(doc.name, 'Clemens');
     assert.equal(doc.city, 'Dresden');
     assert.equal(doc.format, 'json');
-    assert.end();
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
+  assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(doc) {
     assert.ok(true, 'Promise is resolved');
     assert.equal(doc.name, 'Clemens');
     assert.equal(doc.city, 'Dresden');
     assert.equal(doc.format, 'json');
-  }).catch(function(error) {
+    assert.end();
+  }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });
 });

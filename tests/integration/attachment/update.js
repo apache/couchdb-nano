@@ -17,7 +17,6 @@ var pixel = helpers.pixel;
 var harness = helpers.harness(__filename);
 var db = harness.locals.db;
 var it = harness.it;
-
 var rev;
 
 it('should be able to insert and update attachments', function(assert) {
@@ -32,13 +31,13 @@ it('should be able to insert and update attachments', function(assert) {
       assert.equal(error, null, 'should store the pixel');
       assert.ok(bmp.rev, 'should store a revision');
       rev = bmp.rev;
-      assert.end();
     });
-    assert.ok(helpers.isPromise(p), 'returns Promise')
+    assert.ok(helpers.isPromise(p), 'returns Promise');
     p.then(function(s) {
       assert.ok(true, 'Promise is resolved');
       assert.ok(s.rev, 'should store a revision');
-    }).catch(function(error) {
+      assert.end();
+    }).catch(function() {
       assert.ok(false, 'Promise is rejected');
     });
   });

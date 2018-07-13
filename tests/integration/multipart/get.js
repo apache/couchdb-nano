@@ -32,15 +32,15 @@ it('should be able to insert a doc with att', function(assert) {
     assert.equal(foo.id, 'foobaz', 'id is foobaz');
     assert.ok(foo.rev, 'has rev');
     rev = foo.rev;
-    assert.end();
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
+  assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(foo) {
     assert.ok(true, 'Promise is resolved');
     assert.equal(foo.ok, true, 'response should be ok');
     assert.equal(foo.id, 'foobaz', 'id is foobaz');
     assert.ok(foo.rev, 'has rev');
-  }).catch(function(error) {
+    assert.end();
+  }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });
 });
@@ -53,13 +53,13 @@ it('should be able to get the document with the attachment', function(assert) {
       assert.equal(headers['content-type'].split(';')[0], 'multipart/related');
     }
     assert.equal(typeof foobaz, 'object', 'foobaz should be a buffer');
-    assert.end();
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
+  assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(foobaz) {
     assert.ok(true, 'Promise is resolved');
-    ssert.equal(typeof foobaz, 'object', 'foobaz should be a buffer');
-  }).catch(function(error) {
+    assert.equal(typeof foobaz, 'object', 'foobaz should be a buffer');
+    assert.end();
+  }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });
 });

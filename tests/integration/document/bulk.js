@@ -29,15 +29,15 @@ it('should be able to bulk insert two docs', function(assert) {
     assert.equal(response.length, 2, 'has two docs');
     assert.ok(response[0].id, 'first got id');
     assert.ok(response[1].id, 'other also got id');
-    assert.end();
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
+  assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(response) {
     assert.ok(true, 'Promise is resolved');
     assert.equal(response.length, 2, 'has two docs');
     assert.ok(response[0].id, 'first got id');
     assert.ok(response[1].id, 'other also got id');
-  }).catch(function(error) {
+    assert.end();
+  }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });
 });

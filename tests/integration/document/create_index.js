@@ -27,14 +27,13 @@ it ('Should create one simple index', function(assert) {
     assert.equal(error, null, 'should have indexed fields');
     assert.equal(foo.result, 'created', 'index should be created');
     assert.equal(foo.name, 'fooindex', 'index should have correct name');
-
-    assert.end();
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
-  p.then(function(response) {
+  assert.ok(helpers.isPromise(p), 'returns Promise');
+  p.then(function(foo) {
     assert.equal(foo.result, 'created', 'index should be created');
     assert.equal(foo.name, 'fooindex', 'index should have correct name');
-  }).catch(function(error) {
+    assert.end();
+  }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });
 });

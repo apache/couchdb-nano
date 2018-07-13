@@ -34,13 +34,12 @@ it('should list the correct databases', function(assert) {
       return e === 'database_list' || e === '_replicator' || e === '_users';
     });
     assert.equal(filtered.length, 3, 'should have exactly 3 dbs');
-    assert.end();
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
-  p.then(function(list) {
+  assert.ok(helpers.isPromise(p), 'returns Promise');
+  p.then(function() {
     assert.ok(true, 'Promise is resolved');
-    assert.equal(filtered.length, 3, 'should have exactly 3 dbs');
-  }).catch(function(error) {
+    assert.end();
+  }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });
 });

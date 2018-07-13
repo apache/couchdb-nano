@@ -23,13 +23,13 @@ it('should be to do a mango query', function(assert) {
   var p = db.find({ selector: { foo: 'baz'}}, function(error, response) {
     assert.equal(error, null, 'should work');
     assert.equal(response.docs.length, 1, 'and get one row');
-    assert.end();
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
+  assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(response) {
     assert.ok(true, 'Promise is resolved');
     assert.equal(response.docs.length, 1, 'and get one row');
-  }).catch(function(error) {
+    assert.end();
+  }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });
 });
@@ -40,6 +40,6 @@ it('should be to do a mango query with streams', function(assert) {
     assert.equal(response.docs.length, 1, 'and get one row');
     assert.end();
   });
-  assert.ok(!helpers.isPromise(p), 'does not return Promise')
-  assert.equal(p.constructor.name, 'Request', 'returns a Request')
+  assert.ok(!helpers.isPromise(p), 'does not return Promise');
+  assert.equal(p.constructor.name, 'Request', 'returns a Request');
 });

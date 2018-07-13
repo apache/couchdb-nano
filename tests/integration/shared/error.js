@@ -47,13 +47,13 @@ it('should error when destroying a db that does not exist', function(assert) {
     assert.ok(error, 'an error');
     assert.ok(error.message, 'a note');
     assert.equal(error.message, 'Database does not exist.', 'is missing');
-    assert.end();
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise')
-  p.then(function(response) {
+  assert.ok(helpers.isPromise(p), 'returns Promise');
+  p.then(function() {
     assert.ok(false, 'Promise is resolved');
   }).catch(function(error) {
     assert.ok(true, 'Promise is rejected');
     assert.equal(error.message, 'Database does not exist.', 'is missing');
+    assert.end();
   });
 });
