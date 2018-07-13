@@ -135,3 +135,19 @@ it('should be able to list with a end_key', function(assert) {
     assert.ok(false, 'Promise is rejected');
   });
 });
+
+it('should be able to list as a stream', function(assert) {
+  var p = db.listAsStream(function(error) {
+    assert.equal(error, null, 'should work');
+  });
+  assert.ok(!helpers.isPromise(p), 'does not return Promise');
+  assert.equal(p.constructor.name, 'Request', 'returns a Request');
+});
+
+it('should be able to list with params as a stream', function(assert) {
+  var p = db.listAsStream({end_key: 's'}, function(error) {
+    assert.equal(error, null, 'should work');
+  });
+  assert.ok(!helpers.isPromise(p), 'does not return Promise');
+  assert.equal(p.constructor.name, 'Request', 'returns a Request');
+});

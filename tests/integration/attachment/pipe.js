@@ -38,10 +38,20 @@ it('should be able to pipe to a writeStream', function(assert) {
   });
 });
 
+it('should be able to pipe to a writeStream', function(assert) {
+  var ws = fs.createWriteStream('/dev/null');
+  db.attachment.getAsStream('new', 'att', function() {})
+    .pipe(ws)
+    .on('end', function() {
+      assert.end();
+    });
+});
+
 it('should be able to pipe from a readStream', function(assert) {
   var logo = path.join(__dirname, '..', '..', 'fixtures', 'logo.png');
   var rs = fs.createReadStream(logo);
-  var is = db.attachment.insertAsStream('nodejs', 'logo.png', null, 'image/png');
+  var is = db.attachment.insertAsStream('nodejs', 'logo.png', null, 'image/png', function() {
+  });
 
   is.on('end', function() {
     db.attachment.get('nodejs', 'logo.png', function(err, buffer) {

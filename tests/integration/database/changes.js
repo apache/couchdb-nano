@@ -43,3 +43,12 @@ it('should be able to receive changes since seq:0 as stream', function(assert) {
   assert.ok(!helpers.isPromise(p), 'returns Promise');
   assert.equal(p.constructor.name, 'Request', 'returns a Request');
 });
+
+it('should be able to receive changes - no params - stream', function(assert) {
+  var p = db.changesAsStream(function(error) {
+    assert.equal(error, null, 'gets response from changes');
+    assert.end();
+  });
+  assert.ok(!helpers.isPromise(p), 'returns Promise');
+  assert.equal(p.constructor.name, 'Request', 'returns a Request');
+});

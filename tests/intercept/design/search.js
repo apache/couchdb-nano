@@ -300,3 +300,16 @@ it('should not encode encoded string sort parameter', function(assert) {
     assert.ok(true, 'Promise is rejected');
   });
 });
+
+it('should allow search results to be streamed', function(assert) {
+  db.searchAsStream('fake', 'fake', 
+                    { q: 'foo:bar' }, 
+                    function(err, data) {
+      assert.equal(err, null);
+      assert.equal(data.method, 'GET');
+      assert.equal(typeof data.headers, 'object');
+      assert.equal(typeof data.qs, 'object');
+      assert.equal(data.qs.q, 'foo:bar');
+      assert.end();
+  });
+});
