@@ -93,4 +93,5 @@ You may find that using the Promise style of coding helps you create neater, sim
 
 ## TypeScript
 
-If you use TypeScript to build your app, then Nano's TypeScript definitions have been updated to reflect the new return values. Having the Nano `get` function, for example, return a Promise which resolves with a `nano.DocumentGetResponse` means that your code editor can give you a helping hand with code completion, type-checking and a sanity checks which will help you write more accurate code at the first attempt.
+If you use TypeScript to build your app, then Nano's TypeScript definitions have been updated to reflect the new return values. Having the Nano `get` function, for example, return a Promise which resolves with a `nano.DocumentGetResponse` means that your code editor can give you a helping hand with code completion, type-checking and a sanity checks leading to more accurate code at the first attempt.
+
