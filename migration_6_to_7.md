@@ -16,9 +16,8 @@ In Nano 7:
 
 ```js
 // Nano 7
-var db = nano.db.use('mydb')
-var x = db.get('mydoc') 
-// x is a Promise
+const db = nano.db.use('mydb')
+const x = await db.get('mydoc') 
 ```
 
 If you are not using the streaming properties of Nano 6's return value, you may not need to change any code at all. This document outlines the areas that have changed and what you need to do to your code.
@@ -53,7 +52,7 @@ If you have code in the *callback* style, then Nano 7 will still work:
 
 ```js
 // Nano 7
-db.get('mydoc', function(err, data)  {
+db.get('mydoc', (err, data) => {
   console.log(err, data)
 })
 ```
@@ -84,9 +83,9 @@ db.get('mydoc').then((doc) => {
 In a JavaScript [async function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function), the code becomes even neater with the [await operator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await):
 
 ```js
-var doc = await db.get('mydoc')
+let doc = await db.get('mydoc')
 doc.last_updated = new Date().getTime()
-var response = await db.insert(doc)
+let response = await db.insert(doc)
 ```
 
 You may find that using the Promise style of coding helps you create neater, simpler code, but pre-existing code that uses the callback style should still work.
