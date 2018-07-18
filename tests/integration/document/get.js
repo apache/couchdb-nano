@@ -12,15 +12,15 @@
 
 'use strict';
 
-var helpers = require('../../helpers/integration');
-var harness = helpers.harness(__filename);
-var db = harness.locals.db;
-var it = harness.it;
+const helpers = require('../../helpers/integration');
+const harness = helpers.harness(__filename);
+const db = harness.locals.db;
+const it = harness.it;
 
 it('should insert a one item', helpers.insertOne);
 
 it('should get the document', function(assert) {
-  var p = db.get('foobaz', {'revs_info': true}, function(error, foobaz) {
+  const p = db.get('foobaz', {'revs_info': true}, function(error, foobaz) {
     assert.equal(error, null, 'should get foobaz');
     assert.ok(foobaz['_revs_info'], 'got revs info');
     assert.equal(foobaz._id, 'foobaz', 'id is food');

@@ -12,10 +12,10 @@
 
 'use strict';
 
-var helpers = require('../../helpers/unit');
-var insertAttachment = helpers.unit(['attachment', 'insert']);
+const helpers = require('../../helpers/unit');
+const insertAttachment = helpers.unit(['attachment', 'insert']);
 
-var buffer = new Buffer(helpers.pixel, 'base64');
+const buffer = new Buffer(helpers.pixel, 'base64');
 
 insertAttachment('pixels', 'pixel.bmp', buffer, 'image/bmp', {
   body: buffer,

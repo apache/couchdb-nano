@@ -12,11 +12,11 @@
 
 'use strict';
 
-var helpers = require('../../helpers/integration');
-var harness = helpers.harness(__filename);
-var nano = harness.locals.nano;
-var Nano = helpers.Nano;
-var it = harness.it;
+const helpers = require('../../helpers/integration');
+const harness = helpers.harness(__filename);
+const nano = harness.locals.nano;
+const Nano = helpers.Nano;
+const it = harness.it;
 
 it('should throw when initialize fails', function(assert) {
   try {
@@ -35,7 +35,7 @@ it('should throw when initialize fails', function(assert) {
 });
 
 it('should be able to stream the simplest request', function(assert) {
-  var root = nano.request({stream: true});
+  const root = nano.request({stream: true});
   root.on('end', function() {
     assert.pass('request worked');
     assert.end();
@@ -43,7 +43,7 @@ it('should be able to stream the simplest request', function(assert) {
 });
 
 it('should error when destroying a db that does not exist', function(assert) {
-  var p = nano.db.destroy('say_wat_wat', function(error) {
+  const p = nano.db.destroy('say_wat_wat', function(error) {
     assert.ok(error, 'an error');
     assert.ok(error.message, 'a note');
     assert.equal(error.message, 'Database does not exist.', 'is missing');

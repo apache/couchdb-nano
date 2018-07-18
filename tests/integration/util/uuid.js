@@ -12,13 +12,13 @@
 
 'use strict';
 
-var helpers = require('../../helpers/integration');
-var harness = helpers.harness(__filename);
-var nano = helpers.nano;
-var it = harness.it;
+const helpers = require('../../helpers/integration');
+const harness = helpers.harness(__filename);
+const nano = helpers.nano;
+const it = harness.it;
 
 it('should generate three uuids', function(assert) {
-  var p = nano.uuids(3, function(error, data) {
+  const p = nano.uuids(3, function(error, data) {
     assert.equal(error, null, 'should generate uuids');
     assert.ok(data, 'got response');
     assert.ok(data.uuids, 'got uuids');
@@ -37,7 +37,7 @@ it('should generate three uuids', function(assert) {
 });
 
 it('should generate one uuid', function(assert) {
-  var p = nano.uuids(function(error, data) {
+  const p = nano.uuids(function(error, data) {
     assert.equal(error, null, 'should generate uuids');
     assert.ok(data, 'got response');
     assert.ok(data.uuids, 'got uuid');

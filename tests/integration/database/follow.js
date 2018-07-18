@@ -12,18 +12,18 @@
 
 'use strict';
 
-var helpers = require('../../helpers/integration');
-var harness = helpers.harness(__filename);
-var it = harness.it;
-var db = harness.locals.db;
+const helpers = require('../../helpers/integration');
+const harness = helpers.harness(__filename);
+const it = harness.it;
+const db = harness.locals.db;
 
 if (helpers.unmocked) {
   it('should insert a bunch of items', helpers.insertThree);
 
-  var feed1;
+  let feed1;
 
   it('should be able to get the changes feed', function(assert) {
-    var i = 3;
+    let i = 3;
 
     feed1 = db.follow({since: '0'});
 

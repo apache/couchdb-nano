@@ -12,15 +12,15 @@
 
 'use strict';
 
-var helpers = require('../../helpers/integration');
-var harness = helpers.harness(__filename);
-var nano = harness.locals.nano;
-var Nano = helpers.Nano;
+const helpers = require('../../helpers/integration');
+const harness = helpers.harness(__filename);
+const nano = harness.locals.nano;
+const Nano = helpers.Nano;
 
-var it = harness.it;
+const it = harness.it;
 
 it('should serve the root when no path is specified', function(assert) {
-  var p = nano.dinosaur('', function(err, response) {
+  const p = nano.dinosaur('', function(err, response) {
     assert.equal(err, null, 'failed to get root');
     assert.ok(response.version, 'version is defined');
     nano.relax(function(err, response) {
@@ -39,7 +39,7 @@ it('should serve the root when no path is specified', function(assert) {
 });
 
 it('should be able to parse urls', function(assert) {
-  var baseUrl = 'http://someurl.com';
+  const baseUrl = 'http://someurl.com';
   assert.equal(
     Nano(baseUrl).config.url,
     baseUrl,
@@ -54,14 +54,6 @@ it('should be able to parse urls', function(assert) {
     Nano('http://a:b@someurl.com:5984').config.url,
     'http://a:b@someurl.com:5984',
     'with authentication');
-
-  //var withDb = Nano({
-  //  url: 'http://a:b@someurl.com:5984',
-  //  db: 'foo'
-  //})
-
-  //assert.equal(withDb.config.db, 'foo', 'should create url with db');
-  //assert.ok(withDb.attachment, 'should have an attachment');
 
   assert.equal(
     Nano('http://a:b%20c%3F@someurl.com:5984/mydb').config.url,
@@ -97,7 +89,7 @@ it('should be able to parse urls', function(assert) {
 });
 
 it('should not parse urls when parseURL flag set to false', function(assert) {
-  var url = 'http://someurl.com/path';
+  const url = 'http://someurl.com/path';
 
   assert.equal(
     Nano({
@@ -111,7 +103,7 @@ it('should not parse urls when parseURL flag set to false', function(assert) {
 });
 
 it('should accept and handle customer http headers', function(assert) {
-  var nanoWithDefaultHeaders = Nano({
+  const nanoWithDefaultHeaders = Nano({
     url: helpers.couch,
     defaultHeaders: {
       'x-custom-header': 'custom',
@@ -119,7 +111,7 @@ it('should accept and handle customer http headers', function(assert) {
     }
   });
 
-  var req = nanoWithDefaultHeaders.db.listAsStream(function(err) {
+  const req = nanoWithDefaultHeaders.db.listAsStream(function(err) {
     assert.equal(err, null, 'should list');
     assert.end();
   });
@@ -136,7 +128,7 @@ it('should accept and handle customer http headers', function(assert) {
 });
 
 it('should prevent shallow object copies', function(assert) {
-  var config = {
+  const config = {
     url: 'http://someurl.com'
   };
 

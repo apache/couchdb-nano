@@ -12,7 +12,7 @@
 
 'use strict';
 
-var getMultipart = require('../../helpers/unit').unit([
+const getMultipart = require('../../helpers/unit').unit([
   'multipart',
   'get'
 ]);

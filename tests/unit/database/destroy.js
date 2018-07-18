@@ -12,7 +12,7 @@
 
 'use strict';
 
-var destroyDatabase = require('../../helpers/unit').unit([
+const destroyDatabase = require('../../helpers/unit').unit([
   'database',
   'destroy'
 ]);

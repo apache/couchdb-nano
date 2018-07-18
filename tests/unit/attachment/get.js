@@ -12,7 +12,7 @@
 
 'use strict';
 
-var getAttachment = require('../../helpers/unit').unit([
+const getAttachment = require('../../helpers/unit').unit([
   'attachment',
   'get'
 ]);

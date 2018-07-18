@@ -12,13 +12,13 @@
 
 'use strict';
 
-var helpers = require('../../helpers/integration');
-var harness = helpers.harness(__filename);
-var it = harness.it;
-var db = harness.locals.db;
+const helpers = require('../../helpers/integration');
+const harness = helpers.harness(__filename);
+const it = harness.it;
+const db = harness.locals.db;
 
 it('should be able to insert a new plain text attachment', function(assert) {
-  var p = db.attachment.insert('new',
+  const p = db.attachment.insert('new',
   'att', 'Hello World!', 'text/plain', function(error, att) {
     assert.equal(error, null, 'store the attachment');
     assert.equal(att.ok, true, 'response ok');
@@ -42,7 +42,7 @@ it('should be able to insert a new plain text attachment', function(assert) {
 });
 
 it('should fail destroying with a bad filename', function(assert) {
-  var p = db.attachment.destroy('new', false, true, function(error, response) {
+  const p = db.attachment.destroy('new', false, true, function(error, response) {
     assert.equal(response, undefined, 'no response should be given');
   });
   assert.ok(helpers.isPromise(p), 'returns Promise');

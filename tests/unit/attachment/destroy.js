@@ -12,7 +12,7 @@
 
 'use strict';
 
-var destroyAttachment = require('../../helpers/unit').unit([
+const destroyAttachment = require('../../helpers/unit').unit([
   'attachment',
   'destroy'
 ]);

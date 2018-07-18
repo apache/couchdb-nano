@@ -12,7 +12,7 @@
 
 'use strict';
 
-var replicateDatabase = require('../../helpers/unit').unit([
+const replicateDatabase = require('../../helpers/unit').unit([
   'database',
   'replicate'
 ]);

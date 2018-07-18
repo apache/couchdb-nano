@@ -12,11 +12,11 @@
 
 'use strict';
 
-var helpers = require('../../helpers/unit');
-var test  = require('tape');
-var debug = require('debug')('nano/tests/unit/shared/jar');
+const helpers = require('../../helpers/unit');
+const test  = require('tape');
+const debug = require('debug')('nano/tests/unit/shared/jar');
 
-var cli = helpers.mockClientJar(debug);
+const cli = helpers.mockClientJar(debug);
 
 test('it should be able to set a jar box', function(assert) {
   assert.equal(cli.config.jar, 'is set');

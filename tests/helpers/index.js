@@ -12,14 +12,14 @@
 
 'use strict';
 
-var path = require('path');
-var fs = require('fs');
-var url = require('url');
-var nano = require('../../lib/nano');
+const path = require('path');
+const fs = require('fs');
+const url = require('url');
+const nano = require('../../lib/nano');
 
-var helpers = exports;
-var cfg = helpers.cfg = require('../fixtures/cfg');
-var auth = url.parse(cfg.admin).auth.split(':');
+const helpers = exports;
+const cfg = helpers.cfg = require('../fixtures/cfg');
+const auth = url.parse(cfg.admin).auth.split(':');
 
 helpers.noopTest = function(t){ t.end(); };
 helpers.timeout = cfg.timeout;
@@ -34,7 +34,7 @@ helpers.username = auth[0];
 helpers.password = auth[1];
 
 helpers.loadFixture = function helpersLoadFixture(filename, json) {
-  var contents = fs.readFileSync(
+  const contents = fs.readFileSync(
     path.join(__dirname, '..', 'fixtures', filename), (json ? 'ascii' : null));
   return json ? JSON.parse(contents) : contents;
 };

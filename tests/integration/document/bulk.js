@@ -12,13 +12,13 @@
 
 'use strict';
 
-var helpers = require('../../helpers/integration');
-var harness = helpers.harness(__filename);
-var it = harness.it;
-var db = harness.locals.db;
+const helpers = require('../../helpers/integration');
+const harness = helpers.harness(__filename);
+const it = harness.it;
+const db = harness.locals.db;
 
 it('should be able to bulk insert two docs', function(assert) {
-  var p = db.bulk({
+  const p = db.bulk({
     'docs': [
       {'key':'baz', 'name':'bazzel'},
       {'key':'bar', 'name':'barry'}

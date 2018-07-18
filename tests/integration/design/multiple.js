@@ -12,13 +12,13 @@
 
 'use strict';
 
-var helpers = require('../../helpers/integration');
-var harness = helpers.harness(__filename);
-var it = harness.it;
-var db = harness.locals.db;
+const helpers = require('../../helpers/integration');
+const harness = helpers.harness(__filename);
+const it = harness.it;
+const db = harness.locals.db;
 
 it('should be able to insert docs and design doc', function(assert) {
-  var p = db.insert({
+  const p = db.insert({
     views: {
       'by_id': {
         map: 'function(doc) { emit(doc._id, doc); }'
@@ -41,7 +41,7 @@ it('should be able to insert docs and design doc', function(assert) {
 it('should insert a bunch of items', helpers.insertThree);
 
 it('get multiple docs with a composed key', function(assert) {
-  var p = db.view('alice', 'by_id', {
+  const p = db.view('alice', 'by_id', {
     keys: ['foobar', 'barfoo'],
     'include_docs': true
   }, function(err, view) {
@@ -63,7 +63,7 @@ it('get multiple docs with a composed key', function(assert) {
 });
 
 it('get multiple docs with a composed key as a stream', function(assert) {
-  var p = db.viewAsStream('alice', 'by_id', {
+  const p = db.viewAsStream('alice', 'by_id', {
     keys: ['foobar', 'barfoo'],
     'include_docs': true
   }, function(err, view) {

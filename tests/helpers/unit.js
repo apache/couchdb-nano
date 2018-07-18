@@ -12,20 +12,20 @@
 
 'use strict';
 
-var helpers = require('./');
-var Client = require('../../lib/nano');
-var test  = require('tape');
-var _ = require('underscore');
+const helpers = require('./');
+const Client = require('../../lib/nano');
+const test  = require('tape');
+const _ = require('underscore');
 
 helpers.unit = function(method, error) {
-  var unitName = 'nano/tests/unit/' + method.join('/');
-  var debug = require('debug')(unitName);
+  const unitName = 'nano/tests/unit/' + method.join('/');
+  const debug = require('debug')(unitName);
 
   function log(data) {
     debug({ got: data.body });
   }
 
-  var cli = helpers.mockClientOk(log, error);
+  let cli = helpers.mockClientOk(log, error);
 
   //
   // allow database creation and other server stuff
@@ -40,15 +40,15 @@ helpers.unit = function(method, error) {
     cli.server = helpers.mockClientDb(log, error);
   }
 
-  var testNr = 1;
+  let testNr = 1;
 
   return function() {
-    var args = Array.prototype.slice.call(arguments);
-    var stub = args.pop();
+    const args = Array.prototype.slice.call(arguments);
+    const stub = args.pop();
 
     test(unitName + ':' + testNr++,
     function(assert) {
-      var f;
+      let f;
       assert.ok(typeof stub, 'object');
 
       //
@@ -101,7 +101,7 @@ helpers.unit = function(method, error) {
 function mockClient(code, path, extra) {
   return function(debug, error) {
     extra = extra || {};
-    var opts = _.extend(extra, {
+    const opts = _.extend(extra, {
       url: helpers.couch + path,
       log: debug,
       request: function(req, cb) {

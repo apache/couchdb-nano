@@ -12,7 +12,7 @@
 
 'use strict';
 
-var createDatabase = require('../../helpers/unit').unit([
+const createDatabase = require('../../helpers/unit').unit([
   'database',
   'create'
 ]);

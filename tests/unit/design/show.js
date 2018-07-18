@@ -12,7 +12,7 @@
 
 'use strict';
 
-var showDesign = require('../../helpers/unit').unit([
+const showDesign = require('../../helpers/unit').unit([
   'view',
   'show'
 ]);

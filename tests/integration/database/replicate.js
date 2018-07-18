@@ -12,15 +12,15 @@
 
 'use strict';
 
-var async = require('async');
-var helpers = require('../../helpers/integration');
-var harness = helpers.harness(__filename);
-var it = harness.it;
-var db = harness.locals.db;
-var nano = harness.locals.nano;
+const async = require('async');
+const helpers = require('../../helpers/integration');
+const harness = helpers.harness(__filename);
+const it = harness.it;
+const db = harness.locals.db;
+const nano = harness.locals.nano;
 
-var replica;
-var replica2;
+let replica;
+let replica2;
 
 it('should insert a bunch of items', helpers.insertThree);
 
@@ -35,7 +35,7 @@ it('creates a bunch of database replicas', function(assert) {
 it('should be able to replicate three docs', function(assert) {
   replica = nano.use('database_replica');
 
-  var p = db.replicate('database_replica', function(error) {
+  const p = db.replicate('database_replica', function(error) {
     assert.equal(error, null, 'replication should work');
     replica.list(function(error, list) {
       assert.equal(error, null, 'should be able to invoke list');
@@ -66,7 +66,7 @@ it('should be able to replicate to a `nano` object', function(assert) {
 });
 
 it('should be able to replicate with params', function(assert) {
-  var p = db.replicate('database_replica', {}, function(error) {
+  const p = db.replicate('database_replica', {}, function(error) {
     assert.equal(error, null, 'replication should work');
   });
   assert.ok(helpers.isPromise(p), 'returns Promise');

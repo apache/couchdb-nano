@@ -12,16 +12,16 @@
 
 'use strict';
 
-var async = require('async');
-var helpers = require('../../helpers/integration');
-var harness = helpers.harness(__filename);
-var it = harness.it;
-var db = harness.locals.db;
-var nano = harness.locals.nano;
+const async = require('async');
+const helpers = require('../../helpers/integration');
+const harness = helpers.harness(__filename);
+const it = harness.it;
+const db = harness.locals.db;
+const nano = harness.locals.nano;
 
-var replica;
-var replica2;
-var replica3;
+let replica;
+let replica2;
+let replica3;
 
 it('should insert a bunch of items', helpers.insertThree);
 

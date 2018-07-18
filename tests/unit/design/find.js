@@ -11,7 +11,7 @@
 // the License.
 
 'use strict';
-var findDesign = require('../../helpers/unit').unit([
+const findDesign = require('../../helpers/unit').unit([
   'find',
   'find'
 ]);

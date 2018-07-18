@@ -12,16 +12,16 @@
 
 'use strict';
 
-var helpers = require('../../helpers/integration');
-var harness = helpers.harness(__filename);
-var db = harness.locals.db;
-var nano = harness.locals.nano;
-var it = harness.it;
+const helpers = require('../../helpers/integration');
+const harness = helpers.harness(__filename);
+const db = harness.locals.db;
+const nano = harness.locals.nano;
+const it = harness.it;
 
 it('should insert a bunch of items', helpers.insertThree);
 
 it('should list the three documents', function(assert) {
-  var p = db.list(function(error, docs) {
+  const p = db.list(function(error, docs) {
     assert.equal(error, null, 'should get list');
     assert.equal(docs['total_rows'], 3, 'with total three rows');
     assert.ok(docs.rows, 'and the rows themselves');
@@ -53,7 +53,7 @@ it('should be able to list using the `relax` function', function(assert) {
 });
 
 it('should be able to list with a start_key', function(assert) {
-  var p = db.list({start_key: 'c'}, function(error, docs) {
+  const p = db.list({start_key: 'c'}, function(error, docs) {
     assert.equal(error, null, 'should work');
     assert.ok(docs.rows, 'get the rows');
     assert.equal(docs.rows.length, 2, 'starts in row two');
@@ -74,7 +74,7 @@ it('should be able to list with a start_key', function(assert) {
 });
 
 it('should be able to list with a startkey', function(assert) {
-  var p = db.list({startkey: 'c'}, function(error, docs) {
+  const p = db.list({startkey: 'c'}, function(error, docs) {
     assert.equal(error, null, 'should work');
     assert.ok(docs.rows, 'get the rows');
     assert.equal(docs.rows.length, 2, 'starts in row two');
@@ -95,7 +95,7 @@ it('should be able to list with a startkey', function(assert) {
 });
 
 it('should be able to list with a endkey', function(assert) {
-  var p = db.list({endkey: 's'}, function(error, docs) {
+  const p = db.list({endkey: 's'}, function(error, docs) {
     assert.equal(error, null, 'should work');
     assert.ok(docs.rows, 'get the rows');
     assert.equal(docs.rows.length, 2, 'starts in row two');
@@ -116,7 +116,7 @@ it('should be able to list with a endkey', function(assert) {
 });
 
 it('should be able to list with a end_key', function(assert) {
-  var p = db.list({end_key: 's'}, function(error, docs) {
+  const p = db.list({end_key: 's'}, function(error, docs) {
     assert.equal(error, null, 'should work');
     assert.ok(docs.rows, 'get the rows');
     assert.equal(docs.rows.length, 2, 'starts in row two');
@@ -137,7 +137,7 @@ it('should be able to list with a end_key', function(assert) {
 });
 
 it('should be able to list as a stream', function(assert) {
-  var p = db.listAsStream(function(error) {
+  const p = db.listAsStream(function(error) {
     assert.equal(error, null, 'should work');
   });
   assert.ok(!helpers.isPromise(p), 'does not return Promise');
@@ -145,7 +145,7 @@ it('should be able to list as a stream', function(assert) {
 });
 
 it('should be able to list with params as a stream', function(assert) {
-  var p = db.listAsStream({end_key: 's'}, function(error) {
+  const p = db.listAsStream({end_key: 's'}, function(error) {
     assert.equal(error, null, 'should work');
   });
   assert.ok(!helpers.isPromise(p), 'does not return Promise');

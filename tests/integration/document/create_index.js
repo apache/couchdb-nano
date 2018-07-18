@@ -12,15 +12,15 @@
 
 'use strict';
 
-var helpers = require('../../helpers/integration');
-var harness = helpers.harness(__filename);
-var db = harness.locals.db;
-var it = harness.it;
+const helpers = require('../../helpers/integration');
+const harness = helpers.harness(__filename);
+const db = harness.locals.db;
+const it = harness.it;
 
 it('should insert a one item', helpers.insertOne);
 
 it ('Should create one simple index', function(assert) {
-  var p = db.createIndex({
+  const p = db.createIndex({
     name: 'fooindex',
     index: { fields: ['foo'] }
   }, function(error, foo) {

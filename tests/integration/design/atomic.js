@@ -12,18 +12,18 @@
 
 'use strict';
 
-var helpers = require('../../helpers/integration');
-var harness = helpers.harness(__filename);
-var it = harness.it;
-var db = harness.locals.db;
+const helpers = require('../../helpers/integration');
+const harness = helpers.harness(__filename);
+const it = harness.it;
+const db = harness.locals.db;
 
-var rev;
+let rev;
 
 it('should be able to insert an atomic design doc', function(assert) {
-  var p = db.insert({
+  const p = db.insert({
     updates: {
       inplace: function(doc, req) {
-        var body = JSON.parse(req.body);
+        const body = JSON.parse(req.body);
         doc[body.field] = body.value;
         return [doc, JSON.stringify(doc)];
       },
@@ -46,7 +46,7 @@ it('should be able to insert an atomic design doc', function(assert) {
 });
 
 it('should be able to insert atomically', function(assert) {
-  var p = db.atomic('update', 'inplace', 'foobar', {
+  const p = db.atomic('update', 'inplace', 'foobar', {
     field: 'foo',
     value: 'bar'
   }, function(error, response) {
@@ -58,7 +58,7 @@ it('should be able to insert atomically', function(assert) {
 });
 
 it('should be able to update atomically without a body', function (assert) {
-  var p = db.insert({}, 'baz', function () {
+  const p = db.insert({}, 'baz', function () {
     db.atomic('update', 'addbaz', 'baz', function (error, response) {
       assert.equal(error, null, 'should be able to update');
       assert.equal(response.baz, 'biz', 'and the new field is present');
@@ -69,7 +69,7 @@ it('should be able to update atomically without a body', function (assert) {
 });
 
 it('should be able to update with slashes on the id', function(assert) {
-  var p = db.insert({'wat': 'wat'}, 'wat/wat', function(error, foo) {
+  const p = db.insert({'wat': 'wat'}, 'wat/wat', function(error, foo) {
     assert.equal(error, null, 'stores `wat`');
     assert.equal(foo.ok, true, 'response ok');
     db.atomic('update', 'inplace', 'wat/wat', {

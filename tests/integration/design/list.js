@@ -12,15 +12,15 @@
 
 'use strict';
 
-var helpers = require('../../helpers/integration');
-var harness = helpers.harness(__filename);
-var it = harness.it;
-var db = harness.locals.db;
+const helpers = require('../../helpers/integration');
+const harness = helpers.harness(__filename);
+const it = harness.it;
+const db = harness.locals.db;
 
 it('should create a ddoc and insert some docs', helpers.prepareAView);
 
 it('should get the people by running the ddoc', function(assert) {
-  var p = db.viewWithList('people', 'by_name_and_city', 'my_list', {
+  const p = db.viewWithList('people', 'by_name_and_city', 'my_list', {
     key: [
       'Derek',
       'San Francisco'

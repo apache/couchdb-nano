@@ -12,14 +12,14 @@
 
 'use strict';
 
-var async = require('async');
-var helpers = require('../../helpers/integration');
-var harness = helpers.harness(__filename);
-var it = harness.it;
-var db = harness.locals.db;
-var viewDerek = helpers.viewDerek;
+const async = require('async');
+const helpers = require('../../helpers/integration');
+const harness = helpers.harness(__filename);
+const it = harness.it;
+const db = harness.locals.db;
+const viewDerek = helpers.viewDerek;
 
-var opts = {key: ['Derek', 'San Francisco']};
+const opts = {key: ['Derek', 'San Francisco']};
 
 it('should create a ddoc and insert some docs', helpers.prepareAView);
 

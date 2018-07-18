@@ -12,15 +12,15 @@
 
 'use strict';
 
-var helpers = require('../../helpers/integration');
-var harness = helpers.harness(__filename);
-var db = harness.locals.db;
-var it = harness.it;
+const helpers = require('../../helpers/integration');
+const harness = helpers.harness(__filename);
+const db = harness.locals.db;
+const it = harness.it;
 
-var rev;
+let rev;
 
 it('should insert one simple document', function(assert) {
-  var p = db.insert({'foo': 'baz'}, 'foobaz', function(error, foo) {
+  const p = db.insert({'foo': 'baz'}, 'foobaz', function(error, foo) {
     rev = foo.rev;
     assert.equal(error, null, 'should have stored foo');
     assert.equal(foo.ok, true, 'response should be ok');
@@ -38,7 +38,7 @@ it('should insert one simple document', function(assert) {
 });
 
 it('should fail to insert again since it already exists', function(assert) {
-  var p = db.insert({}, 'foobaz', function(error) {
+  const p = db.insert({}, 'foobaz', function(error) {
     assert.equal(error['statusCode'], 409, 'should be conflict');
     assert.equal(error.scope, 'couch', 'scope is couch');
     assert.equal(error.error, 'conflict', 'type is conflict');
@@ -55,7 +55,7 @@ it('should fail to insert again since it already exists', function(assert) {
 });
 
 it('should be able to use custom params in insert', function(assert) {
-  var p = db.insert({
+  const p = db.insert({
     foo: 'baz',
     _rev: rev
   }, {
@@ -78,7 +78,7 @@ it('should be able to use custom params in insert', function(assert) {
 });
 
 it('should be able to insert functions in docs', function(assert) {
-  var p = db.insert({
+  const p = db.insert({
     fn: function() { return true; },
     fn2: 'function () { return true; }'
   }, function(error, fns) {
