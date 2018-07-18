@@ -95,7 +95,7 @@ See [Migration Guide for switching from Nano 6.x to 7.x](migration_6_to_7.md).
 To use `nano` you need to connect it to your CouchDB install, to do that:
 
 ```js
-var nano = require('nano')('http://localhost:5984');
+const nano = require('nano')('http://localhost:5984');
 ```
 
 The URL you supply may also contain authenication credentials e.g. `http://admin:mypassword@localhost:5984`.
@@ -109,7 +109,7 @@ nano.db.create('alice');
 and to use an existing database:
 
 ```js
-var alice = nano.db.use('alice');
+const alice = nano.db.use('alice');
 ```
 
 Under-the-hood, calls like `nano.db.create` are making HTTP API calls to the CouchDB service. Such operations are *asynchronous*. There are two ways to recieve the asynchronous data back from the library
@@ -147,8 +147,8 @@ The documentation will now follow the *Promises* style.
 A simple but complete example is:
 
 ```js
-var nano = require('nano')('http://localhost:5984');
-var alice = null;
+const nano = require('nano')('http://localhost:5984');
+let alice;
 
 nano.db.destory('alice').then((response) => {
   return nano.db.create('alice')
@@ -190,29 +190,29 @@ You can also see your document in [futon](http://localhost:5984/_utils).
 Configuring nano to use your database server is as simple as:
 
 ```js
-var nano = require('nano')('http://localhost:5984'),
-  db = nano.use('foo');
+const nano = require('nano')('http://localhost:5984')
+const db = nano.use('foo');
 ```
 
 If you don't need to instrument database objects you can simply:
 
 ```js
 // nano parses the URL and knows this is a database
-var db = require('nano')('http://localhost:5984/foo');
+const db = require('nano')('http://localhost:5984/foo');
 ```
 
 You can also pass options to the require to specify further configuration options you can pass an object literal instead:
 
 ```js
 // nano parses the URL and knows this is a database
-var opts = {
+const opts = {
   url: "http://localhost:5984/foo",
   requestDefaults: { "proxy" : "http://someproxy" },
   log: (id, args) => {
     console.log(id, args);
   }
 };
-var db = require('nano')(opts);
+const db = require('nano')(opts);
 ```
 
 Please check [request] for more information on the defaults. They support features like cookie jar, proxies, ssl, etc.
@@ -222,11 +222,11 @@ You can tell nano to not parse the URL (maybe the server is behind a proxy, is a
 ```js
 // nano does not parse the URL and return the server api
 // "http://localhost:5984/prefix" is the CouchDB server root
-var couch = require('nano')(
+const couch = require('nano')(
   { url : "http://localhost:5984/prefix"
     parseUrl : false
   });
-var db = couch.use('foo');
+const db = couch.use('foo');
 ```
 
 ### Pool size and open sockets
@@ -242,14 +242,14 @@ You can also increase the size in your calling context using `requestDefaults` i
 Here's an example explicitly using the keep alive agent (installed using `npm install agentkeepalive`), especially useful to limit your open sockets when doing high-volume access to CouchDB on localhost:
 
 ```js
-var agentkeepalive = require('agentkeepalive');
-var myagent = new agentkeepalive({
+const agentkeepalive = require('agentkeepalive');
+const myagent = new agentkeepalive({
   maxSockets: 50,
   maxKeepAliveRequests: 0,
   maxKeepAliveTime: 30000
 });
 
-var db = require('nano')(
+const db = require('nano')(
   { url: "http://localhost:5984/foo",
     requestDefaults : { "agent" : myagent }
   });
@@ -433,7 +433,7 @@ nano.db.changes('alice').pipe(process.stdout);
 Uses [Follow] to create a solid changes feed. Please consult `follow` documentation for more information as this is a very complete API on it's own:
 
 ```js
-var feed = db.follow({since: "now"});
+const feed = db.follow({since: "now"});
 feed.on('change', (change) => {
   console.log("change: ", change);
 });
@@ -458,7 +458,7 @@ nano.db.info().then((body) => {
 Returns a database object that allows you to perform operations against that database:
 
 ```js
-var alice = nano.use('alice');
+const alice = nano.use('alice');
 alice.insert({ happy: true }, 'rabbit').then((body) => {
   // do something
 });
@@ -526,7 +526,7 @@ Use [Follow] to create a solid
 Please consult follow documentation for more information as this is a very complete api on it's own
 
 ```js
-var feed = nano.followUpdates({since: "now"});
+const feed = nano.followUpdates({since: "now"});
 feed.on('change', (change) => {
   console.log("change: ", change);
 });
@@ -543,7 +543,7 @@ process.nextTick( () => {
 Inserts `doc` in the database with optional `params`. If params is a string, it's assumed it is the intended document `_id`. If params is an object, it's passed as query string parameters and `docName` is checked for defining the document `_id`:
 
 ```js
-var alice = nano.use('alice');
+const alice = nano.use('alice');
 alice.insert({ happy: true }, 'rabbit').then((body) => {
   console.log(body);
 });
@@ -552,7 +552,7 @@ alice.insert({ happy: true }, 'rabbit').then((body) => {
 The `insert` function can also be used with the method signature `db.insert(doc,[callback])`, where the `doc` contains the `_id` field e.g.
 
 ```js
-var alice = nano.use('alice')
+const alice = nano.use('alice')
 alice.insert({ _id: 'myid', happy: true }).then((body) => {
   console.log(body)
 })
@@ -561,7 +561,7 @@ alice.insert({ _id: 'myid', happy: true }).then((body) => {
 and also used to update an existing document, by including the `_rev` token in the document being saved:
 
 ```js
-var alice = nano.use('alice')
+const alice = nano.use('alice')
 alice.insert({ _id: 'myid', _rev: '1-23202479633c2b380f79507a776743d5', happy: false }).then((body) => {
   console.log(body)
 })
@@ -624,7 +624,7 @@ Bulk operations(update/delete/insert) on the database, refer to the
 [CouchDB doc](http://docs.couchdb.org/en/2.1.1/api/database/bulk-api.html#db-bulk-docs) e.g:
 
 ```js
-var documents = [
+const documents = [
   { a:1, b:2 },
   { _id: 'tiger', striped: true}
 ];
@@ -672,7 +672,7 @@ additional query string `params` can be specified, `include_docs` is always set
 to `true`.
 
 ```js
-var keys = ['tiger', 'zebra', 'donkey'];
+const keys = ['tiger', 'zebra', 'donkey'];
 alice.fetch({keys: keys}).then((data) => {
   console.log(data);
 });
@@ -693,7 +693,7 @@ Create index on database fields, as specified in
 [CouchDB doc](http://docs.couchdb.org/en/latest/api/database/find.html#db-index).
 
 ```js
-var indexDef = {
+const indexDef = {
   index: { fields: ['foo'] },
   name: 'fooindex'
 };
@@ -898,7 +898,7 @@ An example update handler follows:
   "in-place" : "function(doc, req) {
       var field = req.form.field;
       var value = req.form.value;
-      var message = 'set '+field+' to '+value;
+      var message = 'set ' + field + ' to ' + value;
       doc[field] = value;
       return [doc, message];
   }"
@@ -931,7 +931,7 @@ Perform a ["Mango" query](http://docs.couchdb.org/en/2.1.1/api/database/find.htm
 
 ```js
 // find documents where the name = "Brian" and age > 25.
-var q = { 
+const q = { 
   selector: {
     name: { "$eq": "Brian"},
     age : { "$gt": 25 }
@@ -950,7 +950,7 @@ Perform a ["Mango" query](http://docs.couchdb.org/en/2.1.1/api/database/find.htm
 
 ```js
 // find documents where the name = "Brian" and age > 25.
-var q = { 
+const q = { 
   selector: {
     name: { "$eq": "Brian"},
     age : { "$gt": 25 }
@@ -1035,9 +1035,9 @@ getrabbitrev('4-2e6cdc4c7e26b745c2881a24e0eeece2').then((body) => {
 You can pipe the return values of certain nano functions like other stream. For example if our `rabbit` document has an attachment with name `picture.png` you can pipe it to a `writable stream`:
 
 ```js
-var fs = require('fs'),
-    nano = require('nano')('http://127.0.0.1:5984/');
-var alice = nano.use('alice');
+const fs = require('fs');
+const nano = require('nano')('http://127.0.0.1:5984/');
+const alice = nano.use('alice');
 alice.attachment.getAsStream('rabbit', 'picture.png').pipe(fs.createWriteStream('/tmp/rabbit.png'));
 ```
 
