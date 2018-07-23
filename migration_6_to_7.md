@@ -18,6 +18,9 @@ In Nano 7:
 // Nano 7
 const db = nano.db.use('mydb')
 const x = await db.get('mydoc') 
+// the return value of db.get is a Promise, 
+// the 'await' operator waits for the Promise to resolve and 
+// x is your requested CouchDB object
 ```
 
 If you are not using the streaming properties of Nano 6's return value, you may not need to change any code at all. This document outlines the areas that have changed and what you need to do to your code.
@@ -67,7 +70,7 @@ db.get('mydoc').then((doc) => {
 })
 ```
 
-The Promise style of code lets you code sequences of asynchronou calls at the same level of indentation (the callback style forces you to indent further to the right with each call!):
+The Promise style of code lets you code sequences of asynchronous calls at the same level of indentation (the callback style forces you to indent further to the right with each call!):
 
 ```js
 db.get('mydoc').then((doc) => {

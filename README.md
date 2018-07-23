@@ -144,7 +144,20 @@ The documentation will now follow the *Promises* style.
 ------------------
 
 
-A simple but complete example is:
+A simple but complete example in the [async/await](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function) style:
+
+```js
+async function asyncCall() {
+  await nano.db.destory('alice')
+  await nano.db.create('alice')
+  const alice = nano.use('alice')
+  const response = await alice.insert({ happy: true }, 'rabbit')
+  return response
+}
+asyncCall()
+```
+
+or in the raw Promises-style
 
 ```js
 const nano = require('nano')('http://localhost:5984');
@@ -159,19 +172,6 @@ nano.db.destory('alice').then((response) => {
   console.log('you have inserted a document with an _id of rabbit')
   console.log(response);
 })
-```
-
-or in the `async/await` style:
-
-```js
-async function asyncCall() {
-  await nano.db.destory('alice')
-  await nano.db.create('alice')
-  const alice = nano.use('alice')
-  const response = await alice.insert({ happy: true }, 'rabbit')
-  return response
-}
-asyncCall()
 ```
 
 If you run either of these examples (after starting CouchDB) you will see:
