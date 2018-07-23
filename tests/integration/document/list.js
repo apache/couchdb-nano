@@ -44,10 +44,43 @@ it('should be able to list using the `relax` function', function(assert) {
   });
 });
 
+it('should be able to list with a start_key', function(assert) {
+  db.list({start_key: 'c'}, function(error, docs) {
+    assert.equal(error, null, 'should work');
+    assert.ok(docs.rows, 'get the rows');
+    assert.equal(docs.rows.length, 2, 'starts in row two');
+    assert.equal(docs['total_rows'], 3, 'out of three rows');
+    assert.equal(docs.offset, 1, 'offset is 1');
+    assert.end();
+  });
+});
+
 it('should be able to list with a startkey', function(assert) {
   db.list({startkey: 'c'}, function(error, docs) {
     assert.equal(error, null, 'should work');
-    assert.ok(docs.rows, 'get teh rows');
+    assert.ok(docs.rows, 'get the rows');
+    assert.equal(docs.rows.length, 2, 'starts in row two');
+    assert.equal(docs['total_rows'], 3, 'out of three rows');
+    assert.equal(docs.offset, 1, 'offset is 1');
+    assert.end();
+  });
+});
+
+it('should be able to list with a endkey', function(assert) {
+  db.list({endkey: 's'}, function(error, docs) {
+    assert.equal(error, null, 'should work');
+    assert.ok(docs.rows, 'get the rows');
+    assert.equal(docs.rows.length, 2, 'starts in row two');
+    assert.equal(docs['total_rows'], 3, 'out of three rows');
+    assert.equal(docs.offset, 1, 'offset is 1');
+    assert.end();
+  });
+});
+
+it('should be able to list with a end_key', function(assert) {
+  db.list({end_key: 's'}, function(error, docs) {
+    assert.equal(error, null, 'should work');
+    assert.ok(docs.rows, 'get the rows');
     assert.equal(docs.rows.length, 2, 'starts in row two');
     assert.equal(docs['total_rows'], 3, 'out of three rows');
     assert.equal(docs.offset, 1, 'offset is 1');

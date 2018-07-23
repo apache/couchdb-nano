@@ -21,6 +21,8 @@ or save `nano` as a dependency of your project with
 
     npm install --save nano
 
+Note the minimum required version of Node.js is 6.
+
 ## Table of contents
 
 - [Getting started](#getting-started)
@@ -451,7 +453,7 @@ Listen to db updates, the available `params` are:
 
 ** changed in version 6 **
 
-Use [Follow](https://github.com/jhs/follow) to create a solid
+Use [Follow] to create a solid
 [`_db_updates`](http://docs.couchdb.org/en/latest/api/server/common.html?highlight=db_updates#get--_db_updates) feed.
 Please consult follow documentation for more information as this is a very complete api on it's own
 
@@ -555,7 +557,7 @@ alice.copy('rabbit', 'rabbit2', { overwrite: true }, function(err, _, headers) {
 ### db.bulk(docs, [params], [callback])
 
 Bulk operations(update/delete/insert) on the database, refer to the
-[CouchDB doc](http://wiki.apache.org/couchdb/HTTP_Bulk_Document_API) e.g:
+[CouchDB doc](http://docs.couchdb.org/en/2.1.1/api/database/bulk-api.html#db-bulk-docs) e.g:
 
 ``` js
 var documents = [
@@ -670,7 +672,7 @@ alice.multipart.get('rabbit', function(err, buffer) {
 
 Inserts an attachment `attname` to `docname`, in most cases
  `params.rev` is required. Refer to the
- [doc](http://wiki.apache.org/couchdb/HTTP_Document_API) for more details.
+ [CouchDB doc](http://docs.couchdb.org/en/latest/api/document/attachments.html#db-doc-attachment) for more details.
 
 ``` js
 var fs = require('fs');
@@ -927,7 +929,7 @@ If your application needs to generate UUIDs, then CouchDB can provide some for y
 
 ```js
 nano.uuids(3, callback);
-// { uuid: [
+// { uuids: [
 // '5d1b3ef2bc7eea51f660c091e3dffa23',
 // '5d1b3ef2bc7eea51f660c091e3e006ff',
 // '5d1b3ef2bc7eea51f660c091e3e007f0',
@@ -1020,7 +1022,7 @@ where `list_doc_params` is the test name.
 [2]: http://github.com/apache/couchdb-nano/issues
 [4]: https://github.com/apache/couchdb-nano/blob/master/cfg/couch.example.js
 [8]: http://webchat.freenode.net?channels=%23couchdb-dev
-[follow]: https://github.com/jhs/follow
+[follow]: https://www.npmjs.com/package/cloudant-follow
 [request]:  https://github.com/request/request
 
 ## Release

@@ -18,14 +18,12 @@ var db = harness.locals.db;
 var nano = helpers.nano;
 var it = harness.it;
 
-it('should insert a one item', helpers.insertOne);
-
 it('should generate three uuids', function(assert) {
   nano.uuids(3, function(error, data) {
     assert.equal(error, null, 'should generate uuids');
     assert.ok(data, 'got response');
     assert.ok(data.uuids, 'got uuids');
-    assert.equal(data.uuids.count, 3, 'got 3');
+    assert.equal(data.uuids.length, 3, 'got 3');
     assert.end();
   });
 });
@@ -35,7 +33,7 @@ it('should generate one uuid', function(assert) {
     assert.equal(error, null, 'should generate uuids');
     assert.ok(data, 'got response');
     assert.ok(data.uuids, 'got uuid');
-    assert.equal(data.uuids.count, 1, 'got 1');
+    assert.equal(data.uuids.length, 1, 'got 1');
     assert.end();
   });
 });

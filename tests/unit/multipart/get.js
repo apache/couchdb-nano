@@ -19,7 +19,7 @@ var getMultipart = require('../../helpers/unit').unit([
 
 getMultipart('space', {extra: 'stuff'}, {
   encoding: null,
-  headers: {'content-type': 'multipart/related'},
+  headers: {'accept': 'multipart/related'},
   method: 'GET',
   qs: {attachments: true, extra: 'stuff'},
   uri: '/mock/space'

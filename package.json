@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "homepage": "http://github.com/apache/couchdb-nano",
   "repository": "http://github.com/apache/couchdb-nano",
-  "version": "6.4.3",
+  "version": "6.4.4",
   "author": "Apache CouchDB <dev@couchdb.apache.org> (http://couchdb.apache.org)",
   "keywords": [
     "couchdb",
@@ -17,11 +17,12 @@
     "database"
   ],
   "dependencies": {
-    "cloudant-follow": "~0.16.1",
+    "@types/request": "^2.47.1",
+    "cloudant-follow": "~0.17.0",
     "debug": "^2.2.0",
     "errs": "^0.3.2",
     "lodash.isempty": "^4.4.0",
-    "request": "~2.83.0"
+    "request": "^2.85.0"
   },
   "devDependencies": {
     "async": "^2.1.2",
@@ -44,8 +45,9 @@
     "checkcoverage": "istanbul check-coverage --statements 100 --functions 100 --lines 100 --branches 100"
   },
   "main": "./lib/nano.js",
+  "types": "./lib/nano.d.ts",
   "engines": {
-    "node": ">=0.12"
+    "node": ">=6"
   },
   "pre-commit": [
     "jshint",

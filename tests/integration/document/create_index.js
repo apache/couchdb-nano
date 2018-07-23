@@ -26,7 +26,7 @@ it ('Should create one simple index', function(assert) {
   }, function(error, foo) {
     assert.equal(error, null, 'should have indexed fields');
     assert.equal(foo.result, 'created', 'index should be created');
-    assert.equal(foo.name, 'foobaz', 'index should have correct name');
+    assert.equal(foo.name, 'fooindex', 'index should have correct name');
 
     assert.end();
   });
