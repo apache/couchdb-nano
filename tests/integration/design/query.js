@@ -39,3 +39,36 @@ it('should have no cloning issues when doing queries', function (assert) {
     assert.end()
   })
 })
+
+var multipleQueryOpts = {
+  queries: [
+    {
+      keys: [
+        ['Derek','San Francisco'],
+        ['Nuno','London']
+      ]
+    }, 
+    {
+      skip: 2,
+      limit: 1
+    }
+  ]
+}
+
+var expectedResults = 
+  [
+    {total_rows:3,offset:0,rows:[{id:"p_derek",key:["Derek","San Francisco"],value:"p_derek"},{id:"p_nuno",key:["Nuno","London"],value:"p_nuno"}]},
+    {total_rows:3,offset:2,rows:[{id:"p_randall",key:["Randall","San Francisco"],value:"p_randall"}]}
+  ]
+
+
+it('should support multiple view queries', function(assert) {
+  db.view('people','by_name_and_city', multipleQueryOpts, function(error, response) {
+    assert.equal(error, null, 'no errors')
+    assert.ok(response.results, 'should return query results')
+    assert.ok(Array.isArray(response.results), 'query results should be array')
+    assert.equal(response.results.length, 2, 'should return results to both queries')
+    assert.deepEqual(response.results, expectedResults, 'should be expected query results')
+    assert.end()
+  })
+})
