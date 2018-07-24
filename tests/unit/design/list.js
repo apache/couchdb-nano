@@ -12,7 +12,7 @@
 
 'use strict';
 
-var listDesign = require('../../helpers/unit').unit([
+const listDesign = require('../../helpers/unit').unit([
   'view',
   'viewWithList'
 ]);

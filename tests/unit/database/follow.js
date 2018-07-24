@@ -12,7 +12,7 @@
 
 'use strict';
 
-var followDatabase = require('../../helpers/unit').unit([
+const followDatabase = require('../../helpers/unit').unit([
   'database',
   'follow'
 ]);

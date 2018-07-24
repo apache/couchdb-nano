@@ -12,7 +12,7 @@
 
 'use strict';
 
-var geoDesign = require('../../helpers/unit').unit([
+const geoDesign = require('../../helpers/unit').unit([
   'view',
   'spatial'
 ]);

@@ -12,17 +12,25 @@
 
 'use strict';
 
-var helpers = require('../../helpers/integration');
-var harness = helpers.harness(__filename);
-var it = harness.it;
-var db = harness.locals.db;
+const helpers = require('../../helpers/integration');
+const harness = helpers.harness(__filename);
+const it = harness.it;
+const db = harness.locals.db;
 
 it('should be able to insert a simple attachment', function(assert) {
-  db.attachment.insert('new', 'att', 'Hello World!', 'text/plain',
+  const p = db.attachment.insert('new', 'att', 'Hello World!', 'text/plain',
   function(error, att) {
     assert.equal(error, null, 'should store the attachment');
     assert.equal(att.ok, true, 'response ok');
     assert.ok(att.rev, 'should have a revision');
+  });
+  assert.ok(helpers.isPromise(p), 'returns Promise');
+  p.then(function(att) {
+    assert.ok(true, 'Promise is resolved');
+    assert.equal(att.ok, true, 'response ok');
+    assert.ok(att.rev, 'should have a revision');
     assert.end();
+  }).catch(function() {
+    assert.ok(false, 'Promise is rejected');
   });
 });

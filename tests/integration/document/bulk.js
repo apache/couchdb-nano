@@ -12,13 +12,13 @@
 
 'use strict';
 
-var helpers = require('../../helpers/integration');
-var harness = helpers.harness(__filename);
-var it = harness.it;
-var db = harness.locals.db;
+const helpers = require('../../helpers/integration');
+const harness = helpers.harness(__filename);
+const it = harness.it;
+const db = harness.locals.db;
 
 it('should be able to bulk insert two docs', function(assert) {
-  db.bulk({
+  const p = db.bulk({
     'docs': [
       {'key':'baz', 'name':'bazzel'},
       {'key':'bar', 'name':'barry'}
@@ -29,6 +29,15 @@ it('should be able to bulk insert two docs', function(assert) {
     assert.equal(response.length, 2, 'has two docs');
     assert.ok(response[0].id, 'first got id');
     assert.ok(response[1].id, 'other also got id');
+  });
+  assert.ok(helpers.isPromise(p), 'returns Promise');
+  p.then(function(response) {
+    assert.ok(true, 'Promise is resolved');
+    assert.equal(response.length, 2, 'has two docs');
+    assert.ok(response[0].id, 'first got id');
+    assert.ok(response[1].id, 'other also got id');
     assert.end();
+  }).catch(function() {
+    assert.ok(false, 'Promise is rejected');
   });
 });

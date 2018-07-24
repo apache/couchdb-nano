@@ -12,15 +12,14 @@
 
 'use strict';
 
-var helpers = require('../../helpers/integration');
-var harness = helpers.harness(__filename);
-var nano = harness.locals.nano;
-var Nano = helpers.Nano;
-var it = harness.it;
+const helpers = require('../../helpers/integration');
+const harness = helpers.harness(__filename);
+const nano = harness.locals.nano;
+const Nano = helpers.Nano;
+const it = harness.it;
 
-var admin = Nano(helpers.admin);
-var cookie;
-var server;
+let cookie;
+let server;
 
 it('should be able to create a user', function(assert) {
   nano.relax({
@@ -52,13 +51,21 @@ it('should be able to insert with a cookie', function(assert) {
     url: helpers.couch,
     cookie: cookie
   });
-  var db = server.use('shared_cookie');
+  const db = server.use('shared_cookie');
 
-  db.insert({'foo': 'baz'}, null, function(error, response) {
+  const p = db.insert({'foo': 'baz'}, null, function(error, response) {
     assert.equal(error, null, 'should have stored value');
     assert.equal(response.ok, true, 'response should be ok');
     assert.ok(response.rev, 'response should have rev');
     assert.end();
+  });
+  assert.ok(helpers.isPromise(p), 'returns Promise');
+  p.then(function(response) {
+    assert.ok(true, 'Promise is resolved');
+    assert.equal(response.ok, true, 'response should be ok');
+    assert.ok(response.rev, 'response should have rev');
+  }).catch(function() {
+    assert.ok(false, 'Promise is rejected');
   });
 });
 

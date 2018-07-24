@@ -12,7 +12,7 @@
 
 'use strict';
 
-var searchDesign = require('../../helpers/unit').unit([
+const searchDesign = require('../../helpers/unit').unit([
   'view',
   'search'
 ]);

@@ -12,7 +12,7 @@
 
 'use strict';
 
-var listDatabases = require('../../helpers/unit').unit([
+const listDatabases = require('../../helpers/unit').unit([
   'database',
   'list'
 ]);

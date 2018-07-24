@@ -12,26 +12,42 @@
 
 'use strict';
 
-var helpers = require('../../helpers/integration');
-var harness = helpers.harness(__filename);
-var db = harness.locals.db;
-var it = harness.it;
+const helpers = require('../../helpers/integration');
+const harness = helpers.harness(__filename);
+const db = harness.locals.db;
+const it = harness.it;
 
-var rev;
+let rev;
 
 it('should insert one simple document', function(assert) {
-  db.insert({'foo': 'baz'}, 'foobaz', function(error, foo) {
+  const p = db.insert({'foo': 'baz'}, 'foobaz', function(error, foo) {
     rev = foo.rev;
     assert.equal(error, null, 'should have stored foo');
     assert.equal(foo.ok, true, 'response should be ok');
     assert.ok(foo.rev, 'response should have rev');
+  });
+  assert.ok(helpers.isPromise(p), 'returns Promise');
+  p.then(function(foo) {
+    assert.ok(true, 'Promise is resolved');
+    assert.equal(foo.ok, true, 'response should be ok');
+    assert.ok(foo.rev, 'response should have rev');
     assert.end();
+  }).catch(function() {
+    assert.ok(false, 'Promise is rejected');
   });
 });
 
 it('should fail to insert again since it already exists', function(assert) {
-  db.insert({}, 'foobaz', function(error) {
+  const p = db.insert({}, 'foobaz', function(error) {
     assert.equal(error['statusCode'], 409, 'should be conflict');
+    assert.equal(error.scope, 'couch', 'scope is couch');
+    assert.equal(error.error, 'conflict', 'type is conflict');
+  });
+  assert.ok(helpers.isPromise(p), 'returns Promise');
+  p.then(function() {
+    assert.ok(false, 'Promise is resolved');
+  }).catch(function(error) {
+    assert.ok(true, 'Promise is rejected');
     assert.equal(error.scope, 'couch', 'scope is couch');
     assert.equal(error.error, 'conflict', 'type is conflict');
     assert.end();
@@ -39,7 +55,7 @@ it('should fail to insert again since it already exists', function(assert) {
 });
 
 it('should be able to use custom params in insert', function(assert) {
-  db.insert({
+  const p = db.insert({
     foo: 'baz',
     _rev: rev
   }, {
@@ -49,12 +65,20 @@ it('should be able to use custom params in insert', function(assert) {
     assert.equal(error, null, 'should have stored foo');
     assert.equal(foo.ok, true, 'response should be ok');
     assert.ok(foo.rev, 'response should have rev');
+  });
+  assert.ok(helpers.isPromise(p), 'returns Promise');
+  p.then(function(foo) {
+    assert.ok(true, 'Promise is resolved');
+    assert.equal(foo.ok, true, 'response should be ok');
+    assert.ok(foo.rev, 'response should have rev');
     assert.end();
+  }).catch(function() {
+    assert.ok(false, 'Promise is rejected');
   });
 });
 
 it('should be able to insert functions in docs', function(assert) {
-  db.insert({
+  const p = db.insert({
     fn: function() { return true; },
     fn2: 'function () { return true; }'
   }, function(error, fns) {
@@ -67,20 +91,5 @@ it('should be able to insert functions in docs', function(assert) {
       assert.end();
     });
   });
-});
-
-it('should be able to stream an insert', function(assert) {
-  var buffer = '';
-  var foobar = db.insert({'foo': 'bar'});
-
-  function runAssertions(error, foobar) {
-    assert.equal(error, null, 'should have stored foobar');
-    assert.ok(foobar.ok, 'this is ok');
-    assert.ok(foobar.rev, 'and i got revz');
-    assert.end();
-  }
-
-  foobar.on('data', function(chunk) { buffer += chunk; });
-  foobar.on('end', function() { runAssertions(null, JSON.parse(buffer)); });
-  foobar.on('error', runAssertions);
+  assert.ok(helpers.isPromise(p), 'returns Promise');
 });

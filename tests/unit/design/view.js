@@ -12,7 +12,7 @@
 
 'use strict';
 
-var viewDesign = require('../../helpers/unit').unit([
+const viewDesign = require('../../helpers/unit').unit([
   'view',
   'view'
 ]);

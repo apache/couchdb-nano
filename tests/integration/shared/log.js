@@ -12,14 +12,13 @@
 
 'use strict';
 
-var logger = require('../../../lib/logger');
-
-var helpers = require('../../helpers');
-var harness = helpers.harness(__filename);
-var it = harness.it;
+const logger = require('../../../lib/logger');
+const helpers = require('../../helpers');
+const harness = helpers.harness(__filename);
+const it = harness.it;
 
 it('should be able to instantiate a log', function(assert) {
-  var log = logger({
+  const log = logger({
     log: function(id, msg) {
       assert.equal(typeof id, 'string', 'id is set `' + id + '`');
       assert.equal(msg[0], 'testing 1234');

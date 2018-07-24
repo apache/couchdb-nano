@@ -12,18 +12,18 @@
 
 'use strict';
 
-var async = require('async');
-var debug = require('debug');
-var path = require('path');
-var harness = require('tape-it');
-var endsWith = require('endswith');
-var cfg = require('../fixtures/cfg');
-var nano = require('../../lib/nano');
-var helpers = require('./');
+const async = require('async');
+const debug = require('debug');
+const path = require('path');
+const harness = require('tape-it');
+const endsWith = require('endswith');
+const cfg = require('../fixtures/cfg');
+const nano = require('../../lib/nano');
+const helpers = require('./');
 
 helpers.setup = function() {
-  var self = this;
-  var args = Array.prototype.slice.call(arguments);
+  const self = this;
+  const args = Array.prototype.slice.call(arguments);
 
   return function(assert) {
     args.push(function(err) {
@@ -36,8 +36,8 @@ helpers.setup = function() {
 };
 
 helpers.teardown = function() {
-  var self = this;
-  var args = Array.prototype.slice.call(arguments);
+  const self = this;
+  const args = Array.prototype.slice.call(arguments);
 
   return function(assert) {
     args.push(function(err) {
@@ -51,21 +51,21 @@ helpers.teardown = function() {
 };
 
 helpers.harness = function(name, setup, teardown) {
-  var parent = name || module.parent.filename;
-  var fileName = path.basename(parent).split('.')[0];
-  var parentDir = path.dirname(parent)
+  const parent = name || module.parent.filename;
+  const fileName = path.basename(parent).split('.')[0];
+  const parentDir = path.dirname(parent)
     .split(path.sep).reverse()[0];
-  var shortPath = path.join(parentDir, fileName);
-  var log = debug(path.join('nano', 'tests', 'integration', shortPath));
-  var dbName = shortPath.replace('/', '_');
-  var nanoLog = nano({
+  const shortPath = path.join(parentDir, fileName);
+  const log = debug(path.join('nano', 'tests', 'integration', shortPath));
+  const dbName = shortPath.replace('/', '_');
+  const nanoLog = nano({
     url: cfg.couch,
     log: log
   });
 
-  var mock = helpers.nock(helpers.couch, shortPath, log);
-  var db   = nanoLog.use(dbName);
-  var locals = {
+  const mock = helpers.nock(helpers.couch, shortPath, log);
+  const db   = nanoLog.use(dbName);
+  const locals = {
     mock: mock,
     db: db,
     nano: nanoLog
@@ -82,15 +82,15 @@ helpers.harness = function(name, setup, teardown) {
 };
 
 helpers.nock = function helpersNock(url, fixture, log) {
-  var nock = require('nock');
-  var nockDefs = require('../fixtures/' + fixture + '.json');
+  const nock = require('nock');
+  const nockDefs = require('../fixtures/' + fixture + '.json');
 
   nockDefs.forEach(function(n) {
-    var headers = n.headers || {};
-    var response = n.buffer ? endsWith(n.buffer, '.png') ?
+    let headers = n.headers || {};
+    const response = n.buffer ? endsWith(n.buffer, '.png') ?
         helpers.loadFixture(n.buffer) : new Buffer(n.buffer, 'base64') :
         n.response || '';
-    var body = n.base64 ? new Buffer(n.base64, 'base64').toString() :
+        const body = n.base64 ? new Buffer(n.base64, 'base64').toString() :
         n.body || '';
 
     if (typeof headers === 'string' && endsWith(headers, '.json')) {
@@ -166,7 +166,7 @@ helpers.viewDerek = function viewDerek(db, assert, opts, next, method) {
 };
 
 helpers.insertOne = function insertThree(assert) {
-  var db = this.db;
+  const db = this.db;
   db.insert({'foo': 'baz'}, 'foobaz', function(err) {
     assert.equal(err, null, 'should store docs');
     assert.end();
@@ -174,7 +174,7 @@ helpers.insertOne = function insertThree(assert) {
 };
 
 helpers.insertThree = function insertThree(assert) {
-  var db = this.db;
+  const db = this.db;
   async.parallel([
     function(cb) { db.insert({'foo': 'bar'}, 'foobar', cb); },
     function(cb) { db.insert({'bar': 'foo'}, 'barfoo', cb); },
@@ -187,6 +187,10 @@ helpers.insertThree = function insertThree(assert) {
 
 helpers.unmocked = (process.env.NOCK_OFF === 'true');
 helpers.mocked = !helpers.unmocked;
+
+helpers.isPromise = function(p) {
+  return (p && typeof p === 'object' && typeof p.then === 'function') 
+}
 
 module.exports = helpers;
 

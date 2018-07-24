@@ -12,11 +12,11 @@
 
 'use strict';
 
-var helpers = require('../../helpers/integration');
-var harness = helpers.harness(__filename);
-var nano = harness.locals.nano;
-var db = harness.locals.db;
-var it = harness.it;
+const helpers = require('../../helpers/integration');
+const harness = helpers.harness(__filename);
+const nano = harness.locals.nano;
+const db = harness.locals.db;
+const it = harness.it;
 
 it('should get headers', function(assert) {
   db.attachment.insert('new', 'att', 'Hello', 'text/plain',

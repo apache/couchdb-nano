@@ -26,6 +26,14 @@
   , "path"     : "/database_changes/_changes?since=0"
   , "response" : "{\"results\":[{\"seq\":\"1-abc\",\"id\":\"a\",\"changes\":[{\"rev\":\"1-abc\"}]},{\"seq\":\"2-abc\",\"id\":\"b\",\"changes\":[{\"rev\":\"1-abc\"}]},{\"seq\":\"3-abc\",\"id\":\"c\",\"changes\":[{\"rev\":\"1-abc\"}]}],\"last_seq\":\"3-abc\"}"
   }
+, { "status"   : 200
+  , "path"     : "/database_changes/_changes?since=0"
+  , "response" : "{\"results\":[{\"seq\":\"1-abc\",\"id\":\"a\",\"changes\":[{\"rev\":\"1-abc\"}]},{\"seq\":\"2-abc\",\"id\":\"b\",\"changes\":[{\"rev\":\"1-abc\"}]},{\"seq\":\"3-abc\",\"id\":\"c\",\"changes\":[{\"rev\":\"1-abc\"}]}],\"last_seq\":\"3-abc\"}"
+  }
+, { "status"   : 200
+  , "path"     : "/database_changes/_changes"
+  , "response" : "{\"results\":[],\"last_seq\":\"3-abc\"}"
+  }
 , { "method"   : "delete"
   , "path"     : "/database_changes"
   , "status"   : 200

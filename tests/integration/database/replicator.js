@@ -12,16 +12,16 @@
 
 'use strict';
 
-var async = require('async');
-var helpers = require('../../helpers/integration');
-var harness = helpers.harness(__filename);
-var it = harness.it;
-var db = harness.locals.db;
-var nano = harness.locals.nano;
+const async = require('async');
+const helpers = require('../../helpers/integration');
+const harness = helpers.harness(__filename);
+const it = harness.it;
+const db = harness.locals.db;
+const nano = harness.locals.nano;
 
-var replica;
-var replica2;
-var replica3;
+let replica;
+let replica2;
+let replica3;
 
 it('should insert a bunch of items', helpers.insertThree);
 
@@ -53,11 +53,11 @@ it('should be able to replicate (replicator) three docs', function(assert) {
               assert.true(disabled.ok, 'should have stopped the replication');
               assert.end();
             });
-          })
-        })
+          });
+        });
       },
-      3000)
-    };
+      3000);
+    }
     waitForReplication();
   });
 });
@@ -83,10 +83,10 @@ it('should be able to replicate (replicator) to a `nano` object', function(asser
               assert.end();
             });
           });
-        })
+        });
       },
-      3000)
-    };
+      3000);
+    }
     waitForReplication();
   });
 });
@@ -112,10 +112,10 @@ it('should be able to replicate (replicator) with params', function(assert) {
               assert.end();
             });
           });
-        })
+        });
       },
-      3000)
-    };
+      3000);
+    }
     waitForReplication();
   });
 });

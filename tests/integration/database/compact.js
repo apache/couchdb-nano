@@ -12,10 +12,10 @@
 
 'use strict';
 
-var helpers = require('../../helpers/integration');
-var harness = helpers.harness(__filename);
-var it = harness.it;
-var db = harness.locals.db;
+const helpers = require('../../helpers/integration');
+const harness = helpers.harness(__filename);
+const it = harness.it;
+const db = harness.locals.db;
 
 it('should store and delete `goofy`', function(assert) {
   db.insert({'foo': 'baz'}, 'goofy', function(error, foo) {
@@ -30,14 +30,22 @@ it('should store and delete `goofy`', function(assert) {
 });
 
 it('should have run the compaction', function(assert) {
-  db.compact(function(error) {
+  const p = db.compact(function(error) {
     assert.equal(error, null, 'compact should respond');
     db.info(function(error, info) {
       assert.equal(error, null, 'info should respond');
       assert.equal(info['doc_count'], 0, 'document count is not 3');
       assert.equal(info['doc_del_count'], 1, 'document should be deleted');
-      assert.end();
     });
+  });
+  assert.ok(helpers.isPromise(p), 'returns Promise');
+  p.then(function(info) {
+    assert.ok(true, 'Promise is resolved');
+    assert.equal(info['doc_count'], 0, 'document count is not 3');
+    assert.equal(info['doc_del_count'], 1, 'document should be deleted');
+    assert.end();
+  }).catch(function() {
+    assert.ok(false, 'Promise is rejected');
   });
 });
 
@@ -56,5 +64,5 @@ it('should finish compaction before ending', function(assert) {
     });
   }
 
-  var task = setInterval(nextWhenFinished, 100);
+  const task = setInterval(nextWhenFinished, 100);
 });

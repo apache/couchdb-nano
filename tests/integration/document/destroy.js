@@ -12,12 +12,12 @@
 
 'use strict';
 
-var helpers = require('../../helpers/integration');
-var harness = helpers.harness(__filename);
-var it = harness.it;
-var db = harness.locals.db;
+const helpers = require('../../helpers/integration');
+const harness = helpers.harness(__filename);
+const it = harness.it;
+const db = harness.locals.db;
 
-var rev;
+let rev;
 
 it('should insert a document', function(assert) {
   db.insert({'foo': 'baz'}, 'foobaz', function(error, foo) {
@@ -30,17 +30,30 @@ it('should insert a document', function(assert) {
 });
 
 it('should not delete a db', function(assert) {
-  db.destroy(undefined, undefined, function(error, response) {
+  const p = db.destroy(undefined, undefined, function(error, response) {
     assert.equal(error, 'Invalid doc id', 'validated delete parameters');
     assert.equal(response, null, 'ok!');
+  });
+  assert.ok(helpers.isPromise(p), 'returns Promise');
+  p.then(function() {
+    assert.ok(false, 'Promise is resolved');
     assert.end();
+  }).catch(function() {
+    assert.ok(true, 'Promise is rejected');
   });
 });
 
 it('should delete a document', function(assert) {
-  db.destroy('foobaz', rev, function(error, response) {
+  const p = db.destroy('foobaz', rev, function(error, response) {
     assert.equal(error, null, 'deleted foo');
     assert.equal(response.ok, true, 'ok!');
+  });
+  assert.ok(helpers.isPromise(p), 'returns Promise');
+  p.then(function(response) {
+    assert.ok(true, 'Promise is resolved');
+    assert.equal(response.ok, true, 'ok!');
     assert.end();
+  }).catch(function() {
+    assert.ok(false, 'Promise is rejected');
   });
 });

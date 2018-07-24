@@ -12,22 +12,28 @@
 
 'use strict';
 
-var helpers = require('../../helpers/integration');
-var harness = helpers.harness(__filename);
-var db = harness.locals.db;
-var it = harness.it;
+const helpers = require('../../helpers/integration');
+const harness = helpers.harness(__filename);
+const db = harness.locals.db;
+const it = harness.it;
 
 it('should insert a one item', helpers.insertOne);
 
 it ('Should create one simple index', function(assert) {
-  db.createIndex({
+  const p = db.createIndex({
     name: 'fooindex',
     index: { fields: ['foo'] }
   }, function(error, foo) {
     assert.equal(error, null, 'should have indexed fields');
     assert.equal(foo.result, 'created', 'index should be created');
     assert.equal(foo.name, 'fooindex', 'index should have correct name');
-
+  });
+  assert.ok(helpers.isPromise(p), 'returns Promise');
+  p.then(function(foo) {
+    assert.equal(foo.result, 'created', 'index should be created');
+    assert.equal(foo.name, 'fooindex', 'index should have correct name');
     assert.end();
+  }).catch(function() {
+    assert.ok(false, 'Promise is rejected');
   });
 });

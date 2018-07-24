@@ -12,7 +12,7 @@
 
 'use strict';
 
-var compactDatabase = require('../../helpers/unit').unit([
+const compactDatabase = require('../../helpers/unit').unit([
   'database',
   'compact'
 ]);

@@ -12,17 +12,17 @@
 
 'use strict';
 
-var helpers = require('../../helpers/unit');
-var test  = require('tape');
-var debug = require('debug')('nano/tests/unit/shared/error');
+const helpers = require('../../helpers/unit');
+const test  = require('tape');
+const debug = require('debug')('nano/tests/unit/shared/error');
 
-var cli = helpers.mockClientFail(debug);
-var cli2 = helpers.mockClientUnparsedError(debug);
-var cli3 = helpers.mockClientUnparsedError(debug, JSON.stringify({
+const cli = helpers.mockClientFail(debug);
+const cli2 = helpers.mockClientUnparsedError(debug);
+const cli3 = helpers.mockClientUnparsedError(debug, JSON.stringify({
   error: 'not a reason'
 }));
 
-var cli4 = helpers.mockClientUnparsedError(debug, JSON.stringify({
+const cli4 = helpers.mockClientUnparsedError(debug, JSON.stringify({
   stack: new Error('foo').stack
 }));
 
@@ -49,7 +49,7 @@ test('should be capable of using `error`', function(assert) {
 
 test('should remove cloudant stacktraces', function(assert) {
   cli4.relax({}, function(err) {
-    var msg = err.stack.split('\n')[0];
+    const msg = err.stack.split('\n')[0];
     assert.notEqual(msg, 'Error: foo');
     assert.equal(msg, 'Error: Unspecified error');
     assert.end();

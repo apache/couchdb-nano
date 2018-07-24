@@ -12,12 +12,12 @@
 
 'use strict';
 
-var copyDocument = require('../../helpers/unit').unit([
+const copyDocument = require('../../helpers/unit').unit([
   'document',
   'copy'
 ]);
 
-var copyDocumentFail = require('../../helpers/unit').unit([
+const copyDocumentFail = require('../../helpers/unit').unit([
   'document',
   'copy'
 ], new Error('OMG This sucks'));

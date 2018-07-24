@@ -17,19 +17,29 @@ const harness = helpers.harness(__filename);
 const db = harness.locals.db;
 const it = harness.it;
 
-it('should insert a one item', helpers.insertOne);
+it('should insert a bunch of items', helpers.insertThree);
 
-it('should get a status code when you do head', function(assert) {
-  const p = db.head('foobaz', function(error, body, headers) {
-    assert.equal(error, null, 'should get the head of foobaz');
-    assert.equal(headers['statusCode'], 200, 'and is ok');
+it('should be to do a mango query', function(assert) {
+  const p = db.find({ selector: { foo: 'baz'}}, function(error, response) {
+    assert.equal(error, null, 'should work');
+    assert.equal(response.docs.length, 1, 'and get one row');
   });
   assert.ok(helpers.isPromise(p), 'returns Promise');
-  p.then(function(docs) {
+  p.then(function(response) {
     assert.ok(true, 'Promise is resolved');
-    assert.equal(docs['statusCode'], 200, 'and is ok');
+    assert.equal(response.docs.length, 1, 'and get one row');
     assert.end();
   }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });
+});
+
+it('should be to do a mango query with streams', function(assert) {
+  const p = db.findAsStream({ selector: { foo: 'baz'}}, function(error, response) {
+    assert.equal(error, null, 'should work');
+    assert.equal(response.docs.length, 1, 'and get one row');
+    assert.end();
+  });
+  assert.ok(!helpers.isPromise(p), 'does not return Promise');
+  assert.equal(p.constructor.name, 'Request', 'returns a Request');
 });

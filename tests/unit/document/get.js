@@ -12,12 +12,12 @@
 
 'use strict';
 
-var helpers = require('../../helpers/unit');
-var test  = require('tape');
-var debug = require('debug')('nano/tests/unit/shared/error');
+const helpers = require('../../helpers/unit');
+const test  = require('tape');
+const debug = require('debug')('nano/tests/unit/shared/error');
 
-var cli = helpers.mockClientDb(debug)
-var db = cli.use('foo')
+const cli = helpers.mockClientDb(debug);
+const db = cli.use('foo');
 
 test('it should not return db info if docName undefined', function(assert) {
   db.get(undefined, function(err) {

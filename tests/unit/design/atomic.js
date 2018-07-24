@@ -12,7 +12,7 @@
 
 'use strict';
 
-var atomicDesign = require('../../helpers/unit').unit([
+const atomicDesign = require('../../helpers/unit').unit([
   'view',
   'atomic'
 ]);

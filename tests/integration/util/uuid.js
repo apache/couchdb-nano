@@ -12,28 +12,45 @@
 
 'use strict';
 
-var helpers = require('../../helpers/integration');
-var harness = helpers.harness(__filename);
-var db = harness.locals.db;
-var nano = helpers.nano;
-var it = harness.it;
+const helpers = require('../../helpers/integration');
+const harness = helpers.harness(__filename);
+const nano = helpers.nano;
+const it = harness.it;
 
 it('should generate three uuids', function(assert) {
-  nano.uuids(3, function(error, data) {
+  const p = nano.uuids(3, function(error, data) {
     assert.equal(error, null, 'should generate uuids');
     assert.ok(data, 'got response');
     assert.ok(data.uuids, 'got uuids');
     assert.equal(data.uuids.length, 3, 'got 3');
+  });
+  assert.ok(helpers.isPromise(p), 'returns Promise');
+  p.then(function(data) {
+    assert.ok(true, 'Promise is resolved');
+    assert.ok(data, 'got response');
+    assert.ok(data.uuids, 'got uuids');
+    assert.equal(data.uuids.length, 3, 'got 3');
     assert.end();
+  }).catch(function() {
+    assert.ok(true, 'Promise is rejected');
   });
 });
 
 it('should generate one uuid', function(assert) {
-  nano.uuids(function(error, data) {
+  const p = nano.uuids(function(error, data) {
     assert.equal(error, null, 'should generate uuids');
     assert.ok(data, 'got response');
     assert.ok(data.uuids, 'got uuid');
     assert.equal(data.uuids.length, 1, 'got 1');
+  });
+  assert.ok(helpers.isPromise(p), 'returns Promise');
+  p.then(function(data) {
+    assert.ok(true, 'Promise is resolved');
+    assert.ok(data, 'got response');
+    assert.ok(data.uuids, 'got uuid');
+    assert.equal(data.uuids.length, 1, 'got 1');    
     assert.end();
+  }).catch(function() {
+    assert.ok(true, 'Promise is rejected');
   });
 });

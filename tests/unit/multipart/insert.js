@@ -12,7 +12,7 @@
 
 'use strict';
 
-var insertMultipart = require('../../helpers/unit').unit([
+const insertMultipart = require('../../helpers/unit').unit([
   'multipart',
   'insert'
 ]);

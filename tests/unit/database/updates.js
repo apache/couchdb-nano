@@ -12,7 +12,7 @@
 
 'use strict';
 
-var updatesDatabase = require('../../helpers/unit').unit([
+const updatesDatabase = require('../../helpers/unit').unit([
   'database',
   'updates'
 ]);

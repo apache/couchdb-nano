@@ -12,10 +12,10 @@
 
 'use strict';
 
-var helpers = require('../../helpers/integration');
-var harness = helpers.harness(__filename);
-var it = harness.it;
-var db = harness.locals.db;
+const helpers = require('../../helpers/integration');
+const harness = helpers.harness(__filename);
+const it = harness.it;
+const db = harness.locals.db;
 
 it('must insert two docs before the tests start', function(assert) {
   db.insert({'foo': 'baz'}, 'foo_src', function(error, src) {
@@ -32,27 +32,45 @@ it('must insert two docs before the tests start', function(assert) {
 });
 
 it('should be able to copy and overwrite a document', function(assert) {
-  db.copy('foo_src', 'foo_dest', {overwrite: true},
+  const p = db.copy('foo_src', 'foo_dest', {overwrite: true},
   function(error, response, headers) {
     assert.equal(error, null,
       'should have copied and overwritten foo_src to foo_dest');
     assert.equal(headers['statusCode'], 201, 'status code should be 201');
+  });
+  assert.ok(helpers.isPromise(p), 'returns Promise');
+  p.then(function() {
+    assert.ok(true, 'Promise is resolved');
     assert.end();
+  }).catch(function() {
+    assert.ok(false, 'Promise is rejected');
   });
 });
 
 it('copy without overwrite should return conflict for exists docs',
 function(assert) {
-  db.copy('foo_src', 'foo_dest', function(error) {
+  const p = db.copy('foo_src', 'foo_dest', function(error) {
     assert.equal(error.error, 'conflict', 'should be a conflict');
+  });
+  assert.ok(helpers.isPromise(p), 'returns Promise');
+  p.then(function() {
+    assert.ok(false, 'Promise is resolved');
+  }).catch(function() {
+    assert.ok(true, 'Promise is rejected');
     assert.end();
   });
 });
 
 it('copy to a new destination should work', function(assert) {
-  db.copy('foo_src', 'baz_dest', function(error, response, headers) {
+  const p = db.copy('foo_src', 'baz_dest', function(error, response, headers) {
     assert.equal(error, null, 'copies into new document');
     assert.equal(headers['statusCode'], 201, 'Status code should be 201');
+  });
+  assert.ok(helpers.isPromise(p), 'returns Promise');
+  p.then(function() {
+    assert.ok(true, 'Promise is resolved');
     assert.end();
+  }).catch(function() {
+    assert.ok(false, 'Promise is rejected');
   });
 });

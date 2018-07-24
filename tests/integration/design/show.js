@@ -12,11 +12,11 @@
 
 'use strict';
 
-var async = require('async');
-var helpers = require('../../helpers/integration');
-var harness = helpers.harness(__filename);
-var it = harness.it;
-var db = harness.locals.db;
+const async = require('async');
+const helpers = require('../../helpers/integration');
+const harness = helpers.harness(__filename);
+const it = harness.it;
+const db = harness.locals.db;
 
 it('should insert a show ddoc', function(assert) {
   db.insert({
@@ -73,13 +73,22 @@ it('should insert a show ddoc', function(assert) {
 });
 
 it('should show the amazing clemens in json', function(assert) {
-  db.show('people', 'singleDoc', 'p_clemens', function(error, doc, rh) {
+  const p = db.show('people', 'singleDoc', 'p_clemens', function(error, doc, rh) {
     assert.equal(error, null, 'its alive');
     assert.equal(rh['content-type'], 'application/json');
     assert.equal(doc.name, 'Clemens');
     assert.equal(doc.city, 'Dresden');
     assert.equal(doc.format, 'json');
+  });
+  assert.ok(helpers.isPromise(p), 'returns Promise');
+  p.then(function(doc) {
+    assert.ok(true, 'Promise is resolved');
+    assert.equal(doc.name, 'Clemens');
+    assert.equal(doc.city, 'Dresden');
+    assert.equal(doc.format, 'json');
     assert.end();
+  }).catch(function() {
+    assert.ok(false, 'Promise is rejected');
   });
 });
 

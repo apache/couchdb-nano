@@ -14,6 +14,10 @@
   , "status"   : 200
   , "buffer"   : "Qk06AAAAAAAAADYAAAAoAAAAAQAAAP////8BABgAAAAAAAAAAAATCwAAEwsAAAAAAAAAAAAAWm2CAA=="
   }
+, { "path"     : "/attachment_pipe/new/att"
+  , "status"   : 200
+  , "buffer"   : "Qk06AAAAAAAAADYAAAAoAAAAAQAAAP////8BABgAAAAAAAAAAAATCwAAEwsAAAAAAAAAAAAAWm2CAA=="
+  }
 , { "method"   : "put"
   , "path"     : "/attachment_pipe/nodejs/logo.png"
   , "body"     : "*"

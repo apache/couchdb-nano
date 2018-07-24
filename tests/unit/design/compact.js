@@ -12,7 +12,7 @@
 
 'use strict';
 
-var compactDesign = require('../../helpers/unit').unit([
+const compactDesign = require('../../helpers/unit').unit([
   'view',
   'compact'
 ]);

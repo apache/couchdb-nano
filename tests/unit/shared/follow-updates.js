@@ -12,7 +12,7 @@
 
 'use strict';
 
-var followUpdates = require('../../helpers/unit').unit([
+const followUpdates = require('../../helpers/unit').unit([
   'server',
   'followUpdates'
 ]);

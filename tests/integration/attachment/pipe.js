@@ -12,18 +12,18 @@
 
 'use strict';
 
-var fs = require('fs');
-var path = require('path');
-var helpers = require('../../helpers/integration');
-var harness = helpers.harness(__filename);
-var db = harness.locals.db;
-var it = harness.it;
-var pixel = helpers.pixel;
+const fs = require('fs');
+const path = require('path');
+const helpers = require('../../helpers/integration');
+const harness = helpers.harness(__filename);
+const db = harness.locals.db;
+const it = harness.it;
+const pixel = helpers.pixel;
 
 it('should be able to pipe to a writeStream', function(assert) {
-  var buffer = new Buffer(pixel, 'base64');
-  var filename = path.join(__dirname, '.temp.bmp');
-  var ws = fs.createWriteStream(filename);
+  const buffer = new Buffer(pixel, 'base64');
+  const filename = path.join(__dirname, '.temp.bmp');
+  const ws = fs.createWriteStream(filename);
 
   ws.on('close', function() {
     assert.equal(fs.readFileSync(filename).toString('base64'), pixel);
@@ -34,14 +34,24 @@ it('should be able to pipe to a writeStream', function(assert) {
   db.attachment.insert('new', 'att', buffer, 'image/bmp',
   function(error, bmp) {
     assert.equal(error, null, 'Should store the pixel');
-    db.attachment.get('new', 'att', {rev: bmp.rev}).pipe(ws);
+    db.attachment.getAsStream('new', 'att', {rev: bmp.rev}).pipe(ws);
   });
 });
 
+it('should be able to pipe to a writeStream', function(assert) {
+  const ws = fs.createWriteStream('/dev/null');
+  db.attachment.getAsStream('new', 'att', function() {})
+    .pipe(ws)
+    .on('end', function() {
+      assert.end();
+    });
+});
+
 it('should be able to pipe from a readStream', function(assert) {
-  var logo = path.join(__dirname, '..', '..', 'fixtures', 'logo.png');
-  var rs = fs.createReadStream(logo);
-  var is = db.attachment.insert('nodejs', 'logo.png', null, 'image/png');
+  const logo = path.join(__dirname, '..', '..', 'fixtures', 'logo.png');
+  const rs = fs.createReadStream(logo);
+  const is = db.attachment.insertAsStream('nodejs', 'logo.png', null, 'image/png', function() {
+  });
 
   is.on('end', function() {
     db.attachment.get('nodejs', 'logo.png', function(err, buffer) {
