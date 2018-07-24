@@ -11,13 +11,13 @@
 // the License.
 
 var express = require('express')
-  , nano    = require('nano')('http://localhost:5984')
-  , app     = module.exports = express.createServer()
-  , db_name = "test"
-  , db      = nano.use(db_name);
+var nano = require('nano')('http://localhost:5984')
+var app = module.exports = express.createServer()
+var dbName = 'test'
+var db = nano.use(dbName)
 
-app.get("/", function(request,response) {
-  db.attachment.get("new", "logo.png").pipe(response);
-});
+app.get('/', function (request, response) {
+  db.attachment.get('new', 'logo.png').pipe(response)
+})
 
-app.listen(3333);
+app.listen(3333)

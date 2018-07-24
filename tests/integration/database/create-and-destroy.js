@@ -10,34 +10,34 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
-const async = require('async');
-const helpers = require('../../helpers/integration');
-const harness = helpers.harness(__filename);
-const it = harness.it;
-const nano = harness.locals.nano;
+const async = require('async')
+const helpers = require('../../helpers/integration')
+const harness = helpers.harness(__filename)
+const it = harness.it
+const nano = harness.locals.nano
 
-it('should be able to create `az09_$()+-/` database', function(assert) {
-  nano.db.create('az09_$()+-/', function(err) {
-    assert.equal(err, null, 'should create database');
-    assert.end();
-  });
-});
+it('should be able to create `az09_$()+-/` database', function (assert) {
+  nano.db.create('az09_$()+-/', function (err) {
+    assert.equal(err, null, 'should create database')
+    assert.end()
+  })
+})
 
 it('should be able to use config from a nano object to create a db',
-function(assert) {
-  const config = helpers.Nano(
-    helpers.couch + '/' + encodeURIComponent('with/slash')).config;
-  helpers.Nano(config.url).db.create(config.db, function(err) {
-    assert.equal(err, null, 'should create database');
-    assert.end();
-  });
-});
+  function (assert) {
+    const config = helpers.Nano(
+      helpers.couch + '/' + encodeURIComponent('with/slash')).config
+    helpers.Nano(config.url).db.create(config.db, function (err) {
+      assert.equal(err, null, 'should create database')
+      assert.end()
+    })
+  })
 
-it('must destroy the databases we created', function(assert) {
-  async.forEach(['az09_$()+-/', 'with/slash'], nano.db.destroy, function(err) {
-    assert.equal(err, null, 'should destroy all dbs');
-    assert.end();
-  });
-});
+it('must destroy the databases we created', function (assert) {
+  async.forEach(['az09_$()+-/', 'with/slash'], nano.db.destroy, function (err) {
+    assert.equal(err, null, 'should destroy all dbs')
+    assert.end()
+  })
+})

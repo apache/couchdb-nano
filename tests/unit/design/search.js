@@ -10,12 +10,12 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
 const searchDesign = require('../../helpers/unit').unit([
   'view',
   'search'
-]);
+])
 
 searchDesign('alice', 'by_id', {
   keys: 'dawg'
@@ -27,4 +27,4 @@ searchDesign('alice', 'by_id', {
   },
   method: 'POST',
   uri: '/mock/_design/alice/_search/by_id'
-});
+})

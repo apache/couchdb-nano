@@ -10,12 +10,12 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
 const compactDesign = require('../../helpers/unit').unit([
   'view',
   'compact'
-]);
+])
 
 compactDesign('alice', {
   headers: {
@@ -24,4 +24,4 @@ compactDesign('alice', {
   },
   method: 'POST',
   uri: '/mock/_compact/alice'
-});
+})

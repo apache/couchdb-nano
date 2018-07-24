@@ -10,26 +10,26 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
-const helpers = require('../../helpers/integration');
-const harness = helpers.harness(__filename);
-const db = harness.locals.db;
-const it = harness.it;
+const helpers = require('../../helpers/integration')
+const harness = helpers.harness(__filename)
+const db = harness.locals.db
+const it = harness.it
 
-it('should insert a one item', helpers.insertOne);
+it('should insert a one item', helpers.insertOne)
 
-it('should get a status code when you do head', function(assert) {
-  const p = db.head('foobaz', function(error, body, headers) {
-    assert.equal(error, null, 'should get the head of foobaz');
-    assert.equal(headers['statusCode'], 200, 'and is ok');
-  });
-  assert.ok(helpers.isPromise(p), 'returns Promise');
-  p.then(function(docs) {
-    assert.ok(true, 'Promise is resolved');
-    assert.equal(docs['statusCode'], 200, 'and is ok');
-    assert.end();
-  }).catch(function() {
-    assert.ok(false, 'Promise is rejected');
-  });
-});
+it('should get a status code when you do head', function (assert) {
+  const p = db.head('foobaz', function (error, body, headers) {
+    assert.equal(error, null, 'should get the head of foobaz')
+    assert.equal(headers['statusCode'], 200, 'and is ok')
+  })
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function (docs) {
+    assert.ok(true, 'Promise is resolved')
+    assert.equal(docs['statusCode'], 200, 'and is ok')
+    assert.end()
+  }).catch(function () {
+    assert.ok(false, 'Promise is rejected')
+  })
+})

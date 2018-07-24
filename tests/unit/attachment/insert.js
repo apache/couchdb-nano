@@ -10,12 +10,12 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
-const helpers = require('../../helpers/unit');
-const insertAttachment = helpers.unit(['attachment', 'insert']);
+const helpers = require('../../helpers/unit')
+const insertAttachment = helpers.unit(['attachment', 'insert'])
 
-const buffer = new Buffer(helpers.pixel, 'base64');
+const buffer = Buffer.from(helpers.pixel, 'base64')
 
 insertAttachment('pixels', 'pixel.bmp', buffer, 'image/bmp', {
   body: buffer,
@@ -24,7 +24,7 @@ insertAttachment('pixels', 'pixel.bmp', buffer, 'image/bmp', {
   },
   method: 'PUT',
   uri: '/mock/pixels/pixel.bmp'
-});
+})
 
 insertAttachment('pixels', 'meta.txt', 'brown', 'text/plain', {
   body: 'brown',
@@ -33,7 +33,7 @@ insertAttachment('pixels', 'meta.txt', 'brown', 'text/plain', {
   },
   method: 'PUT',
   uri: '/mock/pixels/meta.txt'
-});
+})
 
 insertAttachment('pixels', 'meta.txt', 'white', 'text/plain', {rev: '2'}, {
   body: 'white',
@@ -43,4 +43,4 @@ insertAttachment('pixels', 'meta.txt', 'white', 'text/plain', {rev: '2'}, {
   method: 'PUT',
   uri: '/mock/pixels/meta.txt',
   qs: {rev: '2'}
-});
+})

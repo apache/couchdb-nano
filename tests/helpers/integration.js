@@ -10,111 +10,111 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
-const async = require('async');
-const debug = require('debug');
-const path = require('path');
-const harness = require('tape-it');
-const endsWith = require('endswith');
-const cfg = require('../fixtures/cfg');
-const nano = require('../../lib/nano');
-const helpers = require('./');
+const async = require('async')
+const debug = require('debug')
+const path = require('path')
+const harness = require('tape-it')
+const endsWith = require('endswith')
+const cfg = require('../fixtures/cfg')
+const nano = require('../../lib/nano')
+const helpers = require('./')
 
-helpers.setup = function() {
-  const self = this;
-  const args = Array.prototype.slice.call(arguments);
+helpers.setup = function () {
+  const self = this
+  const args = Array.prototype.slice.call(arguments)
 
-  return function(assert) {
-    args.push(function(err) {
-      assert.equal(err, null, 'create database');
-      assert.end();
-    });
+  return function (assert) {
+    args.push(function (err) {
+      assert.equal(err, null, 'create database')
+      assert.end()
+    })
 
-    self.nano.db.create.apply(this, args);
-  };
-};
+    self.nano.db.create.apply(this, args)
+  }
+}
 
-helpers.teardown = function() {
-  const self = this;
-  const args = Array.prototype.slice.call(arguments);
+helpers.teardown = function () {
+  const self = this
+  const args = Array.prototype.slice.call(arguments)
 
-  return function(assert) {
-    args.push(function(err) {
-      assert.equal(err, null, 'destroy database');
-      assert.ok(self.mock.isDone(), 'mocks didn\'t run');
-      assert.end();
-    });
+  return function (assert) {
+    args.push(function (err) {
+      assert.equal(err, null, 'destroy database')
+      assert.ok(self.mock.isDone(), 'mocks didn\'t run')
+      assert.end()
+    })
 
-    self.nano.db.destroy.apply(this, args);
-  };
-};
+    self.nano.db.destroy.apply(this, args)
+  }
+}
 
-helpers.harness = function(name, setup, teardown) {
-  const parent = name || module.parent.filename;
-  const fileName = path.basename(parent).split('.')[0];
+helpers.harness = function (name, setup, teardown) {
+  const parent = name || module.parent.filename
+  const fileName = path.basename(parent).split('.')[0]
   const parentDir = path.dirname(parent)
-    .split(path.sep).reverse()[0];
-  const shortPath = path.join(parentDir, fileName);
-  const log = debug(path.join('nano', 'tests', 'integration', shortPath));
-  const dbName = shortPath.replace('/', '_');
+    .split(path.sep).reverse()[0]
+  const shortPath = path.join(parentDir, fileName)
+  const log = debug(path.join('nano', 'tests', 'integration', shortPath))
+  const dbName = shortPath.replace('/', '_')
   const nanoLog = nano({
     url: cfg.couch,
     log: log
-  });
+  })
 
-  const mock = helpers.nock(helpers.couch, shortPath, log);
-  const db   = nanoLog.use(dbName);
+  const mock = helpers.nock(helpers.couch, shortPath, log)
+  const db = nanoLog.use(dbName)
   const locals = {
     mock: mock,
     db: db,
     nano: nanoLog
-  };
+  }
 
   return harness({
     id: shortPath,
     timeout: helpers.timeout,
     checkLeaks: !!process.env.LEAKS,
     locals: locals,
-    setup: setup ? setup : helpers.setup.call(locals, dbName),
-    teardown: teardown ? teardown : helpers.teardown.call(locals, dbName)
-  });
-};
+    setup: setup || helpers.setup.call(locals, dbName),
+    teardown: teardown || helpers.teardown.call(locals, dbName)
+  })
+}
 
-helpers.nock = function helpersNock(url, fixture, log) {
-  const nock = require('nock');
-  const nockDefs = require('../fixtures/' + fixture + '.json');
+helpers.nock = function helpersNock (url, fixture, log) {
+  const nock = require('nock')
+  const nockDefs = require('../fixtures/' + fixture + '.json')
 
-  nockDefs.forEach(function(n) {
-    let headers = n.headers || {};
-    const response = n.buffer ? endsWith(n.buffer, '.png') ?
-        helpers.loadFixture(n.buffer) : new Buffer(n.buffer, 'base64') :
-        n.response || '';
-        const body = n.base64 ? new Buffer(n.base64, 'base64').toString() :
-        n.body || '';
+  nockDefs.forEach(function (n) {
+    let headers = n.headers || {}
+    const response = n.buffer ? endsWith(n.buffer, '.png')
+      ? helpers.loadFixture(n.buffer) : Buffer.from(n.buffer, 'base64')
+      : n.response || ''
+    const body = n.base64 ? Buffer.from(n.base64, 'base64').toString()
+      : n.body || ''
 
     if (typeof headers === 'string' && endsWith(headers, '.json')) {
-      headers = require(path.join(fixture, headers));
+      headers = require(path.join(fixture, headers))
     }
 
-    n.method = n.method || 'get';
-    n.options = {log: log};
-    n.scope = url;
-    n.headers = headers;
-    n.response = response;
-    n.body = body;
+    n.method = n.method || 'get'
+    n.options = {log: log}
+    n.scope = url
+    n.headers = headers
+    n.response = response
+    n.body = body
 
-    return n;
-  });
+    return n
+  })
 
-  nock.define(nockDefs);
+  nock.define(nockDefs)
 
-  return nock(url);
-};
+  return nock(url)
+}
 
-helpers.prepareAView = function(assert, search, db) {
-  search = search || '';
-  db = db || this.db;
+helpers.prepareAView = function (assert, search, db) {
+  search = search || ''
+  db = db || this.db
 
   db.insert({
     views: {
@@ -125,72 +125,71 @@ helpers.prepareAView = function(assert, search, db) {
     lists: {
       'my_list': 'function(head, req) { send(\'Hello\'); }'
     }
-  }, '_design/people' + search, function(error, response) {
-    assert.equal(error, null, 'should create view');
-    assert.equal(response.ok, true, 'response is good');
+  }, '_design/people' + search, function (error, response) {
+    assert.equal(error, null, 'should create view')
+    assert.equal(response.ok, true, 'response is good')
     async.parallel([
-      function(cb) {
+      function (cb) {
         db.insert({
           name: 'Derek',
           city: 'San Francisco'
-        }, 'p_derek', cb);
-      }, function(cb) {
+        }, 'p_derek', cb)
+      }, function (cb) {
         db.insert({
           name: 'Randall',
           city: 'San Francisco'
-        }, 'p_randall', cb);
-      }, function(cb) {
+        }, 'p_randall', cb)
+      }, function (cb) {
         db.insert({
           name: 'Nuno',
           city: 'London'
-        }, 'p_nuno', cb);
+        }, 'p_nuno', cb)
       }
-    ], function(error) {
-      assert.equal(error, null, 'store the peeps');
-      assert.end();
-    });
-  });
-};
-
-helpers.viewDerek = function viewDerek(db, assert, opts, next, method) {
-  method = method || 'view';
-  db[method]('people','by_name_and_city', opts, function(error, view) {
-    assert.equal(error, null, 'no errors');
-    assert.equal(view.rows.length,1);
-    assert.equal(view.rows.length,1);
-    assert.equal(view.rows[0].id,'p_derek');
-    assert.equal(view.rows[0].key[0],'Derek');
-    assert.equal(view.rows[0].key[1],'San Francisco');
-    next(error);
-  });
-};
-
-helpers.insertOne = function insertThree(assert) {
-  const db = this.db;
-  db.insert({'foo': 'baz'}, 'foobaz', function(err) {
-    assert.equal(err, null, 'should store docs');
-    assert.end();
-  });
-};
-
-helpers.insertThree = function insertThree(assert) {
-  const db = this.db;
-  async.parallel([
-    function(cb) { db.insert({'foo': 'bar'}, 'foobar', cb); },
-    function(cb) { db.insert({'bar': 'foo'}, 'barfoo', cb); },
-    function(cb) { db.insert({'foo': 'baz'}, 'foobaz', cb); }
-  ], function(error) {
-    assert.equal(error, null, 'should store docs');
-    assert.end();
-  });
-};
-
-helpers.unmocked = (process.env.NOCK_OFF === 'true');
-helpers.mocked = !helpers.unmocked;
-
-helpers.isPromise = function(p) {
-  return (p && typeof p === 'object' && typeof p.then === 'function') 
+    ], function (error) {
+      assert.equal(error, null, 'store the peeps')
+      assert.end()
+    })
+  })
 }
 
-module.exports = helpers;
+helpers.viewDerek = function viewDerek (db, assert, opts, next, method) {
+  method = method || 'view'
+  db[method]('people', 'by_name_and_city', opts, function (error, view) {
+    assert.equal(error, null, 'no errors')
+    assert.equal(view.rows.length, 1)
+    assert.equal(view.rows.length, 1)
+    assert.equal(view.rows[0].id, 'p_derek')
+    assert.equal(view.rows[0].key[0], 'Derek')
+    assert.equal(view.rows[0].key[1], 'San Francisco')
+    next(error)
+  })
+}
 
+helpers.insertOne = function insertThree (assert) {
+  const db = this.db
+  db.insert({'foo': 'baz'}, 'foobaz', function (err) {
+    assert.equal(err, null, 'should store docs')
+    assert.end()
+  })
+}
+
+helpers.insertThree = function insertThree (assert) {
+  const db = this.db
+  async.parallel([
+    function (cb) { db.insert({'foo': 'bar'}, 'foobar', cb) },
+    function (cb) { db.insert({'bar': 'foo'}, 'barfoo', cb) },
+    function (cb) { db.insert({'foo': 'baz'}, 'foobaz', cb) }
+  ], function (error) {
+    assert.equal(error, null, 'should store docs')
+    assert.end()
+  })
+}
+
+helpers.unmocked = (process.env.NOCK_OFF === 'true')
+helpers.mocked = !helpers.unmocked
+
+helpers.isPromise = function (p) {
+  return (p && typeof p === 'object' && typeof p.then === 'function')
+}
+
+module.exports = helpers

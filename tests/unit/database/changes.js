@@ -10,12 +10,12 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
 const changesDatabase = require('../../helpers/unit').unit([
   'database',
   'changes'
-]);
+])
 
 changesDatabase('mock', {since: '10'}, {
   headers: {
@@ -25,7 +25,7 @@ changesDatabase('mock', {since: '10'}, {
   method: 'GET',
   qs: {since: '10'},
   uri: '/mock/_changes'
-});
+})
 
 changesDatabase('mock', {
   headers: {
@@ -34,4 +34,4 @@ changesDatabase('mock', {
   },
   method: 'GET',
   uri: '/mock/_changes'
-});
+})

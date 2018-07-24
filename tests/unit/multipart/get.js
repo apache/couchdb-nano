@@ -10,12 +10,12 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
 const getMultipart = require('../../helpers/unit').unit([
   'multipart',
   'get'
-]);
+])
 
 getMultipart('space', {extra: 'stuff'}, {
   encoding: null,
@@ -23,4 +23,4 @@ getMultipart('space', {extra: 'stuff'}, {
   method: 'GET',
   qs: {attachments: true, extra: 'stuff'},
   uri: '/mock/space'
-});
+})
