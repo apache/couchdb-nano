@@ -16,7 +16,6 @@ const async = require('async');
 const debug = require('debug');
 const path = require('path');
 const harness = require('./harness');
-const endsWith = require('endswith');
 const cfg = require('../fixtures/cfg');
 const nano = require('../../lib/nano');
 const helpers = require('./');
@@ -87,13 +86,13 @@ helpers.nock = function helpersNock(url, fixture, log) {
 
   nockDefs.forEach(function(n) {
     let headers = n.headers || {};
-    const response = n.buffer ? endsWith(n.buffer, '.png') ?
+    const response = n.buffer ? n.buffer.endsWith('.png') ?
         helpers.loadFixture(n.buffer) : new Buffer(n.buffer, 'base64') :
         n.response || '';
         const body = n.base64 ? new Buffer(n.base64, 'base64').toString() :
         n.body || '';
 
-    if (typeof headers === 'string' && endsWith(headers, '.json')) {
+    if (typeof headers === 'string' && headers.endsWith('.json')) {
       headers = require(path.join(fixture, headers));
     }
 
