@@ -10,58 +10,58 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
-const fs = require('fs');
-const path = require('path');
-const helpers = require('../../helpers/integration');
-const harness = helpers.harness(__filename);
-const db = harness.locals.db;
-const it = harness.it;
-const pixel = helpers.pixel;
+const fs = require('fs')
+const path = require('path')
+const helpers = require('../../helpers/integration')
+const harness = helpers.harness(__filename)
+const db = harness.locals.db
+const it = harness.it
+const pixel = helpers.pixel
 
-it('should be able to pipe to a writeStream', function(assert) {
-  const buffer = new Buffer(pixel, 'base64');
-  const filename = path.join(__dirname, '.temp.bmp');
-  const ws = fs.createWriteStream(filename);
+it('should be able to pipe to a writeStream', function (assert) {
+  const buffer = Buffer.from(pixel, 'base64')
+  const filename = path.join(__dirname, '.temp.bmp')
+  const ws = fs.createWriteStream(filename)
 
-  ws.on('close', function() {
-    assert.equal(fs.readFileSync(filename).toString('base64'), pixel);
-    fs.unlinkSync(filename);
-    assert.end();
-  });
+  ws.on('close', function () {
+    assert.equal(fs.readFileSync(filename).toString('base64'), pixel)
+    fs.unlinkSync(filename)
+    assert.end()
+  })
 
   db.attachment.insert('new', 'att', buffer, 'image/bmp',
-  function(error, bmp) {
-    assert.equal(error, null, 'Should store the pixel');
-    db.attachment.getAsStream('new', 'att', {rev: bmp.rev}).pipe(ws);
-  });
-});
+    function (error, bmp) {
+      assert.equal(error, null, 'Should store the pixel')
+      db.attachment.getAsStream('new', 'att', {rev: bmp.rev}).pipe(ws)
+    })
+})
 
-it('should be able to pipe to a writeStream', function(assert) {
-  const ws = fs.createWriteStream('/dev/null');
-  db.attachment.getAsStream('new', 'att', function() {})
+it('should be able to pipe to a writeStream', function (assert) {
+  const ws = fs.createWriteStream('/dev/null')
+  db.attachment.getAsStream('new', 'att', function () {})
     .pipe(ws)
-    .on('end', function() {
-      assert.end();
-    });
-});
+    .on('end', function () {
+      assert.end()
+    })
+})
 
-it('should be able to pipe from a readStream', function(assert) {
-  const logo = path.join(__dirname, '..', '..', 'fixtures', 'logo.png');
-  const rs = fs.createReadStream(logo);
-  const is = db.attachment.insertAsStream('nodejs', 'logo.png', null, 'image/png', function() {
-  });
+it('should be able to pipe from a readStream', function (assert) {
+  const logo = path.join(__dirname, '..', '..', 'fixtures', 'logo.png')
+  const rs = fs.createReadStream(logo)
+  const is = db.attachment.insertAsStream('nodejs', 'logo.png', null, 'image/png', function () {
+  })
 
-  is.on('end', function() {
-    db.attachment.get('nodejs', 'logo.png', function(err, buffer) {
-      assert.equal(err, null, 'should get the logo');
+  is.on('end', function () {
+    db.attachment.get('nodejs', 'logo.png', function (err, buffer) {
+      assert.equal(err, null, 'should get the logo')
       assert.equal(
         fs.readFileSync(logo).toString('base64'), buffer.toString('base64'),
-        'logo should remain unchanged');
-      assert.end();
-    });
-  });
+        'logo should remain unchanged')
+      assert.end()
+    })
+  })
 
-  rs.pipe(is);
-});
+  rs.pipe(is)
+})

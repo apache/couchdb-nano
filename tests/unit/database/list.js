@@ -10,12 +10,12 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
 const listDatabases = require('../../helpers/unit').unit([
   'database',
   'list'
-]);
+])
 
 listDatabases({
   headers: {
@@ -24,4 +24,4 @@ listDatabases({
   },
   method: 'GET',
   uri: '/_all_dbs'
-});
+})

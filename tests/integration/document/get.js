@@ -10,30 +10,30 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
-const helpers = require('../../helpers/integration');
-const harness = helpers.harness(__filename);
-const db = harness.locals.db;
-const it = harness.it;
+const helpers = require('../../helpers/integration')
+const harness = helpers.harness(__filename)
+const db = harness.locals.db
+const it = harness.it
 
-it('should insert a one item', helpers.insertOne);
+it('should insert a one item', helpers.insertOne)
 
-it('should get the document', function(assert) {
-  const p = db.get('foobaz', {'revs_info': true}, function(error, foobaz) {
-    assert.equal(error, null, 'should get foobaz');
-    assert.ok(foobaz['_revs_info'], 'got revs info');
-    assert.equal(foobaz._id, 'foobaz', 'id is food');
-    assert.equal(foobaz.foo, 'baz', 'baz is in foo');
-  });
-  assert.ok(helpers.isPromise(p), 'returns Promise');
-  p.then(function(foobaz) {
-    assert.ok(true, 'Promise is resolved');
-    assert.ok(foobaz['_revs_info'], 'got revs info');
-    assert.equal(foobaz._id, 'foobaz', 'id is food');
-    assert.equal(foobaz.foo, 'baz', 'baz is in foo');
-    assert.end();
-  }).catch(function() {
-    assert.ok(false, 'Promise is rejected');
-  });
-});
+it('should get the document', function (assert) {
+  const p = db.get('foobaz', {'revs_info': true}, function (error, foobaz) {
+    assert.equal(error, null, 'should get foobaz')
+    assert.ok(foobaz['_revs_info'], 'got revs info')
+    assert.equal(foobaz._id, 'foobaz', 'id is food')
+    assert.equal(foobaz.foo, 'baz', 'baz is in foo')
+  })
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function (foobaz) {
+    assert.ok(true, 'Promise is resolved')
+    assert.ok(foobaz['_revs_info'], 'got revs info')
+    assert.equal(foobaz._id, 'foobaz', 'id is food')
+    assert.equal(foobaz.foo, 'baz', 'baz is in foo')
+    assert.end()
+  }).catch(function () {
+    assert.ok(false, 'Promise is rejected')
+  })
+})

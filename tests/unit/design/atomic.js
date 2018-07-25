@@ -10,17 +10,17 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
 const atomicDesign = require('../../helpers/unit').unit([
   'view',
   'atomic'
-]);
+])
 
 atomicDesign('update', 'inplace', 'foobar', {
-    field: 'foo',
-    value: 'bar'
-  }, {
+  field: 'foo',
+  value: 'bar'
+}, {
   body: '{"field":"foo","value":"bar"}',
   headers: {
     accept: 'application/json',
@@ -28,4 +28,4 @@ atomicDesign('update', 'inplace', 'foobar', {
   },
   method: 'PUT',
   uri: '/mock/_design/update/_update/inplace/foobar'
-});
+})

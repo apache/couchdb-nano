@@ -10,12 +10,12 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
 const showDesign = require('../../helpers/unit').unit([
   'view',
   'show'
-]);
+])
 
 showDesign('people', 'singleDoc', 'p_clemens', {
   headers: {
@@ -24,4 +24,4 @@ showDesign('people', 'singleDoc', 'p_clemens', {
   },
   method: 'GET',
   uri: '/mock/_design/people/_show/singleDoc/p_clemens'
-});
+})

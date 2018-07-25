@@ -10,44 +10,44 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
-const helpers = require('../../helpers/integration');
-const harness = helpers.harness(__filename);
-const it = harness.it;
-const nano = harness.locals.nano;
+const helpers = require('../../helpers/integration')
+const harness = helpers.harness(__filename)
+const it = harness.it
+const nano = harness.locals.nano
 
-it('should be able to fetch the database', function(assert) {
-  const p = nano.db.get('database_get', function(error, response) {
-    assert.equal(error, null, 'should get the db');
-    assert.equal(response['doc_count'], 0, 'should be empty');
-    assert.equal(response['db_name'], 'database_get', 'name');
-  });
-  assert.ok(helpers.isPromise(p), 'returns Promise');
-  p.then(function(response) {
-    assert.ok(true, 'Promise is resolved');
-    assert.equal(response['doc_count'], 0, 'should be empty');
-    assert.equal(response['db_name'], 'database_get', 'name');
-    assert.end();
-  }).catch(function() {
-    assert.ok(false, 'Promise is rejected');
-  });
-});
+it('should be able to fetch the database', function (assert) {
+  const p = nano.db.get('database_get', function (error, response) {
+    assert.equal(error, null, 'should get the db')
+    assert.equal(response['doc_count'], 0, 'should be empty')
+    assert.equal(response['db_name'], 'database_get', 'name')
+  })
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function (response) {
+    assert.ok(true, 'Promise is resolved')
+    assert.equal(response['doc_count'], 0, 'should be empty')
+    assert.equal(response['db_name'], 'database_get', 'name')
+    assert.end()
+  }).catch(function () {
+    assert.ok(false, 'Promise is rejected')
+  })
+})
 
-it('resolves db URL correctly for http://app.com/_couchdb', function(assert) {
-  const nano = require('../../../lib/nano');
+it('resolves db URL correctly for http://app.com/_couchdb', function (assert) {
+  const nano = require('../../../lib/nano')
 
   const couch = nano({
     url: 'http://app.com/_couchdb/',
     parseUrl: false,
-    request: function(options) {
+    request: function (options) {
       assert.equal(
         options.uri,
         'http://app.com/_couchdb/mydb/mydoc',
         'should get doc at prefixed path'
-      );
-      assert.end();
+      )
+      assert.end()
     }
-  });
-  couch.use('mydb').get('mydoc');
-});
+  })
+  couch.use('mydb').get('mydoc')
+})

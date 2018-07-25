@@ -10,33 +10,33 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
-const async = require('async');
-const helpers = require('../../helpers/integration');
-const harness = helpers.harness(__filename);
-const it = harness.it;
-const db = harness.locals.db;
+const async = require('async')
+const helpers = require('../../helpers/integration')
+const harness = helpers.harness(__filename)
+const it = harness.it
+const db = harness.locals.db
 
-it('should insert `alice` the design doc', function(assert) {
+it('should insert `alice` the design doc', function (assert) {
   async.waterfall([
-    function(next) {
+    function (next) {
       db.insert({
         views: {
           'by_id': {
             map: 'function(doc) { emit(doc._id, doc); }'
           }
         }
-      }, '_design/alice', next);
+      }, '_design/alice', next)
     },
-    function(data, _, next) {
-      db.insert({'foo': 'baz'}, 'foobaz', next);
+    function (data, _, next) {
+      db.insert({'foo': 'baz'}, 'foobaz', next)
     },
-    function(foo, _, next) {
-      db.destroy('foobaz', foo.rev, next);
+    function (foo, _, next) {
+      db.destroy('foobaz', foo.rev, next)
     }
-  ], function(err) {
-    assert.equal(err, null, 'it should destroy the foo');
-    assert.end();
-  });
-});
+  ], function (err) {
+    assert.equal(err, null, 'it should destroy the foo')
+    assert.end()
+  })
+})

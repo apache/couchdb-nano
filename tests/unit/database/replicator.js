@@ -10,12 +10,12 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
 const replicator = require('../../helpers/unit').unit([
   'database',
   'replicator'
-]);
+])
 
 replicator('baa', 'baashep', {
   body: '{"source":"baa","target":"baashep"}',
@@ -25,7 +25,7 @@ replicator('baa', 'baashep', {
   },
   method: 'POST',
   uri: '/_replicator'
-});
+})
 
 replicator('molly', 'anne', {some: 'params'}, {
   body: '{"some":"params","source":"molly","target":"anne"}',
@@ -35,4 +35,4 @@ replicator('molly', 'anne', {some: 'params'}, {
   },
   method: 'POST',
   uri: '/_replicator'
-});
+})

@@ -10,12 +10,12 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
 const getAttachment = require('../../helpers/unit').unit([
   'attachment',
   'get'
-]);
+])
 
 getAttachment('airplane-design', 'wings.pdf', {rev: 'rev-3'}, {
   encoding: null,
@@ -23,11 +23,11 @@ getAttachment('airplane-design', 'wings.pdf', {rev: 'rev-3'}, {
   method: 'GET',
   qs: {rev: 'rev-3'},
   uri: '/mock/airplane-design/wings.pdf'
-});
+})
 
 getAttachment('airplane-design', 'wings.pdf', {
   encoding: null,
   headers: {},
   method: 'GET',
   uri: '/mock/airplane-design/wings.pdf'
-});
+})

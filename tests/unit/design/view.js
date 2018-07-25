@@ -10,12 +10,12 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
 const viewDesign = require('../../helpers/unit').unit([
   'view',
   'view'
-]);
+])
 
 viewDesign('alice', 'by_id', {
   keys: ['foobar', 'barfoo'],
@@ -31,7 +31,8 @@ viewDesign('alice', 'by_id', {
     'include_docs': true
   },
   uri: '/mock/_design/alice/_view/by_id'
-});
+})
+
 
 viewDesign('alice', 'by_id', {
   queries: [{ keys: ['foobar', 'barfoo']}, { limit: 3, skip: 2 }],
@@ -47,4 +48,4 @@ viewDesign('alice', 'by_id', {
     'include_docs': true
   },
   uri: '/mock/_design/alice/_view/by_id'
-});
+})

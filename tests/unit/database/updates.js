@@ -10,12 +10,12 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
 const updatesDatabase = require('../../helpers/unit').unit([
   'database',
   'updates'
-]);
+])
 
 updatesDatabase({
   headers: {
@@ -24,7 +24,7 @@ updatesDatabase({
   },
   method: 'GET',
   uri: '/_db_updates'
-});
+})
 
 updatesDatabase({since: 1}, {
   headers: {
@@ -34,4 +34,4 @@ updatesDatabase({since: 1}, {
   method: 'GET',
   qs: {since: 1},
   uri: '/_db_updates'
-});
+})

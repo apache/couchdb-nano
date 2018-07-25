@@ -10,12 +10,12 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
 const geoDesign = require('../../helpers/unit').unit([
   'view',
   'spatial'
-]);
+])
 
 geoDesign('people', 'byArea', {x: '1'}, {
   headers: {
@@ -25,4 +25,4 @@ geoDesign('people', 'byArea', {x: '1'}, {
   method: 'GET',
   qs: {x: '1'},
   uri: '/mock/_design/people/_spatial/byArea'
-});
+})

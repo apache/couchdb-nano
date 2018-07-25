@@ -10,12 +10,12 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
 const followUpdates = require('../../helpers/unit').unit([
   'server',
   'followUpdates'
-]);
+])
 
-followUpdates({db: '/_db_updates'});
-followUpdates({since: 1}, {db: '/_db_updates', since: 1});
+followUpdates({db: '/_db_updates'})
+followUpdates({since: 1}, {db: '/_db_updates', since: 1})

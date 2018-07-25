@@ -10,18 +10,18 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
 const insertMultipart = require('../../helpers/unit').unit([
   'multipart',
   'insert'
-]);
+])
 
 insertMultipart({hey: 1}, [{
-    name: 'att',
-    data: 'some',
-    'content_type': 'text/plain'
-  }], {extra: 'stuff'}, {
+  name: 'att',
+  data: 'some',
+  'content_type': 'text/plain'
+}], {extra: 'stuff'}, {
   headers: {
     'content-type': 'multipart/related'
   },
@@ -38,4 +38,4 @@ insertMultipart({hey: 1}, [{
   ],
   qs: {extra: 'stuff'},
   uri: '/mock'
-});
+})

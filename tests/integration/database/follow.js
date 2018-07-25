@@ -10,41 +10,41 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
-const helpers = require('../../helpers/integration');
-const harness = helpers.harness(__filename);
-const it = harness.it;
-const db = harness.locals.db;
+const helpers = require('../../helpers/integration')
+const harness = helpers.harness(__filename)
+const it = harness.it
+const db = harness.locals.db
 
 if (helpers.unmocked) {
-  it('should insert a bunch of items', helpers.insertThree);
+  it('should insert a bunch of items', helpers.insertThree)
 
-  let feed1;
+  let feed1
 
-  it('should be able to get the changes feed', function(assert) {
-    let i = 3;
+  it('should be able to get the changes feed', function (assert) {
+    let i = 3
 
-    feed1 = db.follow({since: '0'});
+    feed1 = db.follow({since: '0'})
 
-    feed1.on('change', function(change) {
-      assert.ok(change, 'change existed');
-      //assert.equal(change.seq, i + 1, 'seq is set correctly');
-      ++i;
+    feed1.on('change', function (change) {
+      assert.ok(change, 'change existed')
+      // assert.equal(change.seq, i + 1, 'seq is set correctly');
+      ++i
       if (i === 4) {
-        assert.end();
+        assert.end()
       }
-    });
+    })
 
-    feed1.follow();
+    feed1.follow()
 
-    setTimeout(function() {
-      db.insert({'bar': 'baz'}, 'barbaz');
-    }, 100);
-  });
+    setTimeout(function () {
+      db.insert({'bar': 'baz'}, 'barbaz')
+    }, 100)
+  })
 
-  it('should clear changes feed', function(assert) {
-    feed1.die();
-    assert.end();
-  });
+  it('should clear changes feed', function (assert) {
+    feed1.die()
+    assert.end()
+  })
 }
