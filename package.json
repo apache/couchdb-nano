@@ -47,8 +47,6 @@
     "node": ">=6"
   },
   "pre-commit": [
-    "jshint",
-    "codestyle",
     "mocked",
     "test",
     "checkcoverage"
