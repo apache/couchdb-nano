@@ -896,8 +896,10 @@ An example update handler follows:
 ```js
 "updates": {
   "in-place" : "function(doc, req) {
-      var field = req.form.field;
-      var value = req.form.value;
+      var request_body = JSON.parse(req.body);
+  
+      var field = request_body.field;
+      var value = request_body.value;
       var message = 'set ' + field + ' to ' + value;
       doc[field] = value;
       return [doc, message];
