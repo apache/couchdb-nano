@@ -23,11 +23,7 @@ it('should handle crazy encodings', function(assert) {
     data: 'काचं शक्नोम्यत्तुम् । नोपहिनस्ति माम् ॥',
     'content_type': 'text/plain'
   };
-  const p = db.multipart.insert({'foo': 'bar'}, [att], 'foobar', function(error, foo) {
-    assert.equal(error, null, 'should have stored foo and attachment');
-    assert.equal(foo.ok, true, 'response should be ok');
-    assert.ok(foo.rev, 'response should have rev');
-  });
+  const p = db.multipart.insert({'foo': 'bar'}, [att], 'foobar');
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(foo) {
     assert.ok(true, 'Promise is resolved');
@@ -46,7 +42,7 @@ it('should test with presence of attachment', function(assert) {
     'content_type': 'text/plain'
   };
 
-  const p = db.attachment.insert('mydoc', 'one', 'Hello World!', 'text/plain',
+  db.attachment.insert('mydoc', 'one', 'Hello World!', 'text/plain',
   function(err) {
     assert.equal(err, null, 'should have stored the thingy');
     db.get('mydoc', function(_, doc) {
@@ -60,7 +56,6 @@ it('should test with presence of attachment', function(assert) {
       });
     });
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise');
 });
 
 it('should work with attachment as a buffer', function(assert) {
@@ -69,11 +64,7 @@ it('should work with attachment as a buffer', function(assert) {
     data: new Buffer('foo'),
     'content_type': 'text/plain'
   };
-  const p = db.multipart.insert({'foo': 'bar'}, [att], 'otherdoc', function(error, foo) {
-    assert.equal(error, null, 'Should have stored foo and attachment');
-    assert.equal(foo.ok, true, 'Response should be ok');
-    assert.ok(foo.rev, 'Response should have rev');
-  });
+  const p = db.multipart.insert({'foo': 'bar'}, [att], 'otherdoc');
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(foo) {
     assert.ok(true, 'Promise is resolved');

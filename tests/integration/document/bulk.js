@@ -23,12 +23,6 @@ it('should be able to bulk insert two docs', function(assert) {
       {'key':'baz', 'name':'bazzel'},
       {'key':'bar', 'name':'barry'}
     ]
-  },
-  function(error, response) {
-    assert.equal(error, null, 'no error');
-    assert.equal(response.length, 2, 'has two docs');
-    assert.ok(response[0].id, 'first got id');
-    assert.ok(response[1].id, 'other also got id');
   });
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(response) {

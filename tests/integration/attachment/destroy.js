@@ -18,21 +18,13 @@ const it = harness.it;
 const db = harness.locals.db;
 
 it('should be able to insert a new plain text attachment', function(assert) {
-  const p = db.attachment.insert('new',
-  'att', 'Hello World!', 'text/plain', function(error, att) {
-    assert.equal(error, null, 'store the attachment');
-    assert.equal(att.ok, true, 'response ok');
-    assert.ok(att.rev, 'have a revision number');
-    db.attachment.destroy('new', 'att', {rev: att.rev},
-    function(error, response) {
-      assert.equal(error, null, 'delete the attachment');
-      assert.equal(response.ok, true, 'response ok');
-      assert.equal(response.id, 'new', '`id` should be `new`');
-    });
-  });
+  const p = db.attachment.insert('new', 'att', 'Hello World!', 'text/plain');
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(response) {
-    assert.ok(true, 'Promise is resolved');
+    assert.equal(att.ok, true, 'response ok');
+    assert.ok(att.rev, 'have a revision number');
+    return db.attachment.destroy('new', 'att', {rev: att.rev});
+  }).then(function(response) {
     assert.equal(response.ok, true, 'response ok');
     assert.equal(response.id, 'new', '`id` should be `new`');
     assert.end();
@@ -42,12 +34,11 @@ it('should be able to insert a new plain text attachment', function(assert) {
 });
 
 it('should fail destroying with a bad filename', function(assert) {
-  const p = db.attachment.destroy('new', false, true, function(error, response) {
-    assert.equal(response, undefined, 'no response should be given');
-  });
+  const p = db.attachment.destroy('new', false, true);
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function() {
     assert.ok(false, 'Promise is resolved');
+    assert.end();
   }).catch(function() {
     assert.ok(true, 'Promise is rejected');
     assert.end();
