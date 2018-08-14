@@ -25,14 +25,7 @@ it('should be able to insert a doc with att', function(assert) {
     data: 'Hello World!',
     'content_type': 'text/plain'
   };
-
-  const p = db.multipart.insert({'foo': 'baz'}, [att], 'foobaz', function(error, foo) {
-    assert.equal(error, null, 'should have stored foobaz');
-    assert.equal(foo.ok, true, 'response should be ok');
-    assert.equal(foo.id, 'foobaz', 'id is foobaz');
-    assert.ok(foo.rev, 'has rev');
-    rev = foo.rev;
-  });
+  const p = db.multipart.insert({'foo': 'baz'}, [att], 'foobaz');
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(foo) {
     assert.ok(true, 'Promise is resolved');
@@ -46,20 +39,12 @@ it('should be able to insert a doc with att', function(assert) {
 });
 
 it('should be able to get the document with the attachment', function(assert) {
-  const p = db.multipart.get('foobaz', function(error, foobaz, headers) {
+  db.multipart.get('foobaz', function(error, foobaz, headers) {
     assert.equal(error, null, 'should get foobaz');
     if (helpers.unmocked) {
       assert.ok(headers['content-type'], 'should have content type');
       assert.equal(headers['content-type'].split(';')[0], 'multipart/related');
     }
     assert.equal(typeof foobaz, 'object', 'foobaz should be a buffer');
-  });
-  assert.ok(helpers.isPromise(p), 'returns Promise');
-  p.then(function(foobaz) {
-    assert.ok(true, 'Promise is resolved');
-    assert.equal(typeof foobaz, 'object', 'foobaz should be a buffer');
-    assert.end();
-  }).catch(function() {
-    assert.ok(false, 'Promise is rejected');
   });
 });

@@ -19,9 +19,10 @@ const it = harness.it;
 const nano = harness.locals.nano;
 
 it('should be able to create `az09_$()+-/` database', function(assert) {
-  nano.db.create('az09_$()+-/', function(err) {
-    assert.equal(err, null, 'should create database');
+  nano.db.create('az09_$()+-/').then(function(err) {
     assert.end();
+  }).catch(function() {
+    assert.ok(false, 'Promise is rejected');
   });
 });
 

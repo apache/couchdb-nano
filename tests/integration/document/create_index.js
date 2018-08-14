@@ -23,10 +23,6 @@ it ('Should create one simple index', function(assert) {
   const p = db.createIndex({
     name: 'fooindex',
     index: { fields: ['foo'] }
-  }, function(error, foo) {
-    assert.equal(error, null, 'should have indexed fields');
-    assert.equal(foo.result, 'created', 'index should be created');
-    assert.equal(foo.name, 'fooindex', 'index should have correct name');
   });
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(foo) {

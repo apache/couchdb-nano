@@ -19,11 +19,8 @@ const it = harness.it;
 
 it('should insert a one item', helpers.insertOne);
 
-it('should get a status code when you do head', function(assert) {
-  const p = db.head('foobaz', function(error, body, headers) {
-    assert.equal(error, null, 'should get the head of foobaz');
-    assert.equal(headers['statusCode'], 200, 'and is ok');
-  });
+it('should get a status code when you do head - promises', function(assert) {
+  const p = db.head('foobaz');
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(docs) {
     assert.ok(true, 'Promise is resolved');
@@ -31,5 +28,12 @@ it('should get a status code when you do head', function(assert) {
     assert.end();
   }).catch(function() {
     assert.ok(false, 'Promise is rejected');
+  });
+});
+
+it('should get a status code when you do head - callbacks', function(assert) {
+  db.head('foobaz', function(error, body, headers) {
+    assert.equal(error, null, 'should get the head of foobaz');
+    assert.equal(headers['statusCode'], 200, 'and is ok');
   });
 });

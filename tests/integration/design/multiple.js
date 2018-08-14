@@ -24,10 +24,7 @@ it('should be able to insert docs and design doc', function(assert) {
         map: 'function(doc) { emit(doc._id, doc); }'
       }
     }
-  }, '_design/alice', function(error, response) {
-    assert.equal(error, null, 'should create views');
-    assert.equal(response.ok, true, 'response ok');
-  });
+  }, '_design/alice');
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(response) {
     assert.ok(true, 'Promise is resolved');
@@ -44,11 +41,6 @@ it('get multiple docs with a composed key', function(assert) {
   const p = db.view('alice', 'by_id', {
     keys: ['foobar', 'barfoo'],
     'include_docs': true
-  }, function(err, view) {
-    assert.equal(err, null, 'should response');
-    assert.equal(view.rows.length, 2, 'has more or less than two rows');
-    assert.equal(view.rows[0].id, 'foobar', 'foo is not the first id');
-    assert.equal(view.rows[1].id, 'barfoo', 'bar is not the second id');
   });
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(view) {

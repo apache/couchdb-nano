@@ -18,17 +18,12 @@ const it = harness.it;
 const nano = harness.locals.nano;
 
 it('should be able to fetch the database', function(assert) {
-  const p = nano.db.get('database_get', function(error, response) {
-    assert.equal(error, null, 'should get the db');
-    assert.equal(response['doc_count'], 0, 'should be empty');
-    assert.equal(response['db_name'], 'database_get', 'name');
-  });
+
+  const p = nano.db.get('database_get');
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(response) {
-    assert.ok(true, 'Promise is resolved');
     assert.equal(response['doc_count'], 0, 'should be empty');
     assert.equal(response['db_name'], 'database_get', 'name');
-    assert.end();
   }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });

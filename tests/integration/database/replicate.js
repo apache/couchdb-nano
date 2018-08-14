@@ -34,19 +34,12 @@ it('creates a bunch of database replicas', function(assert) {
 
 it('should be able to replicate three docs', function(assert) {
   replica = nano.use('database_replica');
-
-  const p = db.replicate('database_replica', function(error) {
-    assert.equal(error, null, 'replication should work');
-    replica.list(function(error, list) {
-      assert.equal(error, null, 'should be able to invoke list');
-      assert.equal(list['total_rows'], 3, 'and have three documents');
-    });
-  });
+  const p = db.replicate('database_replica')
   assert.ok(helpers.isPromise(p), 'returns Promise');
-  p.then(function(list) {
-    assert.ok(true, 'Promise is resolved');
+  p.then(function() {
+    return replica.list();
+  }).then(function(list) {
     assert.equal(list['total_rows'], 3, 'and have three documents');
-    assert.end();
   }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });
@@ -54,21 +47,21 @@ it('should be able to replicate three docs', function(assert) {
 
 it('should be able to replicate to a `nano` object', function(assert) {
   replica2 = nano.use('database_replica2');
-
-  nano.db.replicate(db, replica2, function(error) {
-    assert.equal(error, null, 'should replicate');
-    replica2.list(function(error, list) {
-      assert.equal(error, null, 'should list');
-      assert.equal(list['total_rows'], 3, 'and have three documents');
-      assert.end();
-    });
+  let p = nano.db.replicate(db, replica2);
+  assert.ok(helpers.isPromise(p), 'returns Promise');
+  p.then(function() {
+    return replica2.list();
+  }).then(function(list) {
+    assert.equal(list['total_rows'], 3, 'and have three documents');
+    assert.end();
+  }).catch(function() {
+    assert.ok(false, 'Promise is rejected');
   });
+  
 });
 
 it('should be able to replicate with params', function(assert) {
-  const p = db.replicate('database_replica', {}, function(error) {
-    assert.equal(error, null, 'replication should work');
-  });
+  const p = db.replicate('database_replica', {});
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function() {
     assert.ok(true, 'Promise is resolved');
