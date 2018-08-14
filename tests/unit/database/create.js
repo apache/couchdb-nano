@@ -10,12 +10,12 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
 const createDatabase = require('../../helpers/unit').unit([
   'database',
   'create'
-]);
+])
 
 createDatabase('mock', {
   headers: {
@@ -24,7 +24,7 @@ createDatabase('mock', {
   },
   method: 'PUT',
   uri: '/mock'
-});
+})
 
 createDatabase('az09_$()+-/', {
   headers: {
@@ -33,4 +33,4 @@ createDatabase('az09_$()+-/', {
   },
   method: 'PUT',
   uri: '/az09_%24()%2B-%2F'
-});
+})

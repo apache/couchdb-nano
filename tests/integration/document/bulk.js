@@ -10,28 +10,28 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
-const helpers = require('../../helpers/integration');
-const harness = helpers.harness(__filename);
-const it = harness.it;
-const db = harness.locals.db;
+const helpers = require('../../helpers/integration')
+const harness = helpers.harness(__filename)
+const it = harness.it
+const db = harness.locals.db
 
-it('should be able to bulk insert two docs', function(assert) {
+it('should be able to bulk insert two docs', function (assert) {
   const p = db.bulk({
     'docs': [
-      {'key':'baz', 'name':'bazzel'},
-      {'key':'bar', 'name':'barry'}
+      {'key': 'baz', 'name': 'bazzel'},
+      {'key': 'bar', 'name': 'barry'}
     ]
-  });
-  assert.ok(helpers.isPromise(p), 'returns Promise');
-  p.then(function(response) {
-    assert.ok(true, 'Promise is resolved');
-    assert.equal(response.length, 2, 'has two docs');
-    assert.ok(response[0].id, 'first got id');
-    assert.ok(response[1].id, 'other also got id');
-    assert.end();
-  }).catch(function() {
-    assert.ok(false, 'Promise is rejected');
-  });
-});
+  })
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function (response) {
+    assert.ok(true, 'Promise is resolved')
+    assert.equal(response.length, 2, 'has two docs')
+    assert.ok(response[0].id, 'first got id')
+    assert.ok(response[1].id, 'other also got id')
+    assert.end()
+  }).catch(function () {
+    assert.ok(false, 'Promise is rejected')
+  })
+})

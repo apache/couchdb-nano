@@ -10,28 +10,28 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
-const helpers = require('../../helpers/integration');
-const harness = helpers.harness(__filename);
-const it = harness.it;
-const db = harness.locals.db;
+const helpers = require('../../helpers/integration')
+const harness = helpers.harness(__filename)
+const it = harness.it
+const db = harness.locals.db
 
-it('should create a ddoc and insert some docs', helpers.prepareAView);
+it('should create a ddoc and insert some docs', helpers.prepareAView)
 
-it('should get the people by running the ddoc', function(assert) {
+it('should get the people by running the ddoc', function (assert) {
   const p = db.viewWithList('people', 'by_name_and_city', 'my_list', {
     key: [
       'Derek',
       'San Francisco'
     ]
-  });
-  assert.ok(helpers.isPromise(p), 'returns Promise');
-  p.then(function(list) {
-    assert.ok(true, 'Promise is resolved');
-    assert.equal(list, 'Hello', 'and list should be `hello`');
-    assert.end();
-  }).catch(function() {
-    assert.ok(false, 'Promise is rejected');
-  });
-});
+  })
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function (list) {
+    assert.ok(true, 'Promise is resolved')
+    assert.equal(list, 'Hello', 'and list should be `hello`')
+    assert.end()
+  }).catch(function () {
+    assert.ok(false, 'Promise is rejected')
+  })
+})

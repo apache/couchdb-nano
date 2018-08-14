@@ -10,36 +10,36 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
-const helpers = require('../../helpers/integration');
-const harness = helpers.harness(__filename);
-const db = harness.locals.db;
-const it = harness.it;
+const helpers = require('../../helpers/integration')
+const harness = helpers.harness(__filename)
+const db = harness.locals.db
+const it = harness.it
 
-let rev;
+let rev
 
-it('should insert one doc', function(assert) {
-  const p = db.insert({'foo': 'baz'}, 'foobar');
-  assert.ok(helpers.isPromise(p), 'returns Promise');
-  p.then(function(foo) {
-    assert.ok(true, 'Promise is resolved');
-    assert.equal(foo.ok, true, 'response ok');
-    assert.ok(foo.rev, 'withs rev');
-    assert.end();
-  }).catch(function() {
-    assert.ok(false, 'Promise is rejected');
-  });
-});
+it('should insert one doc', function (assert) {
+  const p = db.insert({'foo': 'baz'}, 'foobar')
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function (foo) {
+    assert.ok(true, 'Promise is resolved')
+    assert.equal(foo.ok, true, 'response ok')
+    assert.ok(foo.rev, 'withs rev')
+    assert.end()
+  }).catch(function () {
+    assert.ok(false, 'Promise is rejected')
+  })
+})
 
-it('should update the document', function(assert) {
-  const p = db.insert({foo: 'bar', '_rev': rev}, 'foobar');
-  assert.ok(helpers.isPromise(p), 'returns Promise');
-  p.then(function(response) {
-    assert.ok(true, 'Promise is resolved');
-    assert.equal(response.ok, true, 'response should be ok');
-    assert.end();
-  }).catch(function() {
-    assert.ok(false, 'Promise is rejected');
-  });
-});
+it('should update the document', function (assert) {
+  const p = db.insert({foo: 'bar', '_rev': rev}, 'foobar')
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function (response) {
+    assert.ok(true, 'Promise is resolved')
+    assert.equal(response.ok, true, 'response should be ok')
+    assert.end()
+  }).catch(function () {
+    assert.ok(false, 'Promise is rejected')
+  })
+})

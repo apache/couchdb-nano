@@ -10,54 +10,54 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
-const helpers = require('../../helpers/integration');
-const harness = helpers.harness(__filename);
-const it = harness.it;
-const db = harness.locals.db;
+const helpers = require('../../helpers/integration')
+const harness = helpers.harness(__filename)
+const it = harness.it
+const db = harness.locals.db
 
-it('should store and delete `goofy`', function(assert) {
-  let p = db.insert({'foo': 'baz'}, 'goofy');
-  assert.ok(helpers.isPromise(p), 'returns Promise');
-  p.then(function(foo) {
-    assert.equal(foo.ok, true, 'response should be ok');
-    return db.destroy('goofy', foo.rev);
-  }).then(function(response) {
-    assert.equal(response.ok, true, 'response ok');
-    assert.end();
-  }).catch(function() {
-    assert.ok(false, 'Promise is rejected');
-  });
-});
+it('should store and delete `goofy`', function (assert) {
+  let p = db.insert({'foo': 'baz'}, 'goofy')
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function (foo) {
+    assert.equal(foo.ok, true, 'response should be ok')
+    return db.destroy('goofy', foo.rev)
+  }).then(function (response) {
+    assert.equal(response.ok, true, 'response ok')
+    assert.end()
+  }).catch(function () {
+    assert.ok(false, 'Promise is rejected')
+  })
+})
 
-it('should have run the compaction', function(assert) {
-  const p = db.compact();
-  assert.ok(helpers.isPromise(p), 'returns Promise');
-  p.then(function() {
-    return  db.info();
-  }).then(function(info) {
-    assert.equal(info['doc_count'], 0, 'document count is not 3');
-    assert.equal(info['doc_del_count'], 1, 'document should be deleted');
-  }).catch(function() {
-    assert.ok(false, 'Promise is rejected');
-  });
-});
+it('should have run the compaction', function (assert) {
+  const p = db.compact()
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function () {
+    return db.info()
+  }).then(function (info) {
+    assert.equal(info['doc_count'], 0, 'document count is not 3')
+    assert.equal(info['doc_del_count'], 1, 'document should be deleted')
+  }).catch(function () {
+    assert.ok(false, 'Promise is rejected')
+  })
+})
 
-it('should finish compaction before ending', function(assert) {
-  function nextWhenFinished() {
-    db.info(function(err, info) {
+it('should finish compaction before ending', function (assert) {
+  function nextWhenFinished () {
+    db.info(function (err, info) {
       if (err) {
-        return;
+        return
       }
       if (info['compact_running']) {
-        return;
+        return
       }
-      clearTimeout(task);
-      assert.pass('compaction is complete');
-      assert.end();
-    });
+      clearTimeout(task)
+      assert.pass('compaction is complete')
+      assert.end()
+    })
   }
 
-  const task = setInterval(nextWhenFinished, 100);
-});
+  const task = setInterval(nextWhenFinished, 100)
+})

@@ -10,40 +10,40 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
-const async = require('async');
-const helpers = require('../../helpers/integration');
-const harness = helpers.harness(__filename);
-const it = harness.it;
-const db = harness.locals.db;
-const viewDerek = helpers.viewDerek;
+const async = require('async')
+const helpers = require('../../helpers/integration')
+const harness = helpers.harness(__filename)
+const it = harness.it
+const db = harness.locals.db
+const viewDerek = helpers.viewDerek
 
 //
 // these are cloudant only
 // tests do no run without mocks
 //
 if (helpers.mocked) {
-  const opts = {key: ['Derek', 'San Francisco']};
+  const opts = {key: ['Derek', 'San Francisco']}
 
-  it('should create a ddoc and insert some docs', function(assert) {
-    helpers.prepareAView(assert, '/_search', db);
-  });
+  it('should create a ddoc and insert some docs', function (assert) {
+    helpers.prepareAView(assert, '/_search', db)
+  })
 
-  it('should respond with derek when asked for derek', function(assert) {
-    viewDerek(db, assert, opts, assert.end, 'search');
-  });
+  it('should respond with derek when asked for derek', function (assert) {
+    viewDerek(db, assert, opts, assert.end, 'search')
+  })
 
-  it('should have no cloning issues when doing queries', function(assert) {
+  it('should have no cloning issues when doing queries', function (assert) {
     async.waterfall([
-      function(next) { viewDerek(db, assert, opts, next, 'search'); },
-      function(next) { viewDerek(db, assert, opts, next, 'search'); }
-    ], function(err) {
-      assert.equal(err, null, 'no errors');
-      assert.ok(Array.isArray(opts.key));
-      assert.equal(opts.key[0], 'Derek');
-      assert.equal(opts.key[1], 'San Francisco');
-      assert.end();
-    });
-  });
+      function (next) { viewDerek(db, assert, opts, next, 'search') },
+      function (next) { viewDerek(db, assert, opts, next, 'search') }
+    ], function (err) {
+      assert.equal(err, null, 'no errors')
+      assert.ok(Array.isArray(opts.key))
+      assert.equal(opts.key[0], 'Derek')
+      assert.equal(opts.key[1], 'San Francisco')
+      assert.end()
+    })
+  })
 }

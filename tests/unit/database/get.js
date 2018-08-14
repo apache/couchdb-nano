@@ -10,12 +10,12 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
 const getDatabase = require('../../helpers/unit').unit([
   'database',
   'get'
-]);
+])
 
 getDatabase('space', {
   headers: {
@@ -24,4 +24,4 @@ getDatabase('space', {
   },
   method: 'GET',
   uri: '/space'
-});
+})
