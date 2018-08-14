@@ -32,12 +32,7 @@ it('must insert two docs before the tests start', function(assert) {
 });
 
 it('should be able to copy and overwrite a document', function(assert) {
-  const p = db.copy('foo_src', 'foo_dest', {overwrite: true},
-  function(error, response, headers) {
-    assert.equal(error, null,
-      'should have copied and overwritten foo_src to foo_dest');
-    assert.equal(headers['statusCode'], 201, 'status code should be 201');
-  });
+  const p = db.copy('foo_src', 'foo_dest', {overwrite: true});
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function() {
     assert.ok(true, 'Promise is resolved');
@@ -49,9 +44,7 @@ it('should be able to copy and overwrite a document', function(assert) {
 
 it('copy without overwrite should return conflict for exists docs',
 function(assert) {
-  const p = db.copy('foo_src', 'foo_dest', function(error) {
-    assert.equal(error.error, 'conflict', 'should be a conflict');
-  });
+  const p = db.copy('foo_src', 'foo_dest');
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function() {
     assert.ok(false, 'Promise is resolved');
@@ -62,10 +55,7 @@ function(assert) {
 });
 
 it('copy to a new destination should work', function(assert) {
-  const p = db.copy('foo_src', 'baz_dest', function(error, response, headers) {
-    assert.equal(error, null, 'copies into new document');
-    assert.equal(headers['statusCode'], 201, 'Status code should be 201');
-  });
+  const p = db.copy('foo_src', 'baz_dest');
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function() {
     assert.ok(true, 'Promise is resolved');

@@ -30,10 +30,7 @@ it('should insert a document', function(assert) {
 });
 
 it('should not delete a db', function(assert) {
-  const p = db.destroy(undefined, undefined, function(error, response) {
-    assert.equal(error, 'Invalid doc id', 'validated delete parameters');
-    assert.equal(response, null, 'ok!');
-  });
+  const p = db.destroy(undefined, undefined);
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function() {
     assert.ok(false, 'Promise is resolved');
@@ -44,10 +41,7 @@ it('should not delete a db', function(assert) {
 });
 
 it('should delete a document', function(assert) {
-  const p = db.destroy('foobaz', rev, function(error, response) {
-    assert.equal(error, null, 'deleted foo');
-    assert.equal(response.ok, true, 'ok!');
-  });
+  const p = db.destroy('foobaz', rev);
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(response) {
     assert.ok(true, 'Promise is resolved');

@@ -18,27 +18,24 @@ const it = harness.it;
 const nano = harness.locals.nano;
 
 it('should ensure _replicator and _users are created', function(assert) {
-  nano.db.create('_replicator', function() {
-    nano.db.destroy('_users', function() {
-      nano.db.create('_users', function() {
-        assert.end();
-      });
-    });
+  nano.db.create('_replicator').then(function() {
+    return nano.db.destroy('_users');
+  }).then(function() {
+    return nano.db.create('_users'); 
+  }).then(function() {
+    assert.end();
   });
 });
 
 it('should list the correct databases', function(assert) {
-  const p = nano.db.list(function(error, list) {
-    assert.equal(error, null, 'should list databases');
+  const p = nano.db.list()
+  assert.ok(helpers.isPromise(p), 'returns Promise');
+  p.then(function(list) {
     const filtered = list.filter(function(e) {
       return e === 'database_list' || e === '_replicator' || e === '_users';
     });
     assert.equal(filtered.length, 3, 'should have exactly 3 dbs');
-  });
-  assert.ok(helpers.isPromise(p), 'returns Promise');
-  p.then(function() {
-    assert.ok(true, 'Promise is resolved');
-    assert.end();
+    assert.end()
   }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });

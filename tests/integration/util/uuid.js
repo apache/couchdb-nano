@@ -18,12 +18,7 @@ const nano = helpers.nano;
 const it = harness.it;
 
 it('should generate three uuids', function(assert) {
-  const p = nano.uuids(3, function(error, data) {
-    assert.equal(error, null, 'should generate uuids');
-    assert.ok(data, 'got response');
-    assert.ok(data.uuids, 'got uuids');
-    assert.equal(data.uuids.length, 3, 'got 3');
-  });
+  const p = nano.uuids(3);
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(data) {
     assert.ok(true, 'Promise is resolved');
@@ -37,12 +32,7 @@ it('should generate three uuids', function(assert) {
 });
 
 it('should generate one uuid', function(assert) {
-  const p = nano.uuids(function(error, data) {
-    assert.equal(error, null, 'should generate uuids');
-    assert.ok(data, 'got response');
-    assert.ok(data.uuids, 'got uuid');
-    assert.equal(data.uuids.length, 1, 'got 1');
-  });
+  const p = nano.uuids();
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(data) {
     assert.ok(true, 'Promise is resolved');

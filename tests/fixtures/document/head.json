@@ -14,6 +14,10 @@
   , "method"   : "head"
   , "headers"  : { "statusCode" : 200 }
   }
+, { "path"     : "/document_head/foobaz"
+  , "method"   : "head"
+  , "headers"  : { "statusCode" : 200 }
+  }
 , { "method"   : "delete"
   , "path"     : "/document_head"
   , "response" : "{ \"ok\": true }"

@@ -20,10 +20,7 @@ const it = harness.it;
 it('should insert a bunch of items', helpers.insertThree);
 
 it('should be to do a mango query', function(assert) {
-  const p = db.find({ selector: { foo: 'baz'}}, function(error, response) {
-    assert.equal(error, null, 'should work');
-    assert.equal(response.docs.length, 1, 'and get one row');
-  });
+  const p = db.find({ selector: { foo: 'baz'}});
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(response) {
     assert.ok(true, 'Promise is resolved');

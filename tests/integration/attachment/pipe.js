@@ -31,11 +31,10 @@ it('should be able to pipe to a writeStream', function(assert) {
     assert.end();
   });
 
-  db.attachment.insert('new', 'att', buffer, 'image/bmp',
-  function(error, bmp) {
-    assert.equal(error, null, 'Should store the pixel');
-    db.attachment.getAsStream('new', 'att', {rev: bmp.rev}).pipe(ws);
-  });
+  db.attachment.insert('new', 'att', buffer, 'image/bmp')
+    .then(function(bmp) {
+      db.attachment.getAsStream('new', 'att', {rev: bmp.rev}).pipe(ws);
+    });
 });
 
 it('should be able to pipe to a writeStream', function(assert) {

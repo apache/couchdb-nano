@@ -18,19 +18,11 @@ const it = harness.it;
 const db = harness.locals.db;
 
 it('should be able to insert a simple attachment', function(assert) {
-  const p = db.attachment.insert('new', 'att', 'Hello World!', 'text/plain',
-  function(error, att) {
-    assert.equal(error, null, 'should store the attachment');
-    assert.equal(att.ok, true, 'response ok');
-    assert.ok(att.rev, 'should have a revision');
-  });
+  const p = db.attachment.insert('new', 'att', 'Hello World!', 'text/plain')
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(att) {
-    assert.ok(true, 'Promise is resolved');
     assert.equal(att.ok, true, 'response ok');
     assert.ok(att.rev, 'should have a revision');
     assert.end();
-  }).catch(function() {
-    assert.ok(false, 'Promise is rejected');
   });
 });

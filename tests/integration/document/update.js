@@ -20,12 +20,7 @@ const it = harness.it;
 let rev;
 
 it('should insert one doc', function(assert) {
-  const p = db.insert({'foo': 'baz'}, 'foobar', function(error, foo) {
-    assert.equal(error, null, 'stored foo');
-    assert.equal(foo.ok, true, 'response ok');
-    assert.ok(foo.rev, 'withs rev');
-    rev = foo.rev;
-  });
+  const p = db.insert({'foo': 'baz'}, 'foobar');
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(foo) {
     assert.ok(true, 'Promise is resolved');
@@ -38,10 +33,7 @@ it('should insert one doc', function(assert) {
 });
 
 it('should update the document', function(assert) {
-  const p = db.insert({foo: 'bar', '_rev': rev}, 'foobar', function(error, response) {
-    assert.equal(error, null, 'should have deleted foo');
-    assert.equal(response.ok, true, 'response should be ok');
-  });
+  const p = db.insert({foo: 'bar', '_rev': rev}, 'foobar');
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(response) {
     assert.ok(true, 'Promise is resolved');

@@ -20,12 +20,7 @@ const it = harness.it;
 let rev;
 
 it('should insert one simple document', function(assert) {
-  const p = db.insert({'foo': 'baz'}, 'foobaz', function(error, foo) {
-    rev = foo.rev;
-    assert.equal(error, null, 'should have stored foo');
-    assert.equal(foo.ok, true, 'response should be ok');
-    assert.ok(foo.rev, 'response should have rev');
-  });
+  const p = db.insert({'foo': 'baz'}, 'foobaz');
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(foo) {
     assert.ok(true, 'Promise is resolved');
@@ -38,11 +33,7 @@ it('should insert one simple document', function(assert) {
 });
 
 it('should fail to insert again since it already exists', function(assert) {
-  const p = db.insert({}, 'foobaz', function(error) {
-    assert.equal(error['statusCode'], 409, 'should be conflict');
-    assert.equal(error.scope, 'couch', 'scope is couch');
-    assert.equal(error.error, 'conflict', 'type is conflict');
-  });
+  const p = db.insert({}, 'foobaz');
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function() {
     assert.ok(false, 'Promise is resolved');
@@ -61,10 +52,6 @@ it('should be able to use custom params in insert', function(assert) {
   }, {
     docName: 'foobaz',
     'new_edits': false
-  }, function(error, foo) {
-    assert.equal(error, null, 'should have stored foo');
-    assert.equal(foo.ok, true, 'response should be ok');
-    assert.ok(foo.rev, 'response should have rev');
   });
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(foo) {
@@ -78,18 +65,18 @@ it('should be able to use custom params in insert', function(assert) {
 });
 
 it('should be able to insert functions in docs', function(assert) {
-  const p = db.insert({
+  db.insert({
     fn: function() { return true; },
     fn2: 'function () { return true; }'
-  }, function(error, fns) {
-    assert.equal(error, null, 'should have stored foo');
+  }).then(function(fns) {
+
     assert.equal(fns.ok, true, 'response should be ok');
     assert.ok(fns.rev, 'response should have rev');
-    db.get(fns.id, function(error, fns) {
-      assert.equal(fns.fn, fns.fn2, 'fn matches fn2');
-      assert.equal(error, null, 'should get foo');
-      assert.end();
-    });
+    return db.get(fns.id);
+  }).then(function(fns) {
+    assert.equal(fns.fn, fns.fn2, 'fn matches fn2');
+    assert.end();
+  }).catch(function() {
+    assert.ok(false, 'Promise is rejected');
   });
-  assert.ok(helpers.isPromise(p), 'returns Promise');
 });

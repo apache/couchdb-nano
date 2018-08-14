@@ -26,11 +26,7 @@ const n = nano({url: 'http://localhost:5984', request: fakeRequest});
 const db = n.db.use('fake');
 
 it('should allow custom request object to be supplied', function(assert) {
-  const p = db.info(function(err, data) {
-      assert.equal(err, null);
-      assert.equal(data.method, 'GET');
-      assert.equal(typeof data.headers, 'object');
-  });
+  const p = db.info();
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(data) {
     assert.ok(true, 'Promise is resolved');
@@ -43,13 +39,7 @@ it('should allow custom request object to be supplied', function(assert) {
 });
 
 it('should encode array counts parameter', function(assert) {
-  const p = db.search('fake', 'fake', { counts: ['brand','colour'] }, function(err, data) {
-      assert.equal(err, null);
-      assert.equal(data.method, 'GET');
-      assert.equal(typeof data.headers, 'object');
-      assert.equal(typeof data.qs, 'object');
-      assert.equal(data.qs.counts, JSON.stringify(['brand','colour']));
-  });
+  const p = db.search('fake', 'fake', { counts: ['brand','colour'] });
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(data) {
     assert.ok(true, 'Promise is resolved');
@@ -63,14 +53,7 @@ it('should encode array counts parameter', function(assert) {
 
 it('should not encode string counts parameter', function(assert) {
   const p = db.search('fake', 'fake', 
-                    { counts: JSON.stringify(['brand','colour']) }, 
-                    function(err, data) {
-      assert.equal(err, null);
-      assert.equal(data.method, 'GET');
-      assert.equal(typeof data.headers, 'object');
-      assert.equal(typeof data.qs, 'object');
-      assert.equal(data.qs.counts, JSON.stringify(['brand','colour']));
-  });
+                    { counts: JSON.stringify(['brand','colour']) });
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(data) {
     assert.ok(true, 'Promise is resolved');
@@ -84,13 +67,7 @@ it('should not encode string counts parameter', function(assert) {
 });
 
 it('should encode array drilldown parameter', function(assert) {
-  const p = db.search('fake', 'fake', { drilldown: ['colour','red'] }, function(err, data) {
-      assert.equal(err, null);
-      assert.equal(data.method, 'GET');
-      assert.equal(typeof data.headers, 'object');
-      assert.equal(typeof data.qs, 'object');
-      assert.equal(data.qs.drilldown, JSON.stringify(['colour','red']));
-  });
+  const p = db.search('fake', 'fake', { drilldown: ['colour','red'] });
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(data) {
     assert.ok(true, 'Promise is resolved');
@@ -105,14 +82,7 @@ it('should encode array drilldown parameter', function(assert) {
 
 it('should not encode string drilldown parameter', function(assert) {
   const p = db.search('fake', 'fake', 
-                    { drilldown: JSON.stringify(['colour','red']) }, 
-                    function(err, data) {
-      assert.equal(err, null);
-      assert.equal(data.method, 'GET');
-      assert.equal(typeof data.headers, 'object');
-      assert.equal(typeof data.qs, 'object');
-      assert.equal(data.qs.drilldown, JSON.stringify(['colour','red']));
-  });
+                    { drilldown: JSON.stringify(['colour','red']) });
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(data) {
     assert.ok(true, 'Promise is resolved');
@@ -127,14 +97,7 @@ it('should not encode string drilldown parameter', function(assert) {
 
 it('should encode array group_sort parameter', function(assert) {
   const p = db.search('fake', 'fake', 
-                    { group_sort: ['-foo<number>','bar<string>'] }, 
-                    function(err, data) {
-      assert.equal(err, null);
-      assert.equal(data.method, 'GET');
-      assert.equal(typeof data.headers, 'object');
-      assert.equal(typeof data.qs, 'object');
-      assert.equal(data.qs.group_sort, JSON.stringify(['-foo<number>','bar<string>']));
-  });
+                    { group_sort: ['-foo<number>','bar<string>'] });
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(data) {
     assert.ok(true, 'Promise is resolved');
@@ -149,14 +112,7 @@ it('should encode array group_sort parameter', function(assert) {
 
 it('should not encode string group_sort parameter', function(assert) {
   const p = db.search('fake', 'fake', 
-                    { group_sort: JSON.stringify(['-foo<number>','bar<string>']) }, 
-                    function(err, data) {
-      assert.equal(err, null);
-      assert.equal(data.method, 'GET');
-      assert.equal(typeof data.headers, 'object');
-      assert.equal(typeof data.qs, 'object');
-      assert.equal(data.qs.group_sort, JSON.stringify(['-foo<number>','bar<string>']));
-  });
+                    { group_sort: JSON.stringify(['-foo<number>','bar<string>']) });
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(data) {
     assert.ok(true, 'Promise is resolved');
@@ -171,14 +127,7 @@ it('should not encode string group_sort parameter', function(assert) {
 
 it('should encode object ranges parameter', function(assert) {
   const p = db.search('fake', 'fake', 
-                    { ranges: {'price':'[0 TO 10]'} }, 
-                    function(err, data) {
-      assert.equal(err, null);
-      assert.equal(data.method, 'GET');
-      assert.equal(typeof data.headers, 'object');
-      assert.equal(typeof data.qs, 'object');
-      assert.equal(data.qs.ranges, JSON.stringify({'price':'[0 TO 10]'}));
-  });
+                    { ranges: {'price':'[0 TO 10]'} });
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(data) {
     assert.ok(true, 'Promise is resolved');
@@ -193,14 +142,7 @@ it('should encode object ranges parameter', function(assert) {
 
 it('should not encode string ranges parameter', function(assert) {
   const p = db.search('fake', 'fake', 
-                    { ranges: JSON.stringify({'price':'[0 TO 10]'}) }, 
-                    function(err, data) {
-      assert.equal(err, null);
-      assert.equal(data.method, 'GET');
-      assert.equal(typeof data.headers, 'object');
-      assert.equal(typeof data.qs, 'object');
-      assert.equal(data.qs.ranges, JSON.stringify({'price':'[0 TO 10]'}));
-  });
+                    { ranges: JSON.stringify({'price':'[0 TO 10]'}) });
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(data) {
     assert.ok(true, 'Promise is resolved');
@@ -215,14 +157,7 @@ it('should not encode string ranges parameter', function(assert) {
 
 it('should encode array sort parameter', function(assert) {
   const p = db.search('fake', 'fake', 
-                    { sort: ['-foo<number>','bar<string>'] }, 
-                    function(err, data) {
-      assert.equal(err, null);
-      assert.equal(data.method, 'GET');
-      assert.equal(typeof data.headers, 'object');
-      assert.equal(typeof data.qs, 'object');
-      assert.equal(data.qs.sort, JSON.stringify(['-foo<number>','bar<string>']));
-  });
+                    { sort: ['-foo<number>','bar<string>'] });
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(data) {
     assert.ok(true, 'Promise is resolved');
@@ -237,14 +172,7 @@ it('should encode array sort parameter', function(assert) {
 
 it('should not encode string sort parameter', function(assert) {
   const p = db.search('fake', 'fake', 
-                    { sort: JSON.stringify(['-foo<number>','bar<string>']) }, 
-                    function(err, data) {
-      assert.equal(err, null);
-      assert.equal(data.method, 'GET');
-      assert.equal(typeof data.headers, 'object');
-      assert.equal(typeof data.qs, 'object');
-      assert.equal(data.qs.sort, JSON.stringify(['-foo<number>','bar<string>']));
-  });
+                    { sort: JSON.stringify(['-foo<number>','bar<string>']) });
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(data) {
     assert.ok(true, 'Promise is resolved');
@@ -259,14 +187,7 @@ it('should not encode string sort parameter', function(assert) {
 
 it('should encode unencoded sort parameter', function(assert) {
   const p = db.search('fake', 'fake', 
-                    { sort: '-foo<number>' }, 
-                    function(err, data) {
-      assert.equal(err, null);
-      assert.equal(data.method, 'GET');
-      assert.equal(typeof data.headers, 'object');
-      assert.equal(typeof data.qs, 'object');
-      assert.equal(data.qs.sort, JSON.stringify('-foo<number>'));
-  });
+                    { sort: '-foo<number>' });
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(data) {
     assert.ok(true, 'Promise is resolved');
@@ -281,14 +202,7 @@ it('should encode unencoded sort parameter', function(assert) {
 
 it('should not encode encoded string sort parameter', function(assert) {
   const p = db.search('fake', 'fake', 
-                    { sort: JSON.stringify('-foo<number>') }, 
-                    function(err, data) {
-      assert.equal(err, null);
-      assert.equal(data.method, 'GET');
-      assert.equal(typeof data.headers, 'object');
-      assert.equal(typeof data.qs, 'object');
-      assert.equal(data.qs.sort, JSON.stringify('-foo<number>'));
-  });
+                    { sort: JSON.stringify('-foo<number>') });
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(data) {
     assert.ok(true, 'Promise is resolved');
