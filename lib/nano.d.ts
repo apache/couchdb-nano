@@ -134,11 +134,11 @@ declare namespace nano {
       callback?: Callback<DocumentInsertResponse>
     ): Promise<DocumentInsertResponse>;
     // http://docs.couchdb.org/en/latest/api/document/common.html#get--db-docid
-    get(docname: string, callback?: Callback<DocumentGetResponse & D>): Promise<DocumentGetResponse>;
+    get(docname: string, callback?: Callback<DocumentGetResponse & D>): Promise<DocumentGetResponse & D>;
     // http://docs.couchdb.org/en/latest/api/document/common.html#get--db-docid
-    get(docname: string, params?: DocumentGetParams, callback?: Callback<DocumentGetResponse & D>): Promise<DocumentGetResponse>;
+    get(docname: string, params?: DocumentGetParams, callback?: Callback<DocumentGetResponse & D>): Promise<DocumentGetResponse & D>;
     // http://docs.couchdb.org/en/latest/api/document/common.html#head--db-docid
-    head(docname: string, callback?: Callback<object>): Promise<object>;
+    head(docname: string, callback?: Callback<any>): Promise<any>;
     // http://docs.couchdb.org/en/latest/api/document/common.html#copy--db-docid
     copy(src_document: string, dst_document: string, callback?: Callback<DocumentCopyResponse>): Promise<DocumentCopyResponse>;
     // http://docs.couchdb.org/en/latest/api/document/common.html#copy--db-docid
@@ -251,22 +251,22 @@ declare namespace nano {
     view<V>(
       designname: string,
       viewname: string,
-      callback?: Callback<DocumentViewResponse<V>>
-    ): Promise<DocumentViewResponse<V>>; 
+      callback?: Callback<DocumentViewResponse<V,D>>
+    ): Promise<DocumentViewResponse<V,D>>; 
     // http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view
     // http://docs.couchdb.org/en/latest/api/ddoc/views.html#post--db-_design-ddoc-_view-view
     view<V>(
       designname: string,
       viewname: string,
       params: DocumentViewParams,
-      callback?: Callback<DocumentViewResponse<V>>
-    ): Promise<DocumentViewResponse<V>>;
+      callback?: Callback<DocumentViewResponse<V,D>>
+    ): Promise<DocumentViewResponse<V,D>>;
     // http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view
     // http://docs.couchdb.org/en/latest/api/ddoc/views.html#post--db-_design-ddoc-_view-view
     viewAsStream<V>(
       designname: string,
       viewname: string,
-      callback?: Callback<DocumentViewResponse<V>>
+      callback?: Callback<DocumentViewResponse<V,D>>
     ): Request; 
     // http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view
     // http://docs.couchdb.org/en/latest/api/ddoc/views.html#post--db-_design-ddoc-_view-view
@@ -274,7 +274,7 @@ declare namespace nano {
       designname: string,
       viewname: string,
       params: DocumentViewParams,
-      callback?: Callback<DocumentViewResponse<V>>
+      callback?: Callback<DocumentViewResponse<V,D>>
     ): Request;    
     // http://docs.couchdb.org/en/latest/api/ddoc/render.html#db-design-design-doc-list-list-name-view-name
     viewWithList(
@@ -1169,7 +1169,7 @@ declare namespace nano {
   }
 
   // http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view
-  interface DocumentViewResponse<V> {
+  interface DocumentViewResponse<V,D> {
     // Offset where the document list started.
     offset: number;
 
@@ -1178,6 +1178,7 @@ declare namespace nano {
       id: string;
       key: string;
       value: V;
+      doc?: D;
     }>;
 
     // Number of documents in the database/view.
