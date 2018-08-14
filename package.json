@@ -30,8 +30,7 @@
     "istanbul": "^0.4.5",
     "jshint": "^2.9.4",
     "jscs": "^3.0.7",
-    "nock": "^9.0.0",
-    "endswith": "^0.0.0"
+    "nock": "^9.0.0"
   },
   "scripts": {
     "test": "bash scripts/run_couchdb_on_travis.sh; npm run mocha; bash scripts/stop_couchdb_on_travis.sh",
