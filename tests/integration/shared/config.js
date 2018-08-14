@@ -20,21 +20,11 @@ const Nano = helpers.Nano;
 const it = harness.it;
 
 it('should serve the root when no path is specified', function(assert) {
-  const p = nano.dinosaur('', function(err, response) {
-    assert.equal(err, null, 'failed to get root');
+  const p = nano.dinosaur('').then(function(response) {
     assert.ok(response.version, 'version is defined');
-    nano.relax(function(err, response) {
-      assert.equal(err, null, 'relax');
-      assert.ok(response.version, 'had version');
-    });
-  });
-  assert.ok(helpers.isPromise(p), 'returns Promise');
-  p.then(function(response) {
-    assert.ok(true, 'Promise is resolved');
-    assert.ok(response.version, 'version is defined');
-    assert.end();
-  }).catch(function() {
-    assert.ok(false, 'Promise is rejected');
+    return nano.relax();
+  }).then(function(response) {
+    assert.ok(response.version, 'had version');
   });
 });
 

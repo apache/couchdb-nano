@@ -32,46 +32,31 @@ it('should be able to create a user', function(assert) {
       roles: ['admin'],
       password: helpers.password
     }
-  }, function(err) {
-    assert.equal(err, null, 'should create admin');
-    nano.auth(helpers.username, helpers.password, function(err, _, headers) {
-      assert.equal(err, null, 'should have logged in successfully');
-      if (helpers.unmocked) {
-        assert.ok(headers['set-cookie'],
-          'response should have a set-cookie header');
-      }
-      cookie = headers['set-cookie'];
-      assert.end();
-    });
+  }).then(function() {
+    return nano.auth(helpers.username, helpers.password)
+  }).then(function(data) {
+    assert.ok(data.ok);
+    assert.end();
+  }).catch(function() {
+    assert.ok(false, 'Promise is rejected');
   });
 });
 
 it('should be able to insert with a cookie', function(assert) {
-  server = Nano({
-    url: helpers.couch,
-    cookie: cookie
-  });
-  const db = server.use('shared_cookie');
-
-  const p = db.insert({'foo': 'baz'}, null, function(error, response) {
-    assert.equal(error, null, 'should have stored value');
+  const db = nano.db.use('shared_cookie');
+  const p = db.insert({'foo': 'baz'})
+  assert.ok(helpers.isPromise(p), 'returns Promise');
+  p.then(function(response) {
     assert.equal(response.ok, true, 'response should be ok');
     assert.ok(response.rev, 'response should have rev');
     assert.end();
-  });
-  assert.ok(helpers.isPromise(p), 'returns Promise');
-  p.then(function(response) {
-    assert.ok(true, 'Promise is resolved');
-    assert.equal(response.ok, true, 'response should be ok');
-    assert.ok(response.rev, 'response should have rev');
   }).catch(function() {
     assert.ok(false, 'Promise is rejected');
   });
 });
 
 it('should be able to get the session', function(assert) {
-  server.session(function(error, session) {
-    assert.equal(error, null, 'should have gotten the session');
+  nano.session().then(function(session) {
     assert.equal(session.userCtx.name, helpers.username);
     assert.end();
   });

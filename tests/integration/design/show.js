@@ -73,13 +73,7 @@ it('should insert a show ddoc', function(assert) {
 });
 
 it('should show the amazing clemens in json', function(assert) {
-  const p = db.show('people', 'singleDoc', 'p_clemens', function(error, doc, rh) {
-    assert.equal(error, null, 'its alive');
-    assert.equal(rh['content-type'], 'application/json');
-    assert.equal(doc.name, 'Clemens');
-    assert.equal(doc.city, 'Dresden');
-    assert.equal(doc.format, 'json');
-  });
+  const p = db.show('people', 'singleDoc', 'p_clemens');
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(doc) {
     assert.ok(true, 'Promise is resolved');

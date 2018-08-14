@@ -25,9 +25,6 @@ it('should get the people by running the ddoc', function(assert) {
       'Derek',
       'San Francisco'
     ]
-  }, function(error, list) {
-    assert.equal(error, null, 'should response');
-    assert.equal(list, 'Hello', 'and list should be `hello`');
   });
   assert.ok(helpers.isPromise(p), 'returns Promise');
   p.then(function(list) {
