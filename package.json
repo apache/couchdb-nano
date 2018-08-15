@@ -28,9 +28,6 @@
     "async": "^2.1.2",
     "tape": "^4.6.2",
     "istanbul": "^0.4.5",
-    "nock": "^9.0.0",
-    "endswith": "^0.0.0",
-    "tape-it": "^0.3.1",
     "standard": "^11.0.1"
   },
   "scripts": {

@@ -21,21 +21,21 @@ const db = cli.use('foo')
 
 test('it should not return db info if docName undefined', function (assert) {
   db.get(undefined, function (err) {
-    assert.equal(err, 'Invalid doc id')
+    assert.equal(err.toString(), 'Invalid doc id')
     assert.end()
   })
 })
 
 test('it should not return db info if docName null', function (assert) {
   db.get(null, function (err) {
-    assert.equal(err, 'Invalid doc id')
+    assert.equal(err.toString(), 'Invalid doc id')
     assert.end()
   })
 })
 
 test('it should not return db info if docName empty string', function (assert) {
   db.get('', function (err) {
-    assert.equal(err, 'Invalid doc id')
+    assert.equal(err.toString(), 'Invalid doc id')
     assert.end()
   })
 })
