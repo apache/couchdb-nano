@@ -23,6 +23,7 @@ it('should be able to fetch the database', function (assert) {
   p.then(function (response) {
     assert.equal(response['doc_count'], 0, 'should be empty')
     assert.equal(response['db_name'], 'database_get', 'name')
+    assert.end()
   }).catch(function () {
     assert.ok(false, 'Promise is rejected')
   })

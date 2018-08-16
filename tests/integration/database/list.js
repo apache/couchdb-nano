@@ -17,12 +17,26 @@ const harness = helpers.harness(__filename)
 const it = harness.it
 const nano = harness.locals.nano
 
-it('should ensure _replicator and _users are created', function (assert) {
+it('should create _replicator', function (assert) {
   nano.db.create('_replicator').then(function () {
-    return nano.db.destroy('_users')
-  }).then(function () {
-    return nano.db.create('_users')
-  }).then(function () {
+    assert.end()
+  }).catch(function () {
+    assert.end()
+  })
+})
+
+it('should destroy _users', function (assert) {
+  nano.db.destroy('_users').then(function () {
+    assert.end()
+  }).catch(function () {
+    assert.end()
+  })
+})
+
+it('should crestr _users', function (assert) {
+  nano.db.create('_users').then(function () {
+    assert.end()
+  }).catch(function () {
     assert.end()
   })
 })

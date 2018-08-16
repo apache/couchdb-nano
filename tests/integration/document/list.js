@@ -114,6 +114,9 @@ it('should be able to list as a stream', function (assert) {
   })
   assert.ok(!helpers.isPromise(p), 'does not return Promise')
   assert.equal(p.constructor.name, 'Request', 'returns a Request')
+  p.on('end', function () {
+    assert.end()
+  })
 })
 
 it('should be able to list with params as a stream', function (assert) {
@@ -122,4 +125,7 @@ it('should be able to list with params as a stream', function (assert) {
   })
   assert.ok(!helpers.isPromise(p), 'does not return Promise')
   assert.equal(p.constructor.name, 'Request', 'returns a Request')
+  p.on('end', function () {
+    assert.end()
+  })
 })

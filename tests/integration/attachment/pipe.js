@@ -23,27 +23,27 @@ const pixel = helpers.pixel
 it('should be able to pipe to a writeStream', function (assert) {
   const buffer = Buffer.from(pixel, 'base64')
   const filename = path.join(__dirname, '.temp.bmp')
-  const ws = fs.createWriteStream(filename)
-
-  ws.on('close', function () {
-    assert.equal(fs.readFileSync(filename).toString('base64'), pixel)
-    fs.unlinkSync(filename)
-    assert.end()
-  })
 
   db.attachment.insert('new', 'att', buffer, 'image/bmp')
     .then(function (bmp) {
+      const ws = fs.createWriteStream(filename)
+
+      ws.on('close', function () {
+        assert.equal(fs.readFileSync(filename).toString('base64'), pixel)
+        fs.unlinkSync(filename)
+        assert.end()
+      })
       db.attachment.getAsStream('new', 'att', {rev: bmp.rev}).pipe(ws)
     })
 })
 
 it('should be able to pipe to a writeStream', function (assert) {
   const ws = fs.createWriteStream('/dev/null')
-  db.attachment.getAsStream('new', 'att', function () {})
-    .pipe(ws)
-    .on('end', function () {
-      assert.end()
-    })
+  const rs = db.attachment.getAsStream('new', 'att', function () {})
+  rs.pipe(ws)
+  rs.on('end', function () {
+    assert.end()
+  })
 })
 
 it('should be able to pipe from a readStream', function (assert) {

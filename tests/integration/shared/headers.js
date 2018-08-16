@@ -21,6 +21,7 @@ const it = harness.it
 it('should get headers', function (assert) {
   db.attachment.insert('new', 'att', 'Hello', 'text/plain',
     function (error, hello) {
+      console.log('!!!', error, hello)
       assert.equal(error, null, 'should store hello')
       assert.equal(hello.ok, true, 'response should be ok')
       assert.ok(hello.rev, 'should have a revision number')

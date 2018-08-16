@@ -40,6 +40,7 @@ it('should be able to replicate three docs', function (assert) {
     return replica.list()
   }).then(function (list) {
     assert.equal(list['total_rows'], 3, 'and have three documents')
+    assert.end()
   }).catch(function () {
     assert.ok(false, 'Promise is rejected')
   })
@@ -65,7 +66,7 @@ it('should be able to replicate with params', function (assert) {
   p.then(function () {
     assert.ok(true, 'Promise is resolved')
     assert.end()
-  }).catch(function () {
+  }).catch(function (e) {
     assert.ok(false, 'Promise is rejected')
   })
 })
