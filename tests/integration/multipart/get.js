@@ -44,5 +44,6 @@ it('should be able to get the document with the attachment', function (assert) {
       assert.equal(headers['content-type'].split(';')[0], 'multipart/related')
     }
     assert.equal(typeof foobaz, 'object', 'foobaz should be a buffer')
+    assert.end()
   })
 })

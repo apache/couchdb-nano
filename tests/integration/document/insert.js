@@ -26,6 +26,7 @@ it('should insert one simple document', function (assert) {
     assert.ok(true, 'Promise is resolved')
     assert.equal(foo.ok, true, 'response should be ok')
     assert.ok(foo.rev, 'response should have rev')
+    rev = foo.rev
     assert.end()
   }).catch(function () {
     assert.ok(false, 'Promise is rejected')
@@ -67,7 +68,7 @@ it('should be able to use custom params in insert', function (assert) {
 it('should be able to insert functions in docs', function (assert) {
   db.insert({
     fn: function () { return true },
-    fn2: 'function () { return true; }'
+    fn2: 'function () { return true }'
   }).then(function (fns) {
     assert.equal(fns.ok, true, 'response should be ok')
     assert.ok(fns.rev, 'response should have rev')

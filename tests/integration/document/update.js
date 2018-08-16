@@ -26,6 +26,7 @@ it('should insert one doc', function (assert) {
     assert.ok(true, 'Promise is resolved')
     assert.equal(foo.ok, true, 'response ok')
     assert.ok(foo.rev, 'withs rev')
+    rev = foo.rev
     assert.end()
   }).catch(function () {
     assert.ok(false, 'Promise is rejected')

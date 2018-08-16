@@ -35,5 +35,6 @@ it('should get a status code when you do head - callbacks', function (assert) {
   db.head('foobaz', function (error, body, headers) {
     assert.equal(error, null, 'should get the head of foobaz')
     assert.equal(headers['statusCode'], 200, 'and is ok')
+    assert.end()
   })
 })

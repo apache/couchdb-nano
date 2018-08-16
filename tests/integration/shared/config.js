@@ -25,6 +25,7 @@ it('should serve the root when no path is specified', function (assert) {
     return nano.relax()
   }).then(function (response) {
     assert.ok(response.version, 'had version')
+    assert.end()
   })
 })
 

@@ -37,6 +37,7 @@ it('should not delete a db', function (assert) {
     assert.end()
   }).catch(function () {
     assert.ok(true, 'Promise is rejected')
+    assert.end()
   })
 })
 

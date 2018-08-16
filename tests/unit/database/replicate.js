@@ -18,7 +18,7 @@ const replicateDatabase = require('../../helpers/unit').unit([
 ])
 
 replicateDatabase('baa', 'baashep', {
-  body: '{"source":"baa","target":"baashep"}',
+  body: '{"source":"http://localhost:5984/baa","target":"http://localhost:5984/baashep"}',
   headers: {
     accept: 'application/json',
     'content-type': 'application/json'
@@ -28,7 +28,7 @@ replicateDatabase('baa', 'baashep', {
 })
 
 replicateDatabase('molly', 'anne', {some: 'params'}, {
-  body: '{"some":"params","source":"molly","target":"anne"}',
+  body: '{"some":"params","source":"http://localhost:5984/molly","target":"http://localhost:5984/anne"}',
   headers: {
     accept: 'application/json',
     'content-type': 'application/json'
