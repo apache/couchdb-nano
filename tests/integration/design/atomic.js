@@ -47,7 +47,7 @@ it('should be able to insert atomically', function (assert) {
     value: 'bar'
   })
   assert.ok(helpers.isPromise(p), 'returns Promise')
-  p.then(function(response) {
+  p.then(function (response) {
     assert.equal(response.foo, 'bar', 'and the right value was set')
     assert.end()
   })
@@ -61,7 +61,7 @@ it('should be able to update atomically without a body', function (assert) {
   }).then(function (response) {
     assert.equal(response.baz, 'biz', 'and the new field is present')
     assert.end()
-  })  
+  })
 })
 
 it('should be able to update with slashes on the id', function (assert) {
@@ -69,8 +69,8 @@ it('should be able to update with slashes on the id', function (assert) {
   assert.ok(helpers.isPromise(p), 'returns Promise')
   p.then(function (foo) {
     assert.equal(foo.ok, true, 'response ok')
-    return  db.atomic('update', 'inplace', 'wat/wat', {field: 'wat', value: 'dawg'})
-  }).then(function(response) {
+    return db.atomic('update', 'inplace', 'wat/wat', {field: 'wat', value: 'dawg'})
+  }).then(function (response) {
     assert.equal(response.wat, 'dawg', 'with the right copy')
     assert.end()
   })

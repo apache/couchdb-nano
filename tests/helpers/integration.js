@@ -164,7 +164,7 @@ helpers.viewDerek = function viewDerek (db, assert, opts, next, method) {
   })
 }
 
-helpers.insertOne = function(assert) {
+helpers.insertOne = function (assert) {
   const db = this.db
   db.insert({'foo': 'baz'}, 'foobaz', function (err) {
     assert.equal(err, null, 'should store docs')
@@ -172,7 +172,7 @@ helpers.insertOne = function(assert) {
   })
 }
 
-helpers.insertThree = function(assert) {
+helpers.insertThree = function (assert) {
   const db = this.db
   async.parallel([
     function (cb) { db.insert({'foo': 'bar'}, 'foobar', cb) },

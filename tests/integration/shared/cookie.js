@@ -14,7 +14,7 @@
 
 const helpers = require('../../helpers/integration')
 const harness = helpers.harness(__filename)
-const nano = harness.locals.nano
+const nano = require('../../../lib/nano.js')({url: 'http://localhost:5984', requestDefaults: {jar: true}})
 const it = harness.it
 
 it('should be able to create a user', function (assert) {
