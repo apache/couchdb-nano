@@ -235,17 +235,6 @@ declare namespace nano {
       params: DocumentSearchParams,
       callback?: Callback<DocumentSearchResponse<V>>
     ): Request;
-    spatial(
-      ddoc: string,
-      viewname: string,
-      callback?: Callback<any>
-    ): Promise<any>;
-    spatial(
-      ddoc: string,
-      viewname: string,
-      params: any,
-      callback?: Callback<any>
-    ): Promise<any>;
     // http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view
     // http://docs.couchdb.org/en/latest/api/ddoc/views.html#post--db-_design-ddoc-_view-view
     view<V>(
