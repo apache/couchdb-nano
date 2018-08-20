@@ -26,19 +26,16 @@
   },
   "devDependencies": {
     "async": "^2.1.2",
-    "tape": "^4.6.2",
     "istanbul": "^0.4.5",
-    "jshint": "^2.9.4",
-    "jscs": "^3.0.7",
-    "nock": "^9.0.0"
+    "nock": "^9.6.1",
+    "standard": "^11.0.1",
+    "tape": "^4.6.2"
   },
   "scripts": {
-    "test": "bash scripts/run_couchdb_on_travis.sh; npm run mocha; bash scripts/stop_couchdb_on_travis.sh",
-    "mocha": "DEBUG=* NOCK_OFF=true istanbul cover tape tests/*/*/*.js",
+    "test": "standard; bash scripts/run_couchdb_on_travis.sh; npm run mocha; bash scripts/stop_couchdb_on_travis.sh",
+    "mocha": "NOCK_OFF=true istanbul cover tape tests/*/*/*.js",
     "unmocked": "NOCK_OFF=true tape tests/*/*/*.js",
     "mocked": "tape tests/*/*/*.js",
-    "jshint": "jshint tests/*/*/*.js lib/*.js",
-    "codestyle": "jscs -p google tests/*/*/*.js lib/*.js",
     "coverage": "open coverage/lcov-report/index.html",
     "checkcoverage": "istanbul check-coverage --statements 100 --functions 100 --lines 100 --branches 100"
   },
@@ -48,8 +45,6 @@
     "node": ">=6"
   },
   "pre-commit": [
-    "jshint",
-    "codestyle",
     "mocked",
     "test",
     "checkcoverage"

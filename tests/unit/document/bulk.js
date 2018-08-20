@@ -10,12 +10,12 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
 const bulkDocument = require('../../helpers/unit').unit([
   'document',
   'bulk'
-]);
+])
 
 bulkDocument({
   docs: [
@@ -30,7 +30,7 @@ bulkDocument({
   },
   method: 'POST',
   uri: '/mock/_bulk_docs'
-});
+})
 
 bulkDocument({
   docs: []
@@ -43,4 +43,4 @@ bulkDocument({
   method: 'POST',
   qs: {wat: 'izlove'},
   uri: '/mock/_bulk_docs'
-});
+})

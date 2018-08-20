@@ -10,76 +10,68 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
-const helpers = require('../../helpers/integration');
-const harness = helpers.harness(__filename);
-const it = harness.it;
-const db = harness.locals.db;
+const helpers = require('../../helpers/integration')
+const harness = helpers.harness(__filename)
+const it = harness.it
+const db = harness.locals.db
 
-let rev;
-
-it('should be able to insert an atomic design doc', function(assert) {
+it('should be able to insert an atomic design doc', function (assert) {
   const p = db.insert({
     updates: {
-      inplace: function(doc, req) {
-        const body = JSON.parse(req.body);
-        doc[body.field] = body.value;
-        return [doc, JSON.stringify(doc)];
+      inplace: function (doc, req) {
+        const body = JSON.parse(req.body)
+        doc[body.field] = body.value
+        return [doc, JSON.stringify(doc)]
       },
       addbaz: function (doc) {
-        doc.baz = "biz";
-        return [doc, JSON.stringify(doc)];
+        doc.baz = 'biz'
+        return [doc, JSON.stringify(doc)]
       }
     }
-  }, '_design/update', function(err) {
-    assert.equal(err, null, 'should be no problems officer');
-    db.insert({'foo': 'baz'}, 'foobar', function(error, foo) {
-      assert.equal(error, null, 'stores teh foo');
-      assert.equal(foo.ok, true, 'does not have an attitude');
-      assert.ok(foo.rev, 'got the revisions');
-      rev = foo.rev;
-      assert.end();
-    });
-  });
-  assert.ok(helpers.isPromise(p), 'returns Promise');
-});
+  }, '_design/update')
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function () {
+    return db.insert({'foo': 'baz'}, 'foobar')
+  }).then(function (foo) {
+    assert.equal(foo.ok, true, 'does not have an attitude')
+    assert.ok(foo.rev, 'got the revisions')
+    assert.end()
+  })
+})
 
-it('should be able to insert atomically', function(assert) {
+it('should be able to insert atomically', function (assert) {
   const p = db.atomic('update', 'inplace', 'foobar', {
     field: 'foo',
     value: 'bar'
-  }, function(error, response) {
-    assert.equal(error, null, 'should be able to update');
-    assert.equal(response.foo, 'bar', 'and the right value was set');
-    assert.end();
-  });
-  assert.ok(helpers.isPromise(p), 'returns Promise');
-});
+  })
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function (response) {
+    assert.equal(response.foo, 'bar', 'and the right value was set')
+    assert.end()
+  })
+})
 
 it('should be able to update atomically without a body', function (assert) {
-  const p = db.insert({}, 'baz', function () {
-    db.atomic('update', 'addbaz', 'baz', function (error, response) {
-      assert.equal(error, null, 'should be able to update');
-      assert.equal(response.baz, 'biz', 'and the new field is present');
-      assert.end();
-    });
-  });
-  assert.ok(helpers.isPromise(p), 'returns Promise');
-});
+  const p = db.insert({}, 'baz')
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function () {
+    return db.atomic('update', 'addbaz', 'baz')
+  }).then(function (response) {
+    assert.equal(response.baz, 'biz', 'and the new field is present')
+    assert.end()
+  })
+})
 
-it('should be able to update with slashes on the id', function(assert) {
-  const p = db.insert({'wat': 'wat'}, 'wat/wat', function(error, foo) {
-    assert.equal(error, null, 'stores `wat`');
-    assert.equal(foo.ok, true, 'response ok');
-    db.atomic('update', 'inplace', 'wat/wat', {
-      field: 'wat',
-      value: 'dawg'
-    }, function(error, response) {
-      assert.equal(error, null, 'should update');
-      assert.equal(response.wat, 'dawg', 'with the right copy');
-      assert.end();
-    });
-  });
-  assert.ok(helpers.isPromise(p), 'returns Promise');
-});
+it('should be able to update with slashes on the id', function (assert) {
+  const p = db.insert({'wat': 'wat'}, 'wat/wat')
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function (foo) {
+    assert.equal(foo.ok, true, 'response ok')
+    return db.atomic('update', 'inplace', 'wat/wat', {field: 'wat', value: 'dawg'})
+  }).then(function (response) {
+    assert.equal(response.wat, 'dawg', 'with the right copy')
+    assert.end()
+  })
+})

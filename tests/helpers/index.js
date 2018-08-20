@@ -10,32 +10,31 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
-const path = require('path');
-const fs = require('fs');
-const url = require('url');
-const nano = require('../../lib/nano');
+const path = require('path')
+const fs = require('fs')
+const url = require('url')
+const nano = require('../../lib/nano')
 
-const helpers = exports;
-const cfg = helpers.cfg = require('../fixtures/cfg');
-const auth = url.parse(cfg.admin).auth.split(':');
+const helpers = exports
+const cfg = helpers.cfg = require('../fixtures/cfg')
+const auth = url.parse(cfg.admin).auth.split(':')
 
-helpers.noopTest = function(t){ t.end(); };
-helpers.timeout = cfg.timeout;
-helpers.nano = nano(cfg.couch);
-helpers.Nano = nano;
-helpers.couch = cfg.couch;
-helpers.admin = cfg.admin;
+helpers.noopTest = function (t) { t.end() }
+helpers.timeout = cfg.timeout
+helpers.nano = nano(cfg.couch)
+helpers.Nano = nano
+helpers.couch = cfg.couch
+helpers.admin = cfg.admin
 helpers.pixel = 'Qk06AAAAAAAAADYAAAAoAAAAAQAAAP////8BABgAAAAA' +
-  'AAAAAAATCwAAEwsAAAAAAAAAAAAAWm2CAA==';
+  'AAAAAAATCwAAEwsAAAAAAAAAAAAAWm2CAA=='
 
-helpers.username = auth[0];
-helpers.password = auth[1];
+helpers.username = auth[0]
+helpers.password = auth[1]
 
-helpers.loadFixture = function helpersLoadFixture(filename, json) {
+helpers.loadFixture = function helpersLoadFixture (filename, json) {
   const contents = fs.readFileSync(
-    path.join(__dirname, '..', 'fixtures', filename), (json ? 'ascii' : null));
-  return json ? JSON.parse(contents) : contents;
-};
-
+    path.join(__dirname, '..', 'fixtures', filename), (json ? 'ascii' : null))
+  return json ? JSON.parse(contents) : contents
+}

@@ -10,37 +10,34 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
-const helpers = require('../../helpers/integration');
-const pixel = helpers.pixel;
-const harness = helpers.harness(__filename);
-const db = harness.locals.db;
-const it = harness.it;
+const helpers = require('../../helpers/integration')
+const pixel = helpers.pixel
+const harness = helpers.harness(__filename)
+const db = harness.locals.db
+const it = harness.it
 
-let rev;
+it('should be able to insert and update attachments', function (assert) {
+  const buffer = Buffer.from(pixel, 'base64')
+  const p = db.attachment.insert('new', 'att', 'Hello', 'text/plain')
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function (hello) {
+    assert.equal(hello.ok, true, 'response ok')
+    assert.ok(hello.rev, 'should have a revision')
+    return db.attachment.insert('new', 'att', buffer, 'image/bmp', {rev: hello.rev})
+  }).then(function (bmp) {
+    assert.ok(bmp.rev, 'should store a revision')
+    assert.end()
+  })
+})
 
-it('should be able to insert and update attachments', function(assert) {
-  const buffer = new Buffer(pixel, 'base64');
-  const p = db.attachment.insert('new', 'att', 'Hello', 'text/plain');
-  assert.ok(helpers.isPromise(p), 'returns Promise');
-  p.then(function(hello) {
-    assert.equal(hello.ok, true, 'response ok');
-    assert.ok(hello.rev, 'should have a revision');
-    return db.attachment.insert('new', 'att', buffer, 'image/bmp',{rev: hello.rev});
-  }).then(function(bmp) {
-    assert.ok(bmp.rev, 'should store a revision');
-    rev = bmp.rev;
-    assert.end();
-  });
-});
-
-it('should be able to fetch the updated pixel', function(assert) {
-  db.get('new').then(function(newDoc) {
-    newDoc.works = true;
-    return db.insert(newDoc, 'new');
-  }).then(function(response) {
-    assert.equal(response.ok, true, 'response ok');
-    assert.end();
-  });
-});
+it('should be able to fetch the updated pixel', function (assert) {
+  db.get('new').then(function (newDoc) {
+    newDoc.works = true
+    return db.insert(newDoc, 'new')
+  }).then(function (response) {
+    assert.equal(response.ok, true, 'response ok')
+    assert.end()
+  })
+})

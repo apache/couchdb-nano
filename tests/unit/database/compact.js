@@ -10,12 +10,12 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
 const compactDatabase = require('../../helpers/unit').unit([
   'database',
   'compact'
-]);
+])
 
 compactDatabase('mock', {
   headers: {
@@ -24,4 +24,4 @@ compactDatabase('mock', {
   },
   method: 'POST',
   uri: '/mock/_compact'
-});
+})

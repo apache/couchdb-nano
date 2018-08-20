@@ -10,17 +10,17 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
 const copyDocument = require('../../helpers/unit').unit([
   'document',
   'copy'
-]);
+])
 
 const copyDocumentFail = require('../../helpers/unit').unit([
   'document',
   'copy'
-], new Error('OMG This sucks'));
+], new Error('OMG This sucks'))
 
 copyDocument('excel', 'numbers', {
   headers: {
@@ -30,8 +30,8 @@ copyDocument('excel', 'numbers', {
   },
   method: 'COPY',
   uri: '/mock/excel'
-});
+})
 
 copyDocumentFail('excel', 'numbers', {overwrite: 'yes'}, {
 
-});
+})

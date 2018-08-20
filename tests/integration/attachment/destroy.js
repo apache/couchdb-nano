@@ -10,37 +10,37 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
-const helpers = require('../../helpers/integration');
-const harness = helpers.harness(__filename);
-const it = harness.it;
-const db = harness.locals.db;
+const helpers = require('../../helpers/integration')
+const harness = helpers.harness(__filename)
+const it = harness.it
+const db = harness.locals.db
 
-it('should be able to insert a new plain text attachment', function(assert) {
-  const p = db.attachment.insert('new', 'att', 'Hello World!', 'text/plain');
-  assert.ok(helpers.isPromise(p), 'returns Promise');
-  p.then(function(response) {
-    assert.equal(att.ok, true, 'response ok');
-    assert.ok(att.rev, 'have a revision number');
-    return db.attachment.destroy('new', 'att', {rev: att.rev});
-  }).then(function(response) {
-    assert.equal(response.ok, true, 'response ok');
-    assert.equal(response.id, 'new', '`id` should be `new`');
-    assert.end();
-  }).catch(function() {
-    assert.ok(false, 'Promise is rejected');
-  });
-});
+it('should be able to insert a new plain text attachment', function (assert) {
+  const p = db.attachment.insert('new', 'att', 'Hello World!', 'text/plain')
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function (response) {
+    assert.equal(response.ok, true, 'response ok')
+    assert.ok(response.rev, 'have a revision number')
+    return db.attachment.destroy('new', 'att', {rev: response.rev})
+  }).then(function (response) {
+    assert.equal(response.ok, true, 'response ok')
+    assert.equal(response.id, 'new', '`id` should be `new`')
+    assert.end()
+  }).catch(function () {
+    assert.ok(false, 'Promise is rejected')
+  })
+})
 
-it('should fail destroying with a bad filename', function(assert) {
-  const p = db.attachment.destroy('new', false, true);
-  assert.ok(helpers.isPromise(p), 'returns Promise');
-  p.then(function() {
-    assert.ok(false, 'Promise is resolved');
-    assert.end();
-  }).catch(function() {
-    assert.ok(true, 'Promise is rejected');
-    assert.end();
-  });
-});
+it('should fail destroying with a bad filename', function (assert) {
+  const p = db.attachment.destroy('new', false, true)
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function () {
+    assert.ok(false, 'Promise is resolved')
+    assert.end()
+  }).catch(function () {
+    assert.ok(true, 'Promise is rejected')
+    assert.end()
+  })
+})

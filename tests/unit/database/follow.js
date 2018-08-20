@@ -10,11 +10,11 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
 const followDatabase = require('../../helpers/unit').unit([
   'database',
   'follow'
-]);
+])
 
-followDatabase('space', {db: '/space'});
+followDatabase('space', {db: '/space'})

@@ -10,50 +10,50 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
-const helpers = require('../../helpers/integration');
-const harness = helpers.harness(__filename);
-const db = harness.locals.db;
-const it = harness.it;
+const helpers = require('../../helpers/integration')
+const harness = helpers.harness(__filename)
+const db = harness.locals.db
+const it = harness.it
 
-it('should insert a bunch of items', helpers.insertThree);
+it('should insert a bunch of items', helpers.insertThree)
 
-it('should be able to fetch with one key', function(assert) {
-  const p = db.fetch({keys:['foobar']});
-  assert.ok(helpers.isPromise(p), 'returns Promise');
-  p.then(function(docs) {
-    assert.ok(true, 'Promise is resolved');
-    assert.equal(docs.rows.length, 1, 'and get one row');
-    assert.equal(docs['total_rows'], 3, 'out of 3');
-    assert.end();
-  }).catch(function() {
-    assert.ok(false, 'Promise is rejected');
-  });
-});
+it('should be able to fetch with one key', function (assert) {
+  const p = db.fetch({keys: ['foobar']})
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function (docs) {
+    assert.ok(true, 'Promise is resolved')
+    assert.equal(docs.rows.length, 1, 'and get one row')
+    assert.equal(docs['total_rows'], 3, 'out of 3')
+    assert.end()
+  }).catch(function () {
+    assert.ok(false, 'Promise is rejected')
+  })
+})
 
-it('should be able to fetch with multiple keys', function(assert) {
-  const p = db.fetch({keys:['foobar', 'barfoo']});
-  assert.ok(helpers.isPromise(p), 'returns Promise');
-  p.then(function(docs) {
-    assert.ok(true, 'Promise is resolved');
-    assert.equal(docs.rows.length, 2, 'two rows');
-    assert.equal(docs['total_rows'], 3, 'out of 3');
-    assert.end();
-  }).catch(function() {
-    assert.ok(false, 'Promise is rejected');
-  });
-});
+it('should be able to fetch with multiple keys', function (assert) {
+  const p = db.fetch({keys: ['foobar', 'barfoo']})
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function (docs) {
+    assert.ok(true, 'Promise is resolved')
+    assert.equal(docs.rows.length, 2, 'two rows')
+    assert.equal(docs['total_rows'], 3, 'out of 3')
+    assert.end()
+  }).catch(function () {
+    assert.ok(false, 'Promise is rejected')
+  })
+})
 
-it('should be able to fetch with params', function(assert) {
-  const p = db.fetch({keys:['foobar']}, {not: 'important'});
-  assert.ok(helpers.isPromise(p), 'returns Promise');
-  p.then(function(docs) {
-    assert.ok(true, 'Promise is resolved');
-    assert.equal(docs.rows.length, 1, 'and get one row');
-    assert.equal(docs['total_rows'], 3, 'out of 3');
-    assert.end();
-  }).catch(function() {
-    assert.ok(false, 'Promise is rejected');
-  });
-});
+it('should be able to fetch with params', function (assert) {
+  const p = db.fetch({keys: ['foobar']}, {not: 'important'})
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function (docs) {
+    assert.ok(true, 'Promise is resolved')
+    assert.equal(docs.rows.length, 1, 'and get one row')
+    assert.equal(docs['total_rows'], 3, 'out of 3')
+    assert.end()
+  }).catch(function () {
+    assert.ok(false, 'Promise is rejected')
+  })
+})

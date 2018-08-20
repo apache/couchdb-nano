@@ -10,12 +10,12 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
 const destroyAttachment = require('../../helpers/unit').unit([
   'attachment',
   'destroy'
-]);
+])
 
 destroyAttachment('airplane-design', 'wings.pdf', {rev: '3'}, {
   headers: {
@@ -25,4 +25,4 @@ destroyAttachment('airplane-design', 'wings.pdf', {rev: '3'}, {
   method: 'DELETE',
   qs: {rev: '3'},
   uri: '/mock/airplane-design/wings.pdf'
-});
+})

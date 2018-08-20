@@ -10,26 +10,26 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
-const helpers = require('../../helpers/integration');
-const harness = helpers.harness(__filename);
-const db = harness.locals.db;
-const it = harness.it;
+const helpers = require('../../helpers/integration')
+const harness = helpers.harness(__filename)
+const db = harness.locals.db
+const it = harness.it
 
-it('should insert a one item', helpers.insertOne);
+it('should insert a one item', helpers.insertOne)
 
-it ('Should create one simple index', function(assert) {
+it('Should create one simple index', function (assert) {
   const p = db.createIndex({
     name: 'fooindex',
     index: { fields: ['foo'] }
-  });
-  assert.ok(helpers.isPromise(p), 'returns Promise');
-  p.then(function(foo) {
-    assert.equal(foo.result, 'created', 'index should be created');
-    assert.equal(foo.name, 'fooindex', 'index should have correct name');
-    assert.end();
-  }).catch(function() {
-    assert.ok(false, 'Promise is rejected');
-  });
-});
+  })
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function (foo) {
+    assert.equal(foo.result, 'created', 'index should be created')
+    assert.equal(foo.name, 'fooindex', 'index should have correct name')
+    assert.end()
+  }).catch(function () {
+    assert.ok(false, 'Promise is rejected')
+  })
+})

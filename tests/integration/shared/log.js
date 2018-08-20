@@ -10,20 +10,20 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
-const logger = require('../../../lib/logger');
-const helpers = require('../../helpers');
-const harness = helpers.harness(__filename);
-const it = harness.it;
+const logger = require('../../../lib/logger')
+const helpers = require('../../helpers')
+const harness = helpers.harness(__filename)
+const it = harness.it
 
-it('should be able to instantiate a log', function(assert) {
+it('should be able to instantiate a log', function (assert) {
   const log = logger({
-    log: function(id, msg) {
-      assert.equal(typeof id, 'string', 'id is set `' + id + '`');
-      assert.equal(msg[0], 'testing 1234');
-      assert.end();
+    log: function (id, msg) {
+      assert.equal(typeof id, 'string', 'id is set `' + id + '`')
+      assert.equal(msg[0], 'testing 1234')
+      assert.end()
     }
-  })();
-  log('testing 1234');
-});
+  })()
+  log('testing 1234')
+})

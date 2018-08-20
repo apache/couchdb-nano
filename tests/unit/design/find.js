@@ -10,11 +10,11 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 const findDesign = require('../../helpers/unit').unit([
   'find',
   'find'
-]);
+])
 
 findDesign({
   selector: {
@@ -28,4 +28,4 @@ findDesign({
   },
   method: 'POST',
   uri: '/mock/_find'
-});
+})

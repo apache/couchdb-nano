@@ -10,12 +10,12 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
 const destroyDatabase = require('../../helpers/unit').unit([
   'database',
   'destroy'
-]);
+])
 
 destroyDatabase('mock', {
   headers: {
@@ -24,4 +24,4 @@ destroyDatabase('mock', {
   },
   method: 'DELETE',
   uri: '/mock'
-});
+})

@@ -10,32 +10,32 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
-const helpers = require('../../helpers/unit');
-const test  = require('tape');
-const debug = require('debug')('nano/tests/unit/shared/error');
+const helpers = require('../../helpers/unit')
+const test = require('tape')
+const debug = require('debug')('nano/tests/unit/shared/error')
 
-const cli = helpers.mockClientDb(debug);
-const db = cli.use('foo');
+const cli = helpers.mockClientDb(debug)
+const db = cli.use('foo')
 
-test('it should not return db info if docName undefined', function(assert) {
-  db.get(undefined, function(err) {
-    assert.equal(err, 'Invalid doc id');
-    assert.end();
-  });
-});
+test('it should not return db info if docName undefined', function (assert) {
+  db.get(undefined, function (err) {
+    assert.equal(err.toString(), 'Error: Invalid doc id')
+    assert.end()
+  })
+})
 
-test('it should not return db info if docName null', function(assert) {
-  db.get(null, function(err) {
-    assert.equal(err, 'Invalid doc id');
-    assert.end();
-  });
-});
+test('it should not return db info if docName null', function (assert) {
+  db.get(null, function (err) {
+    assert.equal(err.toString(), 'Error: Invalid doc id')
+    assert.end()
+  })
+})
 
-test('it should not return db info if docName empty string', function(assert) {
-  db.get('', function(err) {
-    assert.equal(err, 'Invalid doc id');
-    assert.end();
-  });
-});
+test('it should not return db info if docName empty string', function (assert) {
+  db.get('', function (err) {
+    assert.equal(err.toString(), 'Error: Invalid doc id')
+    assert.end()
+  })
+})

@@ -965,10 +965,10 @@ alice.findAsStream(q).pipe(process.stdout);
 
 ## using cookie authentication
 
-Nano supports making requests using CouchDB's [cookie authentication](http://guide.couchdb.org/editions/1/en/security.html#cookies) functionality. Call `nano.auth` first to get a session cookie. Nano will behave like a web browser, remembering your session cookie and refreshing it if a new one is received in a future HTTP response.
+Nano supports making requests using CouchDB's [cookie authentication](http://guide.couchdb.org/editions/1/en/security.html#cookies) functionality. If you initialise *Nano* so that it is cookie-aware, you may call `nano.auth` first to get a session cookie. Nano will behave like a web browser, remembering your session cookie and refreshing it if a new one is received in a future HTTP response.
 
 ```js
-const nano = require('nano')('http://localhost:5984'),
+const nano = require('nano')({url: 'http://localhost:5984', requestDefaults: {jar:true}}),
   username = 'user',
   userpass = 'pass',
   db = nano.db.use('mydb');

@@ -10,21 +10,20 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-var express = require('express')
-   , db    = require('nano')('http://localhost:5984/my_couch')
-   , app     = module.exports = express()
-   ;
+const express = require('express')
+const db = require('nano')('http://localhost:5984/my_couch')
+const app = module.exports = express()
 
-app.get('/', function(req, res) {
-   db.get('foo', function (error, body, headers) {
-      if(error) {
-         res.status(error.statusCode);
-         return res.send(error.message); 
-      }
-      res.status(200);
-      res.send(body);
-   });
-});
+app.get('/', function (req, res) {
+  db.get('foo', function (error, body, headers) {
+    if (error) {
+      res.status(error.statusCode)
+      return res.send(error.message)
+    }
+    res.status(200)
+    res.send(body)
+  })
+})
 
-app.listen(3333);
-console.log('server is running. check expressjs.com for more cool tricks');
+app.listen(3333)
+console.log('server is running. check expressjs.com for more cool tricks')

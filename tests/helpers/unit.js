@@ -10,52 +10,51 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
-const helpers = require('./');
-const Client = require('../../lib/nano');
-const test  = require('tape');
-const _ = require('underscore');
+const helpers = require('./')
+const Client = require('../../lib/nano')
+const test = require('tape')
 
-helpers.unit = function(method, error) {
-  const unitName = 'nano/tests/unit/' + method.join('/');
-  const debug = require('debug')(unitName);
+helpers.unit = function (method, error) {
+  const unitName = 'nano/tests/unit/' + method.join('/')
+  const debug = require('debug')(unitName)
 
-  function log(data) {
-    debug({ got: data.body });
+  function log (data) {
+    debug({ got: data.body })
   }
 
-  let cli = helpers.mockClientOk(log, error);
+  let cli = helpers.mockClientOk(log, error)
 
   //
   // allow database creation and other server stuff
   //
-  if(method[1].match(/follow/)) {
-    if(method[0] === 'database') {
-      cli.server = helpers.mockClientFollow(log, error);
+  if (method[1].match(/follow/)) {
+    if (method[0] === 'database') {
+      cli.server = helpers.mockClientFollow(log, error)
     } else {
-      cli = helpers.mockClientFollow(log, error);
+      cli = helpers.mockClientFollow(log, error)
     }
   } else {
-    cli.server = helpers.mockClientDb(log, error);
+    cli.server = helpers.mockClientDb(log, error)
   }
 
-  let testNr = 1;
+  let testNr = 1
 
-  return function() {
-    const args = Array.prototype.slice.call(arguments);
-    const stub = args.pop();
+  return function () {
+    const args = Array.prototype.slice.call(arguments)
+    const stub = args.pop()
 
     test(unitName + ':' + testNr++,
-    function(assert) {
-      let f;
-      assert.ok(typeof stub, 'object');
+      function (assert) {
+        let f
+        assert.ok(typeof stub, 'object')
 
-      //
-      // document functions and database functions
-      // are at the top level in nano
-      //
-      if(method[0] === 'database') {
+        //
+        // document functions and database functions
+        // are at the top level in nano
+        //
+        if (method[0] === 'database') {
         //
         // Due to the way this harness is designed we cannot differentiate between different methods
         // when those methods are embedded on an object.
@@ -63,98 +62,98 @@ helpers.unit = function(method, error) {
         // can differentiate between methods embedded on an object.
         // I go the hardcoded route for now.
         //
-        if (method[1] === 'replicator') {
-          f = cli.server.db.replication.enable;
+          if (method[1] === 'replicator') {
+            f = cli.server.db.replication.enable
+          } else {
+            f = cli.server.db[method[1]]
+          }
+        } else if (method[0] === 'view' && method[1] === 'compact') {
+          f = cli.view.compact
+        } else if (!~['multipart', 'attachment'].indexOf(method[0])) {
+          f = cli[method[1]]
         } else {
-          f = cli.server.db[method[1]];
+          f = cli[method[0]][method[1]]
         }
-      } else if(method[0] === 'view' && method[1] === 'compact') {
-        f = cli.view.compact;
-      } else if(!~['multipart', 'attachment'].indexOf(method[0])) {
-        f = cli[method[1]];
-      } else {
-        f = cli[method[0]][method[1]];
-      }
-      assert.ok(typeof f, 'function');
+        assert.ok(typeof f, 'function')
 
-      args.push(function(err, req, response) {
-        if (error) {
-          assert.ok(err);
-          return assert.end();
-        }
+        args.push(function (err, req, response) {
+          if (error) {
+            assert.ok(err)
+            return assert.end()
+          }
 
-        assert.equal(response.statusCode, 200);
-        if(stub.uri) {
-          stub.uri = helpers.couch + stub.uri;
-        } else {
-          stub.db = helpers.couch + stub.db;
-        }
+          assert.equal(response.statusCode, 200)
+          if (stub.uri) {
+            stub.uri = helpers.couch + stub.uri
+          } else {
+            stub.db = helpers.couch + stub.db
+          }
 
-        assert.deepEqual(req, stub);
-        assert.end();
-      });
-      f.apply(null, args);
-    });
-  };
-};
+          assert.deepEqual(req, stub)
+          assert.end()
+        })
+        f.apply(null, args)
+      })
+  }
+}
 
-function mockClient(code, path, extra) {
-  return function(debug, error) {
-    extra = extra || {};
-    const opts = _.extend(extra, {
+function mockClient (code, path, extra) {
+  return function (debug, error) {
+    extra = extra || {}
+    const opts = Object.assign(extra, {
       url: helpers.couch + path,
       log: debug,
-      request: function(req, cb) {
-        if(error) {
-          return cb(error);
+      request: function (req, cb) {
+        if (error) {
+          return cb(error)
         }
-        if(code === 500) {
-          cb(new Error('omg connection failed'));
+        if (code === 500) {
+          cb(new Error('omg connection failed'))
         } else {
           cb(null, {
             statusCode: code,
             headers: {}
-          }, req); }
+          }, req)
         }
-    });
+      }
+    })
 
-    return Client(opts);
-  };
+    return Client(opts)
+  }
 }
 
-function mockClientUnparsedError() {
-  return function(debug, body) {
+function mockClientUnparsedError () {
+  return function (debug, body) {
     return Client({
       url: helpers.couch,
       log: debug,
-      request: function(_, cb) {
-        return cb(null, {statusCode: 500}, body || '<b> Error happened </b>');
+      request: function (_, cb) {
+        return cb(null, {statusCode: 500}, body || '<b> Error happened </b>')
       }
-    });
-  };
+    })
+  }
 }
 
-function mockClientFollow() {
-  return function(debug, error) {
+function mockClientFollow () {
+  return function (debug, error) {
     return Client({
       url: helpers.couch,
       log: debug,
-      follow: function(qs, cb) {
-        if(error) {
-          return cb(error);
+      follow: function (qs, cb) {
+        if (error) {
+          return cb(error)
         }
 
-        return cb(null, qs,  {statusCode: 200});
+        return cb(null, qs, {statusCode: 200})
       }
-    });
-  };
+    })
+  }
 }
 
-
-helpers.mockClientFollow = mockClientFollow();
-helpers.mockClientUnparsedError = mockClientUnparsedError();
-helpers.mockClientDb = mockClient(200, '');
-helpers.mockClientOk = mockClient(200, '/mock');
-helpers.mockClientFail = mockClient(500, '');
-helpers.mockClientJar = mockClient(300, '', {jar: 'is set'});
-module.exports = helpers;
+helpers.mockClientFollow = mockClientFollow()
+helpers.mockClientUnparsedError = mockClientUnparsedError()
+helpers.mockClientDb = mockClient(200, '')
+helpers.mockClientOk = mockClient(200, '/mock')
+helpers.mockClientFail = mockClient(500, '')
+helpers.mockClientJar = mockClient(300, '', {jar: 'is set'})
+module.exports = helpers
