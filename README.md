@@ -148,7 +148,7 @@ A simple but complete example in the [async/await](https://developer.mozilla.org
 
 ```js
 async function asyncCall() {
-  await nano.db.destory('alice')
+  await nano.db.destroy('alice')
   await nano.db.create('alice')
   const alice = nano.use('alice')
   const response = await alice.insert({ happy: true }, 'rabbit')
@@ -163,7 +163,7 @@ or in the raw Promises-style
 const nano = require('nano')('http://localhost:5984');
 let alice;
 
-nano.db.destory('alice').then((response) => {
+nano.db.destroy('alice').then((response) => {
   return nano.db.create('alice')
 }).then((response) =>  {
   alice = nano.use('alice')
