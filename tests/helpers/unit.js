@@ -89,6 +89,11 @@ helpers.unit = function (method, error) {
             stub.db = helpers.couch + stub.db
           }
 
+	      if (method[1] === 'follow' || method[1] === 'followUpdates') {
+            assert.ok(typeof req.httpAgent, 'object');
+            delete req.httpAgent; // ignore 'httpAgent' in deep equal assert
+          }
+
           assert.deepEqual(req, stub)
           assert.end()
         })
