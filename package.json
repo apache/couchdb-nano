@@ -18,7 +18,7 @@
   ],
   "dependencies": {
     "@types/request": "^2.47.1",
-    "cloudant-follow": "~0.17.0",
+    "cloudant-follow": "^0.18.0",
     "debug": "^2.2.0",
     "errs": "^0.3.2",
     "lodash.isempty": "^4.4.0",
