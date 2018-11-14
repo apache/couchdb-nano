@@ -69,7 +69,7 @@ See [Migration Guide for switching from Nano 6.x to 7.x](migration_6_to_7.md).
   - [db.multipart.get(docname, [params], [callback])](#dbmultipartgetdocname-params-callback)
 - [Attachments functions](#attachments-functions)
   - [db.attachment.insert(docname, attname, att, contenttype, [params], [callback])](#dbattachmentinsertdocname-attname-att-contenttype-params-callback)
-  - [db.attachment.insertAsStream(docname, attname, att, contenttype, [params], [callback])](#dbmultipartinsertasstreamdoc-attachments-params-callback)
+  - [db.attachment.insertAsStream(docname, attname, att, contenttype, [params], [callback])](#dbattachmentinsertasstreamdocname-attname-att-contenttype-params-callback)
   - [db.attachment.get(docname, attname, [params], [callback])](#dbattachmentgetdocname-attname-params-callback)
   - [db.attachment.getAsStream(docname, attname, [params], [callback])](#dbattachmentgetasstreamdocname-attname-params-callback)
   - [db.attachment.destroy(docname, attname, [params], [callback])](#dbattachmentdestroydocname-attname-params-callback)
@@ -753,14 +753,15 @@ fs.readFile('rabbit.png', (err, data) => {
 });
 ```
 
-### db.multipart.insertAsStream(doc, attachments, params, [callback])
+### db.attachment.insertAsStream(docname, attname, att, contenttype, [params], [callback])
 
 It may be more memory-efficient to pipe a stream of data from a source (file, network etc) to a CouchDB attachment:
 
 ```js
   const rs = fs.createReadStream('logo.png');
-  const is = db.attachment.insertAsStream('mydoc', 'logo.png', null, 'image/png').on('end', () => {
-    console.log('done')
+  const is = db.attachment.insertAsStream('mydoc', 'logo.png', null, 'image/png',
+    { rev: '12-150985a725ec88be471921a54ce91452' }).on('end', () => {
+      console.log('done')
   });
   rs.pipe(is);
 ```
@@ -897,7 +898,7 @@ An example update handler follows:
 "updates": {
   "in-place" : "function(doc, req) {
       var request_body = JSON.parse(req.body);
-  
+
       var field = request_body.field;
       var value = request_body.value;
       var message = 'set ' + field + ' to ' + value;
@@ -933,7 +934,7 @@ Perform a ["Mango" query](http://docs.couchdb.org/en/2.1.1/api/database/find.htm
 
 ```js
 // find documents where the name = "Brian" and age > 25.
-const q = { 
+const q = {
   selector: {
     name: { "$eq": "Brian"},
     age : { "$gt": 25 }
@@ -952,7 +953,7 @@ Perform a ["Mango" query](http://docs.couchdb.org/en/2.1.1/api/database/find.htm
 
 ```js
 // find documents where the name = "Brian" and age > 25.
-const q = { 
+const q = {
   selector: {
     name: { "$eq": "Brian"},
     age : { "$gt": 25 }
@@ -980,7 +981,7 @@ nano.auth(username, userpass).then((() => {
 });
 ```
 
-The second request works because the `nano` library has remembered the `AuthSession` cookie that was invisibily returned by the `nano.auth` call. 
+The second request works because the `nano` library has remembered the `AuthSession` cookie that was invisibily returned by the `nano.auth` call.
 
 When you have a session, you can see what permissions you have by calling the `nano.session` function
 
