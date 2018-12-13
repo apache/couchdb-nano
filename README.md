@@ -939,7 +939,7 @@ const q = {
     name: { "$eq": "Brian"},
     age : { "$gt": 25 }
   },
-  fields: [ "name", "age", "tags", "url" ]
+  fields: [ "name", "age", "tags", "url" ],
   limit:50
 };
 alice.find(q).then((doc) => {
@@ -958,7 +958,7 @@ const q = {
     name: { "$eq": "Brian"},
     age : { "$gt": 25 }
   },
-  fields: [ "name", "age", "tags", "url" ]
+  fields: [ "name", "age", "tags", "url" ],
   limit:50
 };
 alice.findAsStream(q).pipe(process.stdout);
