@@ -908,7 +908,7 @@ declare namespace nano {
     key?: string;
 
     // Return only documents that match the specified keys.
-    keys?: string; // This can be string[] too ???
+    keys?: string | string[]; 
 
     // Limit the number of the returned documents to the specified number.
     limit?: number;
