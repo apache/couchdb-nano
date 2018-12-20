@@ -32,11 +32,19 @@ it('should be to do a mango query', function (assert) {
 })
 
 it('should be to do a mango query with streams', function (assert) {
-  const p = db.findAsStream({selector: {foo: 'baz'}}, function (error, response) {
-    assert.equal(error, null, 'should work')
-    assert.equal(response.docs.length, 1, 'and get one row')
-    assert.end()
-  })
+  const resp = []
+  const p = db.findAsStream({selector: {foo: 'baz'}})
+    .on('data', function (part) {
+      resp.push(part)
+    })
+    .on('error', function (error) {
+      assert.ifError(error)
+    })
+    .on('end', function () {
+      const response = JSON.parse(Buffer.concat(resp).toString('utf8'))
+      assert.equal(response.docs.length, 1, 'and get one row')
+      assert.end()
+    })
   assert.ok(!helpers.isPromise(p), 'does not return Promise')
   assert.equal(p.constructor.name, 'Request', 'returns a Request')
 })

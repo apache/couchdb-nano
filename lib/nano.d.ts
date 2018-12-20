@@ -61,7 +61,7 @@ declare namespace nano {
     destroy(name: string, callback?: Callback<OkResponse>): Promise<OkResponse>;
     // http://docs.couchdb.org/en/latest/api/server/common.html#get--_all_dbs
     list(callback?: Callback<string[]>): Promise<string[]>;
-    listAsStream(callback?: Callback<string[]>): Request;
+    listAsStream(): Request;
     use<D>(db: string): DocumentScope<D>;
     compact(name: string, callback?: Callback<OkResponse>): Promise<OkResponse>;
     // http://docs.couchdb.org/en/latest/api/database/compact.html#post--db-_compact
@@ -84,9 +84,9 @@ declare namespace nano {
     // http://docs.couchdb.org/en/latest/api/database/compact.html#post--db-_compact
     changes(name: string, params: DatabaseChangesParams, callback?: Callback<DatabaseChangesResponse>): Promise<DatabaseChangesResponse>;
     // http://docs.couchdb.org/en/latest/api/database/changes.html#get--db-_changes
-    changesAsStream(name: string, callback?: Callback<DatabaseChangesResponse>): Request;
+    changesAsStream(name: string): Request;
     // http://docs.couchdb.org/en/latest/api/database/compact.html#post--db-_compact
-    changesAsStream(name: string, params: DatabaseChangesParams, callback?: Callback<DatabaseChangesResponse>): Request;
+    changesAsStream(name: string, params: DatabaseChangesParams): Request;
     follow(source: string, callback?: Callback<any>): EventEmitter;
     follow(source: string, params: DatabaseScopeFollowUpdatesParams, callback?: Callback<any>): EventEmitter;
     followUpdates(params?: any, callback?: Callback<any>): EventEmitter;
@@ -157,9 +157,9 @@ declare namespace nano {
     // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#get--db-_all_docs
     list(params: DocumentListParams, callback?: Callback<DocumentListResponse<D>>): Promise<DocumentListResponse<D>>;
     // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#get--db-_all_docs
-    listAsStream(callback?: Callback<Request>): Request;
+    listAsStream(): Request;
     // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#get--db-_all_docs
-    listAsStream(params: DocumentListParams, callback?: Callback<Request>): Request;
+    listAsStream(params: DocumentListParams): Request;
     // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs
     fetch(docnames: BulkFetchDocsWrapper, callback?: Callback<DocumentFetchResponse<D>>): Promise<DocumentFetchResponse<D>>;
     // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs
@@ -232,8 +232,7 @@ declare namespace nano {
     searchAsStream<V>(
       designname: string,
       searchname: string,
-      params: DocumentSearchParams,
-      callback?: Callback<DocumentSearchResponse<V>>
+      params: DocumentSearchParams
     ): Request;
     // http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view
     // http://docs.couchdb.org/en/latest/api/ddoc/views.html#post--db-_design-ddoc-_view-view
@@ -241,7 +240,7 @@ declare namespace nano {
       designname: string,
       viewname: string,
       callback?: Callback<DocumentViewResponse<V,D>>
-    ): Promise<DocumentViewResponse<V,D>>; 
+    ): Promise<DocumentViewResponse<V,D>>;
     // http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view
     // http://docs.couchdb.org/en/latest/api/ddoc/views.html#post--db-_design-ddoc-_view-view
     view<V>(
@@ -254,17 +253,15 @@ declare namespace nano {
     // http://docs.couchdb.org/en/latest/api/ddoc/views.html#post--db-_design-ddoc-_view-view
     viewAsStream<V>(
       designname: string,
-      viewname: string,
-      callback?: Callback<DocumentViewResponse<V,D>>
-    ): Request; 
+      viewname: string
+    ): Request;
     // http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view
     // http://docs.couchdb.org/en/latest/api/ddoc/views.html#post--db-_design-ddoc-_view-view
     viewAsStream<V>(
       designname: string,
       viewname: string,
-      params: DocumentViewParams,
-      callback?: Callback<DocumentViewResponse<V,D>>
-    ): Request;    
+      params: DocumentViewParams
+    ): Request;
     // http://docs.couchdb.org/en/latest/api/ddoc/render.html#db-design-design-doc-list-list-name-view-name
     viewWithList(
       designname: string,
@@ -322,16 +319,14 @@ declare namespace nano {
       docname: string,
       attname: string,
       att: any,
-      contenttype: string,
-      callback?: Callback<DocumentInsertResponse>
+      contenttype: string
     ): Request;
     insertAsStream(
       docname: string,
       attname: string,
       att: any,
       contenttype: string,
-      params: any,
-      callback?: Callback<DocumentInsertResponse>
+      params: any
     ): Request
     get(docname: string, attname: string, callback?: Callback<any>): Promise<any>;
     getAsStream(docname: string, attname: string): Request;
@@ -908,7 +903,7 @@ declare namespace nano {
     key?: string;
 
     // Return only documents that match the specified keys.
-    keys?: string | string[]; 
+    keys?: string | string[];
 
     // Limit the number of the returned documents to the specified number.
     limit?: number;
@@ -1013,7 +1008,7 @@ declare namespace nano {
     // A bookmark that was received from a previous search. Used for pagination.
     bookmark?: string;
 
-    // An array of field names for which facet counts are requested. 
+    // An array of field names for which facet counts are requested.
     counts?: string[];
 
     // Filters the result set using key value pairs supplied to the drilldown parameter.
@@ -1025,7 +1020,7 @@ declare namespace nano {
     // The maximum group count when used in conjunction with group_field.
     group_limit?: number;
 
-    // Defines the order of the groups in a search when used with group_field. 
+    // Defines the order of the groups in a search when used with group_field.
     group_sort?: string | string[];
 
     // Which fields are to be highlighted.
@@ -1039,7 +1034,7 @@ declare namespace nano {
 
     // The number of gradments that are returned in highlights. Defaults to 1.
     highlight_number?: number;
-    
+
     // The number of characters in each fragment for highlight. Defaults to 100.
     highlight_size?: number;
 
@@ -1061,7 +1056,7 @@ declare namespace nano {
     // Defines ranges for faceted numeric search fields.
     ranges?: object;
 
-    // Specifies the sort order of the results. 
+    // Specifies the sort order of the results.
     sort?: string | string[];
 
     // Do not wait for the index to finish building to return results.

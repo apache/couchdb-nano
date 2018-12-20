@@ -55,16 +55,24 @@ it('get multiple docs with a composed key', function (assert) {
 })
 
 it('get multiple docs with a composed key as a stream', function (assert) {
+  const resp = []
   const p = db.viewAsStream('alice', 'by_id', {
     keys: ['foobar', 'barfoo'],
     'include_docs': true
-  }, function (err, view) {
-    assert.equal(err, null, 'should response')
-    assert.equal(view.rows.length, 2, 'has more or less than two rows')
-    assert.equal(view.rows[0].id, 'foobar', 'foo is not the first id')
-    assert.equal(view.rows[1].id, 'barfoo', 'bar is not the second id')
-    assert.end()
   })
+    .on('data', function (part) {
+      resp.push(part)
+    })
+    .on('error', function (error) {
+      assert.ifError(error)
+    })
+    .on('end', function () {
+      const view = JSON.parse(Buffer.concat(resp).toString('utf8'))
+      assert.equal(view.rows.length, 2, 'has more or less than two rows')
+      assert.equal(view.rows[0].id, 'foobar', 'foo is not the first id')
+      assert.equal(view.rows[1].id, 'barfoo', 'bar is not the second id')
+      assert.end()
+    })
   assert.ok(!helpers.isPromise(p), 'does not returns Promise')
   assert.equal(p.constructor.name, 'Request', 'returns a Request')
 })

@@ -18,7 +18,11 @@ const it = harness.it
 
 const nano = require('../../../lib/nano.js')
 const fakeRequest = function (r, callback) {
-  callback(null, { statusCode: 200 }, r)
+  if (callback) {
+    callback(null, { statusCode: 200 }, r)
+  } else {
+    return r
+  }
 }
 // by passing in a fake Request object, we can intercept the request
 // and see how Nano is pre-processing the parameters
@@ -216,14 +220,11 @@ it('should not encode encoded string sort parameter', function (assert) {
 })
 
 it('should allow search results to be streamed', function (assert) {
-  db.searchAsStream('fake', 'fake',
-    { q: 'foo:bar' },
-    function (err, data) {
-      assert.equal(err, null)
-      assert.equal(data.method, 'GET')
-      assert.equal(typeof data.headers, 'object')
-      assert.equal(typeof data.qs, 'object')
-      assert.equal(data.qs.q, 'foo:bar')
-      assert.end()
-    })
+  const req = db.searchAsStream('fake', 'fake',
+    { q: 'foo:bar' })
+  assert.equal(req.method, 'GET')
+  assert.equal(typeof req.headers, 'object')
+  assert.equal(typeof req.qs, 'object')
+  assert.equal(req.qs.q, 'foo:bar')
+  assert.end()
 })

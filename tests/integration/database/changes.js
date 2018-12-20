@@ -31,20 +31,31 @@ it('should be able to receive changes since seq:0', function (assert) {
 })
 
 it('should be able to receive changes since seq:0 as stream', function (assert) {
-  const p = db.changesAsStream({since: 0}, function (error, response) {
-    assert.equal(error, null, 'gets response from changes')
-    assert.equal(response.results.length, 3, 'gets three results')
-    assert.end()
-  })
+  const resp = []
+  const p = db.changesAsStream({since: 0})
+    .on('data', function (part) {
+      resp.push(part)
+    })
+    .on('error', function (error) {
+      assert.ifError(error)
+    })
+    .on('end', function () {
+      const response = JSON.parse(Buffer.concat(resp).toString('utf8'))
+      assert.equal(response.results.length, 3, 'gets three results')
+      assert.end()
+    })
   assert.ok(!helpers.isPromise(p), 'returns Promise')
   assert.equal(p.constructor.name, 'Request', 'returns a Request')
 })
 
 it('should be able to receive changes - no params - stream', function (assert) {
-  const p = db.changesAsStream(function (error) {
-    assert.equal(error, null, 'gets response from changes')
-    assert.end()
-  })
+  const p = db.changesAsStream()
+    .on('error', function (error) {
+      assert.ifError(error)
+    })
+    .on('end', function () {
+      assert.end()
+    })
   assert.ok(!helpers.isPromise(p), 'returns Promise')
   assert.equal(p.constructor.name, 'Request', 'returns a Request')
 })
