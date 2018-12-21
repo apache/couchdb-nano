@@ -10,27 +10,28 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-'use strict';
+'use strict'
 
-const helpers = require('../../helpers/unit');
-const test = require('tape');
-const debug = require('debug')('nano/tests/unit/shared/error');
+const helpers = require('../../helpers/unit')
+const test = require('tape')
+const debug = require('debug')('nano/tests/unit/shared/error')
 
-const cli = helpers.mockClientDb(debug);
-const db = cli.use('foo');
+const cli = helpers.mockClientDb(debug)
+const db = cli.use('foo')
 
 test('it should return a promise when no callback is specified', function (assert) {
-  var p = db.head('doc');
+  var p = db.head('doc')
   p.then((headers) => {
-    assert.equal(headers.statusCode, 200);
-    assert.end();
-  });
-});
+    assert.equal(headers.statusCode, 200)
+    assert.end()
+  })
+})
 
 test('it should not return a promise when a callback is specified', function (assert) {
-  var p = db.head('doc', function(err, body, headers) {
-    assert.equal(headers.statusCode, 200);
-    assert.end();
-  });
-  assert.equal(typeof p, 'undefined');
-});
+  var p = db.head('doc', function (err, body, headers) {
+    assert.ifError(err)
+    assert.equal(headers.statusCode, 200)
+    assert.end()
+  })
+  assert.equal(typeof p, 'undefined')
+})
