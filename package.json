@@ -32,7 +32,7 @@
     "tape": "^4.6.2"
   },
   "scripts": {
-    "test": "standard; bash scripts/run_couchdb_on_travis.sh; npm run mocha; bash scripts/stop_couchdb_on_travis.sh",
+    "test": "standard && npm run mocha",
     "mocha": "NOCK_OFF=true istanbul cover tape tests/*/*/*.js",
     "unmocked": "NOCK_OFF=true tape tests/*/*/*.js",
     "mocked": "tape tests/*/*/*.js",
