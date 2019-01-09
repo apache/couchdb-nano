@@ -37,14 +37,14 @@ See [Migration Guide for switching from Nano 6.x to 7.x](migration_6_to_7.md).
   - [nano.db.get(name, [callback])](#nanodbgetname-callback)
   - [nano.db.destroy(name, [callback])](#nanodbdestroyname-callback)
   - [nano.db.list([callback])](#nanodblistcallback)
-  - [nano.db.listAsStream([callback])](#nanodblistasstreamcallback)
+  - [nano.db.listAsStream()](#nanodblistasstream)
   - [nano.db.compact(name, [designname], [callback])](#nanodbcompactname-designname-callback)
   - [nano.db.replicate(source, target, [opts], [callback])](#nanodbreplicatesource-target-opts-callback)
   - [nano.db.replication.enable(source, target, [opts], [callback])](#nanodbreplicationenablesource-target-opts-callback)
   - [nano.db.replication.query(id, [opts], [callback])](#nanodbreplicationenablesource-target-opts-callback)
   - [nano.db.replication.disable(id, [opts], [callback])](#nanodbreplicationdisableid-opts-callback)
   - [nano.db.changes(name, [params], [callback])](#nanodbchangesname-params-callback)
-  - [nano.db.changesAsStream(name, [params], [callback])](#nanodbchangesasstreamname-params-callback)
+  - [nano.db.changesAsStream(name, [params])](#nanodbchangesasstreamname-params)
   - [nano.db.follow(name, [params], [callback])](#nanodbfollowname-params-callback)
   - [nano.db.info([callback])](#nanodbinfocallback)
   - [nano.use(name)](#nanousename)
@@ -60,7 +60,7 @@ See [Migration Guide for switching from Nano 6.x to 7.x](migration_6_to_7.md).
   - [db.copy(src_doc, dest_doc, opts, [callback])](#dbcopysrc_doc-dest_doc-opts-callback)
   - [db.bulk(docs, [params], [callback])](#dbbulkdocs-params-callback)
   - [db.list([params], [callback])](#dblistparams-callback)
-  - [db.listAsStream([params], [callback])](#dblistasstreamparams-callback)
+  - [db.listAsStream([params])](#dblistasstreamparams)
   - [db.fetch(docnames, [params], [callback])](#dbfetchdocnames-params-callback)
   - [db.fetchRevs(docnames, [params], [callback])](#dbfetchrevsdocnames-params-callback)
   - [db.createIndex(indexDef, [callback])](#dbcreateindexindexdef-callback)
@@ -69,19 +69,19 @@ See [Migration Guide for switching from Nano 6.x to 7.x](migration_6_to_7.md).
   - [db.multipart.get(docname, [params], [callback])](#dbmultipartgetdocname-params-callback)
 - [Attachments functions](#attachments-functions)
   - [db.attachment.insert(docname, attname, att, contenttype, [params], [callback])](#dbattachmentinsertdocname-attname-att-contenttype-params-callback)
-  - [db.attachment.insertAsStream(docname, attname, att, contenttype, [params], [callback])](#dbattachmentinsertasstreamdocname-attname-att-contenttype-params-callback)
+  - [db.attachment.insertAsStream(docname, attname, att, contenttype, [params])](#dbattachmentinsertasstreamdocname-attname-att-contenttype-params)
   - [db.attachment.get(docname, attname, [params], [callback])](#dbattachmentgetdocname-attname-params-callback)
-  - [db.attachment.getAsStream(docname, attname, [params], [callback])](#dbattachmentgetasstreamdocname-attname-params-callback)
+  - [db.attachment.getAsStream(docname, attname, [params])](#dbattachmentgetasstreamdocname-attname-params)
   - [db.attachment.destroy(docname, attname, [params], [callback])](#dbattachmentdestroydocname-attname-params-callback)
 - [Views and design functions](#views-and-design-functions)
   - [db.view(designname, viewname, [params], [callback])](#dbviewdesignname-viewname-params-callback)
-  - [db.viewAsStream(designname, viewname, [params], [callback])](#dbviewasstreamdesignname-viewname-params-callback)
+  - [db.viewAsStream(designname, viewname, [params])](#dbviewasstreamdesignname-viewname-params)
   - [db.show(designname, showname, doc_id, [params], [callback])](#dbshowdesignname-showname-doc_id-params-callback)
   - [db.atomic(designname, updatename, docname, [body], [callback])](#dbatomicdesignname-updatename-docname-body-callback)
   - [db.search(designname, viewname, params, [callback])](#dbsearchdesignname-searchname-params-callback)
-  - [db.searchAsStream(designname, viewname, params, [callback])](#dbsearchasstreamdesignname-searchname-params-callback)
+  - [db.searchAsStream(designname, viewname, params)](#dbsearchasstreamdesignname-searchname-params)
   - [db.find(selector, [callback])](#dbfindselector-callback)
-  - [db.findAsStream(selector, [callback])](#dbfindasstreamselector-callback)
+  - [db.findAsStream(selector)](#dbfindasstreamselector)
 - [Using cookie authentication](#using-cookie-authentication)
 - [Advanced features](#advanced-features)
   - [getting uuids](#getting-uuids)
@@ -343,7 +343,7 @@ nano.db.list().then((body) => {
 });
 ```
 
-### nano.db.listAsStream([callback])
+### nano.db.listAsStream()
 
 Lists all the CouchDB databases as a stream:
 
@@ -420,9 +420,9 @@ nano.db.changes('alice').then((body) => {
 });
 ```
 
-### nano.db.changesAsStream(name, [params], [callback])
+### nano.db.changesAsStream(name, [params])
 
-Sames as `nano.db.changes` but returns a stream.
+Same as `nano.db.changes` but returns a stream.
 
 ```js
 nano.db.changes('alice').pipe(process.stdout);
@@ -656,7 +656,7 @@ alice.list({include_docs: true}).then((body) => {
 });
 ```
 
-### db.listAsStream([params], [callback])
+### db.listAsStream([params])
 
 List all the docs in the database as a stream.
 
@@ -753,7 +753,7 @@ fs.readFile('rabbit.png', (err, data) => {
 });
 ```
 
-### db.attachment.insertAsStream(docname, attname, att, contenttype, [params], [callback])
+### db.attachment.insertAsStream(docname, attname, att, contenttype, [params])
 
 It may be more memory-efficient to pipe a stream of data from a source (file, network etc) to a CouchDB attachment:
 
@@ -779,7 +779,7 @@ alice.attachment.get('rabbit', 'rabbit.png').then((body) => {
 });
 ```
 
-### db.attachment.getAsStream(docname, attname, [params], [callback])
+### db.attachment.getAsStream(docname, attname, [params])
 
 ```js
 const fs = require('fs');
@@ -848,7 +848,7 @@ alice.view('characters', 'happy_ones', { include_docs: true }).then((body) => {
 });
 ```
 
-### db.viewAsStream(designname, viewname, [params], [callback])
+### db.viewAsStream(designname, viewname, [params])
 
 Same as `db.view` but returns a stream:
 
@@ -920,7 +920,7 @@ alice.search('characters', 'happy_ones', { q: 'cat' }).then((doc) => {
 
 Check out the tests for a fully functioning example.
 
-### db.searchAsStream(designname, searchname, params, [callback])
+### db.searchAsStream(designname, searchname, params)
 
 Calls a view of the specified design with optional query string additions `params`. Returns stream.
 
@@ -947,7 +947,7 @@ alice.find(q).then((doc) => {
 });
 ```
 
-### db.findAsStream(selector, [callback])
+### db.findAsStream(selector)
 
 Perform a ["Mango" query](http://docs.couchdb.org/en/2.1.1/api/database/find.html) by supplying a JavaScript object containing a selector, but return a stream:
 

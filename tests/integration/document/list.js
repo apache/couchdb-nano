@@ -106,23 +106,25 @@ it('should be able to list with a end_key', function (assert) {
 })
 
 it('should be able to list as a stream', function (assert) {
-  const p = db.listAsStream(function (error) {
-    assert.equal(error, null, 'should work')
-  })
+  const p = db.listAsStream()
+    .on('error', function (error) {
+      assert.ifError(error)
+    })
+    .on('end', function () {
+      assert.end()
+    })
   assert.ok(!helpers.isPromise(p), 'does not return Promise')
   assert.equal(p.constructor.name, 'Request', 'returns a Request')
-  p.on('end', function () {
-    assert.end()
-  })
 })
 
 it('should be able to list with params as a stream', function (assert) {
-  const p = db.listAsStream({end_key: 's'}, function (error) {
-    assert.equal(error, null, 'should work')
-  })
+  const p = db.listAsStream({end_key: 's'})
+    .on('error', function (error) {
+      assert.ifError(error)
+    })
+    .on('end', function () {
+      assert.end()
+    })
   assert.ok(!helpers.isPromise(p), 'does not return Promise')
   assert.equal(p.constructor.name, 'Request', 'returns a Request')
-  p.on('end', function () {
-    assert.end()
-  })
 })

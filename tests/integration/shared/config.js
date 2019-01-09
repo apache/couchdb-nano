@@ -102,10 +102,13 @@ it('should accept and handle customer http headers', function (assert) {
     }
   })
 
-  const req = nanoWithDefaultHeaders.db.listAsStream(function (err) {
-    assert.equal(err, null, 'should list')
-    assert.end()
-  })
+  const req = nanoWithDefaultHeaders.db.listAsStream()
+    .on('error', function (error) {
+      assert.ifError(error)
+    })
+    .on('end', function () {
+      assert.end()
+    })
 
   assert.equal(
     req.headers['x-custom-header'],

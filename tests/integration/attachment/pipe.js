@@ -39,7 +39,7 @@ it('should be able to pipe to a writeStream', function (assert) {
 
 it('should be able to pipe to a writeStream', function (assert) {
   const ws = fs.createWriteStream('/dev/null')
-  const rs = db.attachment.getAsStream('new', 'att', function () {})
+  const rs = db.attachment.getAsStream('new', 'att')
   rs.pipe(ws)
   rs.on('end', function () {
     assert.end()
@@ -49,8 +49,7 @@ it('should be able to pipe to a writeStream', function (assert) {
 it('should be able to pipe from a readStream', function (assert) {
   const logo = path.join(__dirname, '..', '..', 'fixtures', 'logo.png')
   const rs = fs.createReadStream(logo)
-  const is = db.attachment.insertAsStream('nodejs', 'logo.png', null, 'image/png', function () {
-  })
+  const is = db.attachment.insertAsStream('nodejs', 'logo.png', null, 'image/png')
 
   is.on('end', function () {
     db.attachment.get('nodejs', 'logo.png', function (err, buffer) {
