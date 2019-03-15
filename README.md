@@ -918,6 +918,15 @@ alice.search('characters', 'happy_ones', { q: 'cat' }).then((doc) => {
 });
 ```
 
+or
+
+```js
+const drilldown = [['author', 'Dickens']['publisher','Penguin']]
+alice.search('inventory', 'books', { q: '*:*', drilldown: drilldown }).then((doc) => {
+  console.log(doc);
+});
+```
+
 Check out the tests for a fully functioning example.
 
 ### db.searchAsStream(designname, searchname, params)
