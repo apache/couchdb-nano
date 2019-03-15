@@ -99,6 +99,21 @@ it('should not encode string drilldown parameter', function (assert) {
   })
 })
 
+it('should encode array of arrays drilldown parameter', function (assert) {
+  const p = db.search('fake', 'fake', { drilldown: [['colour', 'red'], ['category', 'cake']] })
+  assert.ok(helpers.isPromise(p), 'returns Promise')
+  p.then(function (data) {
+    assert.ok(true, 'Promise is resolved')
+    assert.equal(data.method, 'GET')
+    assert.equal(typeof data.headers, 'object')
+    console.log(data.headers)
+    assert.equal(typeof data.qs, 'object')
+    assert.end()
+  }).catch(function () {
+    assert.ok(true, 'Promise is rejected')
+  })
+})
+
 it('should encode array group_sort parameter', function (assert) {
   const p = db.search('fake', 'fake',
     { group_sort: ['-foo<number>', 'bar<string>'] })

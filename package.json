@@ -32,6 +32,7 @@
     "tape": "^4.6.2"
   },
   "scripts": {
+    "standard": "standard --fix",
     "test": "standard && npm run mocha",
     "mocha": "NOCK_OFF=true istanbul cover tape tests/*/*/*.js",
     "unmocked": "NOCK_OFF=true tape tests/*/*/*.js",

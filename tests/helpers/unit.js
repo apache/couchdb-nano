@@ -94,6 +94,9 @@ helpers.unit = function (method, error) {
             delete req.httpAgent // ignore 'httpAgent' in deep equal assert
           }
 
+          // ignore qsStringifyOptions in object comparison
+          delete req.qsStringifyOptions
+
           assert.deepEqual(req, stub)
           assert.end()
         })
