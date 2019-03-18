@@ -283,7 +283,7 @@ class Person implements iPerson {
     this.dob = dob
   }
 
-  processAPIResponse(response: nano.DocumentInsertResponse) {
+  processAPIResponse(response: Nano.DocumentInsertResponse) {
     if (response.ok === true) {
       this._id = response.id
       this._rev = response.rev
