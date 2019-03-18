@@ -177,7 +177,7 @@ nano.db.destroy('alice').then((response) => {
 If you run either of these examples (after starting CouchDB) you will see:
 
 ```
-you have inserted a document with an _id of rabbitt.
+you have inserted a document with an _id of rabbit.
 { ok: true,
   id: 'rabbit',
   rev: '1-6e4cb465d49c0368ac3946506d26335d' }
@@ -948,7 +948,7 @@ const q = {
     name: { "$eq": "Brian"},
     age : { "$gt": 25 }
   },
-  fields: [ "name", "age", "tags", "url" ]
+  fields: [ "name", "age", "tags", "url" ],
   limit:50
 };
 alice.find(q).then((doc) => {
@@ -967,7 +967,7 @@ const q = {
     name: { "$eq": "Brian"},
     age : { "$gt": 25 }
   },
-  fields: [ "name", "age", "tags", "url" ]
+  fields: [ "name", "age", "tags", "url" ],
   limit:50
 };
 alice.findAsStream(q).pipe(process.stdout);
