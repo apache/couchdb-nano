@@ -650,7 +650,7 @@ or with optional query string additions `params`:
 ```js
 alice.list({include_docs: true}).then((body) => {
   body.rows.forEach((doc) => {
-    // output eacj document's body
+    // output each document's body
     console.log(doc.doc);
   });
 });
