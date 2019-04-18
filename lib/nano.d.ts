@@ -1162,7 +1162,7 @@ declare namespace nano {
       id: string;
       key: string;
       value: V;
-      doc?: D;
+      doc?: D & Document;
     }>;
 
     // Number of documents in the database/view.
