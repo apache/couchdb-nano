@@ -1172,7 +1172,7 @@ declare namespace nano {
     update_seq: any;
   }
 
-  type MangoValue = number | string | Date | boolean;
+  type MangoValue = number | string | Date | boolean | null;
 
   // http://docs.couchdb.org/en/latest/api/database/find.html#selector-syntax
   interface MangoSelector {
