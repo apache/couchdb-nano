@@ -42,192 +42,14 @@ it('should allow custom request object to be supplied', function (assert) {
   })
 })
 
-it('should encode array counts parameter', function (assert) {
-  const p = db.search('fake', 'fake', { counts: ['brand', 'colour'] })
-  assert.ok(helpers.isPromise(p), 'returns Promise')
-  p.then(function (data) {
-    assert.ok(true, 'Promise is resolved')
-    assert.equal(typeof data.headers, 'object')
-    assert.equal(typeof data.qs, 'object')
-    assert.end()
-  }).catch(function () {
-    assert.ok(true, 'Promise is rejected')
-  })
-})
-
-it('should not encode string counts parameter', function (assert) {
-  const p = db.search('fake', 'fake',
-    { counts: JSON.stringify(['brand', 'colour']) })
-  assert.ok(helpers.isPromise(p), 'returns Promise')
-  p.then(function (data) {
-    assert.ok(true, 'Promise is resolved')
-    assert.equal(data.method, 'GET')
-    assert.equal(typeof data.headers, 'object')
-    assert.equal(typeof data.qs, 'object')
-    assert.end()
-  }).catch(function () {
-    assert.ok(true, 'Promise is rejected')
-  })
-})
-
-it('should encode array drilldown parameter', function (assert) {
-  const p = db.search('fake', 'fake', { drilldown: ['colour', 'red'] })
-  assert.ok(helpers.isPromise(p), 'returns Promise')
-  p.then(function (data) {
-    assert.ok(true, 'Promise is resolved')
-    assert.equal(data.method, 'GET')
-    assert.equal(typeof data.headers, 'object')
-    assert.equal(typeof data.qs, 'object')
-    assert.end()
-  }).catch(function () {
-    assert.ok(true, 'Promise is rejected')
-  })
-})
-
-it('should not encode string drilldown parameter', function (assert) {
-  const p = db.search('fake', 'fake',
-    { drilldown: JSON.stringify(['colour', 'red']) })
-  assert.ok(helpers.isPromise(p), 'returns Promise')
-  p.then(function (data) {
-    assert.ok(true, 'Promise is resolved')
-    assert.equal(data.method, 'GET')
-    assert.equal(typeof data.headers, 'object')
-    assert.equal(typeof data.qs, 'object')
-    assert.end()
-  }).catch(function () {
-    assert.ok(true, 'Promise is rejected')
-  })
-})
-
-it('should encode array of arrays drilldown parameter', function (assert) {
+it('should submit all search queries via a POST request', function (assert) {
   const p = db.search('fake', 'fake', { drilldown: [['colour', 'red'], ['category', 'cake']] })
   assert.ok(helpers.isPromise(p), 'returns Promise')
   p.then(function (data) {
     assert.ok(true, 'Promise is resolved')
-    assert.equal(data.method, 'GET')
+    assert.equal(data.method, 'POST')
     assert.equal(typeof data.headers, 'object')
-    console.log(data.headers)
-    assert.equal(typeof data.qs, 'object')
-    assert.end()
-  }).catch(function () {
-    assert.ok(true, 'Promise is rejected')
-  })
-})
-
-it('should encode array group_sort parameter', function (assert) {
-  const p = db.search('fake', 'fake',
-    { group_sort: ['-foo<number>', 'bar<string>'] })
-  assert.ok(helpers.isPromise(p), 'returns Promise')
-  p.then(function (data) {
-    assert.ok(true, 'Promise is resolved')
-    assert.equal(data.method, 'GET')
-    assert.equal(typeof data.headers, 'object')
-    assert.equal(typeof data.qs, 'object')
-    assert.end()
-  }).catch(function () {
-    assert.ok(true, 'Promise is rejected')
-  })
-})
-
-it('should not encode string group_sort parameter', function (assert) {
-  const p = db.search('fake', 'fake',
-    { group_sort: JSON.stringify(['-foo<number>', 'bar<string>']) })
-  assert.ok(helpers.isPromise(p), 'returns Promise')
-  p.then(function (data) {
-    assert.ok(true, 'Promise is resolved')
-    assert.equal(data.method, 'GET')
-    assert.equal(typeof data.headers, 'object')
-    assert.equal(typeof data.qs, 'object')
-    assert.end()
-  }).catch(function () {
-    assert.ok(true, 'Promise is rejected')
-  })
-})
-
-it('should encode object ranges parameter', function (assert) {
-  const p = db.search('fake', 'fake',
-    { ranges: {'price': '[0 TO 10]'} })
-  assert.ok(helpers.isPromise(p), 'returns Promise')
-  p.then(function (data) {
-    assert.ok(true, 'Promise is resolved')
-    assert.equal(data.method, 'GET')
-    assert.equal(typeof data.headers, 'object')
-    assert.equal(typeof data.qs, 'object')
-    assert.end()
-  }).catch(function () {
-    assert.ok(true, 'Promise is rejected')
-  })
-})
-
-it('should not encode string ranges parameter', function (assert) {
-  const p = db.search('fake', 'fake',
-    { ranges: JSON.stringify({'price': '[0 TO 10]'}) })
-  assert.ok(helpers.isPromise(p), 'returns Promise')
-  p.then(function (data) {
-    assert.ok(true, 'Promise is resolved')
-    assert.equal(data.method, 'GET')
-    assert.equal(typeof data.headers, 'object')
-    assert.equal(typeof data.qs, 'object')
-    assert.end()
-  }).catch(function () {
-    assert.ok(true, 'Promise is rejected')
-  })
-})
-
-it('should encode array sort parameter', function (assert) {
-  const p = db.search('fake', 'fake',
-    { sort: ['-foo<number>', 'bar<string>'] })
-  assert.ok(helpers.isPromise(p), 'returns Promise')
-  p.then(function (data) {
-    assert.ok(true, 'Promise is resolved')
-    assert.equal(data.method, 'GET')
-    assert.equal(typeof data.headers, 'object')
-    assert.equal(typeof data.qs, 'object')
-    assert.end()
-  }).catch(function () {
-    assert.ok(true, 'Promise is rejected')
-  })
-})
-
-it('should not encode string sort parameter', function (assert) {
-  const p = db.search('fake', 'fake',
-    { sort: JSON.stringify(['-foo<number>', 'bar<string>']) })
-  assert.ok(helpers.isPromise(p), 'returns Promise')
-  p.then(function (data) {
-    assert.ok(true, 'Promise is resolved')
-    assert.equal(data.method, 'GET')
-    assert.equal(typeof data.headers, 'object')
-    assert.equal(typeof data.qs, 'object')
-    assert.end()
-  }).catch(function () {
-    assert.ok(true, 'Promise is rejected')
-  })
-})
-
-it('should encode unencoded sort parameter', function (assert) {
-  const p = db.search('fake', 'fake',
-    { sort: '-foo<number>' })
-  assert.ok(helpers.isPromise(p), 'returns Promise')
-  p.then(function (data) {
-    assert.ok(true, 'Promise is resolved')
-    assert.equal(data.method, 'GET')
-    assert.equal(typeof data.headers, 'object')
-    assert.equal(typeof data.qs, 'object')
-    assert.end()
-  }).catch(function () {
-    assert.ok(true, 'Promise is rejected')
-  })
-})
-
-it('should not encode encoded string sort parameter', function (assert) {
-  const p = db.search('fake', 'fake',
-    { sort: JSON.stringify('-foo<number>') })
-  assert.ok(helpers.isPromise(p), 'returns Promise')
-  p.then(function (data) {
-    assert.ok(true, 'Promise is resolved')
-    assert.equal(data.method, 'GET')
-    assert.equal(typeof data.headers, 'object')
-    assert.equal(typeof data.qs, 'object')
+    assert.equal(data.body, '{"drilldown":[["colour","red"],["category","cake"]]}')
     assert.end()
   }).catch(function () {
     assert.ok(true, 'Promise is rejected')
@@ -235,11 +57,9 @@ it('should not encode encoded string sort parameter', function (assert) {
 })
 
 it('should allow search results to be streamed', function (assert) {
-  const req = db.searchAsStream('fake', 'fake',
-    { q: 'foo:bar' })
-  assert.equal(req.method, 'GET')
+  const req = db.searchAsStream('fake', 'fake', { q: 'foo:bar' })
+  assert.equal(req.method, 'POST')
   assert.equal(typeof req.headers, 'object')
-  assert.equal(typeof req.qs, 'object')
-  assert.equal(req.qs.q, 'foo:bar')
+  assert.equal(req.body, '{"q":"foo:bar"}')
   assert.end()
 })
