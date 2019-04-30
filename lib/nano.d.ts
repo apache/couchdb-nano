@@ -52,9 +52,15 @@ declare namespace nano {
     uuids: string[]
   }
 
+  interface DatabaseCreateParams {
+    n?: number;
+    partitioned?: boolean;
+    q?: number;
+  }
+
   interface DatabaseScope {
     // http://docs.couchdb.org/en/latest/api/database/common.html#put--db
-    create(name: string, callback?: Callback<DatabaseCreateResponse>): Promise<DatabaseCreateResponse>;
+    create(name: string, params?: DatabaseCreateParams, callback?: Callback<DatabaseCreateResponse>): Promise<DatabaseCreateResponse>;
     // http://docs.couchdb.org/en/latest/api/database/common.html#get--db
     get(name: string, callback?: Callback<DatabaseGetResponse>): Promise<DatabaseGetResponse>;
     // http://docs.couchdb.org/en/latest/api/database/common.html#delete--db

@@ -10,6 +10,16 @@
   , "response" : "{ \"ok\": true }"
   }
 , { "method"   : "put"
+  , "path"     : "/newdb1"
+  , "status"   : 201
+  , "response" : "{ \"ok\": true }"
+  }
+, { "method"   : "put"
+  , "path"     : "/newdb2?q=1&n=3"
+  , "status"   : 201
+  , "response" : "{ \"ok\": true }"
+  }
+, { "method"   : "put"
   , "path"     : "/with%2Fslash"
   , "status"   : 201
   , "response" : "{ \"ok\": true }"
