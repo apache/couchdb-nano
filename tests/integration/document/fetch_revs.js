@@ -20,7 +20,7 @@ const it = harness.it
 it('should insert a bunch of items', helpers.insertThree)
 
 it('should be able to fetch with one key', function (assert) {
-  const p = db.fetchRevs({keys: ['foobar']})
+  const p = db.fetchRevs({ keys: ['foobar'] })
   assert.ok(helpers.isPromise(p), 'returns Promise')
   p.then(function (docs) {
     assert.ok(true, 'Promise is resolved')
@@ -34,7 +34,7 @@ it('should be able to fetch with one key', function (assert) {
 })
 
 it('should be able to fetch with multiple keys', function (assert) {
-  const p = db.fetchRevs({keys: ['foobar', 'barfoo']})
+  const p = db.fetchRevs({ keys: ['foobar', 'barfoo'] })
   assert.ok(helpers.isPromise(p), 'returns Promise')
   p.then(function (docs) {
     assert.ok(true, 'Promise is resolved')
@@ -49,7 +49,7 @@ it('should be able to fetch with multiple keys', function (assert) {
 })
 
 it('should be able to fetch with params', function (assert) {
-  const p = db.fetchRevs({keys: ['foobar']}, {still: 'no'})
+  const p = db.fetchRevs({ keys: ['foobar'] }, { still: 'no' })
   assert.ok(helpers.isPromise(p), 'returns Promise')
   p.then(function (docs) {
     assert.ok(true, 'Promise is resolved')

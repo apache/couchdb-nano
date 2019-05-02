@@ -33,7 +33,7 @@ it('should be able to insert an atomic design doc', function (assert) {
   }, '_design/update')
   assert.ok(helpers.isPromise(p), 'returns Promise')
   p.then(function () {
-    return db.insert({'foo': 'baz'}, 'foobar')
+    return db.insert({ 'foo': 'baz' }, 'foobar')
   }).then(function (foo) {
     assert.equal(foo.ok, true, 'does not have an attitude')
     assert.ok(foo.rev, 'got the revisions')
@@ -65,11 +65,11 @@ it('should be able to update atomically without a body', function (assert) {
 })
 
 it('should be able to update with slashes on the id', function (assert) {
-  const p = db.insert({'wat': 'wat'}, 'wat/wat')
+  const p = db.insert({ 'wat': 'wat' }, 'wat/wat')
   assert.ok(helpers.isPromise(p), 'returns Promise')
   p.then(function (foo) {
     assert.equal(foo.ok, true, 'response ok')
-    return db.atomic('update', 'inplace', 'wat/wat', {field: 'wat', value: 'dawg'})
+    return db.atomic('update', 'inplace', 'wat/wat', { field: 'wat', value: 'dawg' })
   }).then(function (response) {
     assert.equal(response.wat, 'dawg', 'with the right copy')
     assert.end()

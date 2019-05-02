@@ -35,12 +35,12 @@ insertAttachment('pixels', 'meta.txt', 'brown', 'text/plain', {
   uri: '/mock/pixels/meta.txt'
 })
 
-insertAttachment('pixels', 'meta.txt', 'white', 'text/plain', {rev: '2'}, {
+insertAttachment('pixels', 'meta.txt', 'white', 'text/plain', { rev: '2' }, {
   body: 'white',
   headers: {
     'content-type': 'text/plain'
   },
   method: 'PUT',
   uri: '/mock/pixels/meta.txt',
-  qs: {rev: '2'}
+  qs: { rev: '2' }
 })

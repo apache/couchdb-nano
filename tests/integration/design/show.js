@@ -87,7 +87,7 @@ it('should show the amazing clemens in json', function (assert) {
 })
 
 it('should show the amazing clemens in html', function (assert) {
-  db.show('people', 'singleDoc', 'p_clemens', {format: 'html'},
+  db.show('people', 'singleDoc', 'p_clemens', { format: 'html' },
     function (error, doc, rh) {
       assert.equal(error, null, 'should work')
       if (helpers.unmocked) {

@@ -19,8 +19,8 @@ const bulkDocument = require('../../helpers/unit').unit([
 
 bulkDocument({
   docs: [
-    {key: 'baz', name: 'bazzel'},
-    {key: 'bar', name: 'barry'}
+    { key: 'baz', name: 'bazzel' },
+    { key: 'bar', name: 'barry' }
   ]
 }, {
   body: '{"docs":[{"key":"baz","name":"bazzel"},{"key":"bar","name":"barry"}]}',
@@ -34,13 +34,13 @@ bulkDocument({
 
 bulkDocument({
   docs: []
-}, {wat: 'izlove'}, {
+}, { wat: 'izlove' }, {
   body: '{"docs":[]}',
   headers: {
     accept: 'application/json',
     'content-type': 'application/json'
   },
   method: 'POST',
-  qs: {wat: 'izlove'},
+  qs: { wat: 'izlove' },
   uri: '/mock/_bulk_docs'
 })

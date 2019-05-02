@@ -33,7 +33,7 @@ it('should be able to pipe to a writeStream', function (assert) {
         fs.unlinkSync(filename)
         assert.end()
       })
-      db.attachment.getAsStream('new', 'att', {rev: bmp.rev}).pipe(ws)
+      db.attachment.getAsStream('new', 'att', { rev: bmp.rev }).pipe(ws)
     })
 })
 

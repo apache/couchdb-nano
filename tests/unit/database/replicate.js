@@ -27,7 +27,7 @@ replicateDatabase('baa', 'baashep', {
   uri: '/_replicate'
 })
 
-replicateDatabase('molly', 'anne', {some: 'params'}, {
+replicateDatabase('molly', 'anne', { some: 'params' }, {
   body: '{"some":"params","source":"http://localhost:5984/molly","target":"http://localhost:5984/anne"}',
   headers: {
     accept: 'application/json',

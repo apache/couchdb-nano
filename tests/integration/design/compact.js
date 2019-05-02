@@ -30,7 +30,7 @@ it('should insert `alice` the design doc', function (assert) {
       }, '_design/alice', next)
     },
     function (data, _, next) {
-      db.insert({'foo': 'baz'}, 'foobaz', next)
+      db.insert({ 'foo': 'baz' }, 'foobaz', next)
     },
     function (foo, _, next) {
       db.destroy('foobaz', foo.rev, next)

@@ -47,7 +47,7 @@ module.exports = function (opts) {
   }
 
   harness.it = function (name, next) {
-    harness.tests.push({name: name, next: next})
+    harness.tests.push({ name: name, next: next })
     if (!invoked) {
       invoked = true
       nextTick(function () {

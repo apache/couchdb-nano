@@ -23,7 +23,7 @@ it('should be able to insert a doc with att', function (assert) {
     data: 'Hello World!',
     'content_type': 'text/plain'
   }
-  const p = db.multipart.insert({'foo': 'baz'}, [att], 'foobaz')
+  const p = db.multipart.insert({ 'foo': 'baz' }, [att], 'foobaz')
   assert.ok(helpers.isPromise(p), 'returns Promise')
   p.then(function (foo) {
     assert.ok(true, 'Promise is resolved')

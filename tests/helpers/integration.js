@@ -97,7 +97,7 @@ helpers.nock = function helpersNock (url, fixture, log) {
     }
 
     n.method = n.method || 'get'
-    n.options = {log: log}
+    n.options = { log: log }
     n.scope = url
     n.headers = headers
     n.response = response
@@ -166,7 +166,7 @@ helpers.viewDerek = function viewDerek (db, assert, opts, next, method) {
 
 helpers.insertOne = function (assert) {
   const db = this.db
-  db.insert({'foo': 'baz'}, 'foobaz', function (err) {
+  db.insert({ 'foo': 'baz' }, 'foobaz', function (err) {
     assert.equal(err, null, 'should store docs')
     assert.end()
   })
@@ -175,9 +175,9 @@ helpers.insertOne = function (assert) {
 helpers.insertThree = function (assert) {
   const db = this.db
   async.parallel([
-    function (cb) { db.insert({'foo': 'bar'}, 'foobar', cb) },
-    function (cb) { db.insert({'bar': 'foo'}, 'barfoo', cb) },
-    function (cb) { db.insert({'foo': 'baz'}, 'foobaz', cb) }
+    function (cb) { db.insert({ 'foo': 'bar' }, 'foobar', cb) },
+    function (cb) { db.insert({ 'bar': 'foo' }, 'barfoo', cb) },
+    function (cb) { db.insert({ 'foo': 'baz' }, 'foobaz', cb) }
   ], function (error) {
     assert.equal(error, null, 'should store docs')
     assert.end()

@@ -22,7 +22,7 @@ test('it should be able to set a jar box', function (assert) {
   assert.equal(cli.config.jar, 'is set')
   cli.relax({}, function (_, req) {
     assert.equal(req.jar, 'is set')
-    cli.relax({jar: 'changed'}, function (_, req) {
+    cli.relax({ jar: 'changed' }, function (_, req) {
       assert.equal(req.jar, 'changed')
       assert.end()
     })

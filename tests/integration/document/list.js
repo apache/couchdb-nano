@@ -38,7 +38,7 @@ it('should be able to list using the `relax` function', function (assert) {
     db: 'document_list',
     doc: '_all_docs',
     method: 'GET',
-    qs: {limit: 1}
+    qs: { limit: 1 }
   }, function (error, docs) {
     assert.equal(error, null, 'not relaxed')
     assert.ok(docs.rows, 'got meh rows')
@@ -49,7 +49,7 @@ it('should be able to list using the `relax` function', function (assert) {
 })
 
 it('should be able to list with a start_key', function (assert) {
-  const p = db.list({start_key: 'c'})
+  const p = db.list({ start_key: 'c' })
   assert.ok(helpers.isPromise(p), 'returns Promise')
   p.then(function (docs) {
     assert.ok(true, 'Promise is resolved')
@@ -64,7 +64,7 @@ it('should be able to list with a start_key', function (assert) {
 })
 
 it('should be able to list with a startkey', function (assert) {
-  const p = db.list({startkey: 'c'})
+  const p = db.list({ startkey: 'c' })
   assert.ok(helpers.isPromise(p), 'returns Promise')
   p.then(function (docs) {
     assert.ok(true, 'Promise is resolved')
@@ -78,7 +78,7 @@ it('should be able to list with a startkey', function (assert) {
 })
 
 it('should be able to list with a endkey', function (assert) {
-  const p = db.list({endkey: 's'})
+  const p = db.list({ endkey: 's' })
   assert.ok(helpers.isPromise(p), 'returns Promise')
   p.then(function (docs) {
     assert.ok(true, 'Promise is resolved')
@@ -92,7 +92,7 @@ it('should be able to list with a endkey', function (assert) {
 })
 
 it('should be able to list with a end_key', function (assert) {
-  const p = db.list({end_key: 's'})
+  const p = db.list({ end_key: 's' })
   assert.ok(helpers.isPromise(p), 'returns Promise')
   p.then(function (docs) {
     assert.ok(true, 'Promise is resolved')
@@ -118,7 +118,7 @@ it('should be able to list as a stream', function (assert) {
 })
 
 it('should be able to list with params as a stream', function (assert) {
-  const p = db.listAsStream({end_key: 's'})
+  const p = db.listAsStream({ end_key: 's' })
     .on('error', function (error) {
       assert.ifError(error)
     })

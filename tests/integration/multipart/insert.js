@@ -23,7 +23,7 @@ it('should handle crazy encodings', function (assert) {
     data: 'काचं शक्नोम्यत्तुम् । नोपहिनस्ति माम् ॥',
     'content_type': 'text/plain'
   }
-  const p = db.multipart.insert({'foo': 'bar'}, [att], 'foobar')
+  const p = db.multipart.insert({ 'foo': 'bar' }, [att], 'foobar')
   assert.ok(helpers.isPromise(p), 'returns Promise')
   p.then(function (foo) {
     assert.ok(true, 'Promise is resolved')
@@ -64,7 +64,7 @@ it('should work with attachment as a buffer', function (assert) {
     data: Buffer.from('foo'),
     'content_type': 'text/plain'
   }
-  const p = db.multipart.insert({'foo': 'bar'}, [att], 'otherdoc')
+  const p = db.multipart.insert({ 'foo': 'bar' }, [att], 'otherdoc')
   assert.ok(helpers.isPromise(p), 'returns Promise')
   p.then(function (foo) {
     assert.ok(true, 'Promise is resolved')

@@ -17,4 +17,4 @@ const followDatabase = require('../../helpers/unit').unit([
   'follow'
 ])
 
-followDatabase('space', {db: '/space'})
+followDatabase('space', { db: '/space' })

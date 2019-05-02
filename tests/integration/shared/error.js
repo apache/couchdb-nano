@@ -35,7 +35,7 @@ it('should throw when initialize fails', function (assert) {
 })
 
 it('should be able to stream the simplest request', function (assert) {
-  const root = nano.request({stream: true})
+  const root = nano.request({ stream: true })
   root.on('end', function () {
     assert.pass('request worked')
     assert.end()

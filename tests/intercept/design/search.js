@@ -26,7 +26,7 @@ const fakeRequest = function (r, callback) {
 }
 // by passing in a fake Request object, we can intercept the request
 // and see how Nano is pre-processing the parameters
-const n = nano({url: 'http://localhost:5984', request: fakeRequest})
+const n = nano({ url: 'http://localhost:5984', request: fakeRequest })
 const db = n.db.use('fake')
 
 it('should allow custom request object to be supplied', function (assert) {

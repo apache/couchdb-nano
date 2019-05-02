@@ -20,7 +20,7 @@ const db = harness.locals.db
 let rev
 
 it('should insert a document', function (assert) {
-  db.insert({'foo': 'baz'}, 'foobaz', function (error, foo) {
+  db.insert({ 'foo': 'baz' }, 'foobaz', function (error, foo) {
     assert.equal(error, null, 'stores foo')
     assert.equal(foo.ok, true, 'ok response')
     assert.ok(foo.rev, 'response with rev')

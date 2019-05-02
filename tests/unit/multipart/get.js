@@ -17,10 +17,10 @@ const getMultipart = require('../../helpers/unit').unit([
   'get'
 ])
 
-getMultipart('space', {extra: 'stuff'}, {
+getMultipart('space', { extra: 'stuff' }, {
   encoding: null,
-  headers: {'accept': 'multipart/related'},
+  headers: { 'accept': 'multipart/related' },
   method: 'GET',
-  qs: {attachments: true, extra: 'stuff'},
+  qs: { attachments: true, extra: 'stuff' },
   uri: '/mock/space'
 })

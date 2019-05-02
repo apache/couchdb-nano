@@ -32,6 +32,6 @@ copyDocument('excel', 'numbers', {
   uri: '/mock/excel'
 })
 
-copyDocumentFail('excel', 'numbers', {overwrite: 'yes'}, {
+copyDocumentFail('excel', 'numbers', { overwrite: 'yes' }, {
 
 })

@@ -18,7 +18,7 @@ const it = harness.it
 const db = harness.locals.db
 
 it('should store and delete `goofy`', function (assert) {
-  let p = db.insert({'foo': 'baz'}, 'goofy')
+  let p = db.insert({ 'foo': 'baz' }, 'goofy')
   assert.ok(helpers.isPromise(p), 'returns Promise')
   p.then(function (foo) {
     assert.equal(foo.ok, true, 'response should be ok')

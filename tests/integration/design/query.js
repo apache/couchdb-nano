@@ -19,7 +19,7 @@ const it = harness.it
 const db = harness.locals.db
 const viewDerek = helpers.viewDerek
 
-const opts = {key: ['Derek', 'San Francisco']}
+const opts = { key: ['Derek', 'San Francisco'] }
 
 it('should create a ddoc and insert some docs', helpers.prepareAView)
 
@@ -57,8 +57,8 @@ var multipleQueryOpts = {
 
 var expectedResults =
   [
-    {total_rows: 3, offset: 0, rows: [{id: 'p_derek', key: ['Derek', 'San Francisco'], value: 'p_derek'}, {id: 'p_nuno', key: ['Nuno', 'London'], value: 'p_nuno'}]},
-    {total_rows: 3, offset: 2, rows: [{id: 'p_randall', key: ['Randall', 'San Francisco'], value: 'p_randall'}]}
+    { total_rows: 3, offset: 0, rows: [{ id: 'p_derek', key: ['Derek', 'San Francisco'], value: 'p_derek' }, { id: 'p_nuno', key: ['Nuno', 'London'], value: 'p_nuno' }] },
+    { total_rows: 3, offset: 2, rows: [{ id: 'p_randall', key: ['Randall', 'San Francisco'], value: 'p_randall' }] }
   ]
 
 it('should support multiple view queries', function (assert) {

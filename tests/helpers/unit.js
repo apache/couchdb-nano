@@ -136,7 +136,7 @@ function mockClientUnparsedError () {
       url: helpers.couch,
       log: debug,
       request: function (_, cb) {
-        return cb(null, {statusCode: 500}, body || '<b> Error happened </b>')
+        return cb(null, { statusCode: 500 }, body || '<b> Error happened </b>')
       }
     })
   }
@@ -152,7 +152,7 @@ function mockClientFollow () {
           return cb(error)
         }
 
-        return cb(null, qs, {statusCode: 200})
+        return cb(null, qs, { statusCode: 200 })
       }
     })
   }
@@ -163,5 +163,5 @@ helpers.mockClientUnparsedError = mockClientUnparsedError()
 helpers.mockClientDb = mockClient(200, '')
 helpers.mockClientOk = mockClient(200, '/mock')
 helpers.mockClientFail = mockClient(500, '')
-helpers.mockClientJar = mockClient(300, '', {jar: 'is set'})
+helpers.mockClientJar = mockClient(300, '', { jar: 'is set' })
 module.exports = helpers

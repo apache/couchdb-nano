@@ -20,7 +20,7 @@ const it = harness.it
 it('should be able to insert three documents', helpers.insertThree)
 
 it('should be able to receive changes since seq:0', function (assert) {
-  const p = db.changes({since: 0})
+  const p = db.changes({ since: 0 })
   assert.ok(helpers.isPromise(p), 'returns Promise')
   p.then(function (response) {
     assert.equal(response.results.length, 3, 'gets three results')
@@ -32,7 +32,7 @@ it('should be able to receive changes since seq:0', function (assert) {
 
 it('should be able to receive changes since seq:0 as stream', function (assert) {
   const resp = []
-  const p = db.changesAsStream({since: 0})
+  const p = db.changesAsStream({ since: 0 })
     .on('data', function (part) {
       resp.push(part)
     })

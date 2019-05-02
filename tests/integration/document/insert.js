@@ -20,7 +20,7 @@ const it = harness.it
 let rev
 
 it('should insert one simple document', function (assert) {
-  const p = db.insert({'foo': 'baz'}, 'foobaz')
+  const p = db.insert({ 'foo': 'baz' }, 'foobaz')
   assert.ok(helpers.isPromise(p), 'returns Promise')
   p.then(function (foo) {
     assert.ok(true, 'Promise is resolved')
