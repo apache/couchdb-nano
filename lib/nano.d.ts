@@ -234,6 +234,13 @@ declare namespace nano {
       searchname: string,
       params: DocumentSearchParams
     ): Request;
+    baseView<V>(
+      designname: string,
+      viewname: string,
+      meta: any,
+      params?: any,
+      callback?: Callback<any>
+    ): Promise<any>;
     // http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view
     // http://docs.couchdb.org/en/latest/api/ddoc/views.html#post--db-_design-ddoc-_view-view
     view<V>(
