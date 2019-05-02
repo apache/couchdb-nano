@@ -26,6 +26,24 @@ it('should be able to create `az09_$()+-/` database', function (assert) {
   })
 })
 
+it('should be able to create a database without query parameters', function (assert) {
+  nano.db.create('newdb1').then(function (body) {
+    assert.ok(body.ok)
+    assert.end()
+  }).catch(function () {
+    assert.ok(false, 'Promise is rejected')
+  })
+})
+
+it('should be able to create a database with query parameters', function (assert) {
+  nano.db.create('newdb2', { q: 1, n: 3 }).then(function (body) {
+    assert.ok(body.ok)
+    assert.end()
+  }).catch(function () {
+    assert.ok(false, 'Promise is rejected')
+  })
+})
+
 it('should be able to use config from a nano object to create a db',
   function (assert) {
     const config = helpers.Nano(
