@@ -14,7 +14,7 @@
 
 const helpers = require('../../helpers/integration')
 const harness = helpers.harness(__filename)
-const nano = require('../../../lib/nano.js')({url: 'http://localhost:5984', requestDefaults: {jar: true}})
+const nano = require('../../../lib/nano.js')({ url: 'http://localhost:5984', requestDefaults: { jar: true } })
 const it = harness.it
 
 it('should be able to create a user', function (assert) {
@@ -40,7 +40,7 @@ it('should be able to create a user', function (assert) {
 
 it('should be able to insert with a cookie', function (assert) {
   const db = nano.db.use('shared_cookie')
-  const p = db.insert({'foo': 'baz'})
+  const p = db.insert({ 'foo': 'baz' })
   assert.ok(helpers.isPromise(p), 'returns Promise')
   p.then(function (response) {
     assert.equal(response.ok, true, 'response should be ok')

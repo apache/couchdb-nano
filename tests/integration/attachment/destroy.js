@@ -23,7 +23,7 @@ it('should be able to insert a new plain text attachment', function (assert) {
   p.then(function (response) {
     assert.equal(response.ok, true, 'response ok')
     assert.ok(response.rev, 'have a revision number')
-    return db.attachment.destroy('new', 'att', {rev: response.rev})
+    return db.attachment.destroy('new', 'att', { rev: response.rev })
   }).then(function (response) {
     assert.equal(response.ok, true, 'response ok')
     assert.equal(response.id, 'new', '`id` should be `new`')

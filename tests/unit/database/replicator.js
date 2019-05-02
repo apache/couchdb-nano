@@ -27,7 +27,7 @@ replicator('baa', 'baashep', {
   uri: '/_replicator'
 })
 
-replicator('molly', 'anne', {some: 'params'}, {
+replicator('molly', 'anne', { some: 'params' }, {
   body: '{"some":"params","source":"http://localhost:5984/molly","target":"http://localhost:5984/anne"}',
   headers: {
     accept: 'application/json',

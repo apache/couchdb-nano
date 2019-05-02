@@ -17,5 +17,5 @@ const followUpdates = require('../../helpers/unit').unit([
   'followUpdates'
 ])
 
-followUpdates({db: '/_db_updates'})
-followUpdates({since: 1}, {db: '/_db_updates', since: 1})
+followUpdates({ db: '/_db_updates' })
+followUpdates({ since: 1 }, { db: '/_db_updates', since: 1 })

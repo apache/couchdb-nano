@@ -61,4 +61,4 @@ function replicateWithRetry (masterUri, replicaUri, retries, callback) {
   })
 }
 
-module.exports = {insert: insertWithRetry, replicate: replicateWithRetry}
+module.exports = { insert: insertWithRetry, replicate: replicateWithRetry }

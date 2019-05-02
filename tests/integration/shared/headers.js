@@ -28,7 +28,7 @@ it('should get headers', function (assert) {
       nano.request({
         db: 'shared_headers',
         doc: 'new',
-        headers: {'If-None-Match': JSON.stringify(hello.rev)}
+        headers: { 'If-None-Match': JSON.stringify(hello.rev) }
       }, function (error, helloWorld, rh) {
         assert.equal(error, null, 'should get the hello')
         assert.equal(rh['statusCode'], 304, 'status is not modified')

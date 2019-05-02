@@ -24,7 +24,7 @@ function updateRow (row, cb) {
 function list (offset) {
   var ended = false
   offset = offset || 0
-  db.list({include_docs: true, limit: 10, skip: offset},
+  db.list({ include_docs: true, limit: 10, skip: offset },
     function (err, data) {
       var total, offset, rows
       if (err) { console.log('fuuuu: ' + err.message); rows = []; return }

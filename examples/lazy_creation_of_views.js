@@ -43,7 +43,7 @@ module.exports = function () {
     if (!retries) {
       retries = 0
     }
-    users.insert({emailAddress: emailAddress, secret: secret, name: name}, secret,
+    users.insert({ emailAddress: emailAddress, secret: secret, name: name }, secret,
       function (e, b, h) {
         if (e && e.message === 'no_db_file' && retries < 1) {
           return createUsersDatabase(emailAddress, secret, name, retries)
@@ -65,7 +65,7 @@ module.exports = function () {
   function userFind (view, id, opts, tried, callback) {
     if (typeof tried === 'function') {
       callback = tried
-      tried = {tried: 0, max_retries: 2}
+      tried = { tried: 0, max_retries: 2 }
     }
     users.view('users', view, opts, function (e, b, h) {
       if (e) {
@@ -76,7 +76,7 @@ module.exports = function () {
         }
         if (tried.tried < tried.max_retries) {
           if (e.message === 'missing' || e.message === 'deleted') { // create design document
-            var designDoc = {views: {}}
+            var designDoc = { views: {} }
             designDoc.views[view] = currentView
             return users.insert(designDoc, '_design/users', function () {
               tried.tried += 1
@@ -101,7 +101,7 @@ module.exports = function () {
   }
 
   function userFirst (view, id, callback) {
-    return userFind(view, id, {startkey: ('"' + id + '"'), limit: 1}, callback)
+    return userFind(view, id, { startkey: ('"' + id + '"'), limit: 1 }, callback)
   }
 
   return {

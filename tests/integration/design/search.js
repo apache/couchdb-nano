@@ -24,7 +24,7 @@ const viewDerek = helpers.viewDerek
 // tests do no run without mocks
 //
 if (helpers.mocked) {
-  const opts = {key: ['Derek', 'San Francisco']}
+  const opts = { key: ['Derek', 'San Francisco'] }
 
   it('should create a ddoc and insert some docs', function (assert) {
     helpers.prepareAView(assert, '/_search', db)

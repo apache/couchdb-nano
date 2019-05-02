@@ -18,11 +18,11 @@ const it = harness.it
 const db = harness.locals.db
 
 it('must insert two docs before the tests start', function (assert) {
-  db.insert({'foo': 'baz'}, 'foo_src', function (error, src) {
+  db.insert({ 'foo': 'baz' }, 'foo_src', function (error, src) {
     assert.equal(error, null, 'stores src')
     assert.equal(src.ok, true, 'response ok')
     assert.ok(src.rev, 'haz rev')
-    db.insert({'bar': 'qux'}, 'foo_dest', function (error, dest) {
+    db.insert({ 'bar': 'qux' }, 'foo_dest', function (error, dest) {
       assert.equal(error, null, 'stores dest')
       assert.equal(dest.ok, true, 'oki doki')
       assert.ok(dest.rev, 'response has rev')
@@ -32,7 +32,7 @@ it('must insert two docs before the tests start', function (assert) {
 })
 
 it('should be able to copy and overwrite a document', function (assert) {
-  const p = db.copy('foo_src', 'foo_dest', {overwrite: true})
+  const p = db.copy('foo_src', 'foo_dest', { overwrite: true })
   assert.ok(helpers.isPromise(p), 'returns Promise')
   p.then(function () {
     assert.ok(true, 'Promise is resolved')

@@ -25,7 +25,7 @@ it('should be able to insert and update attachments', function (assert) {
   p.then(function (hello) {
     assert.equal(hello.ok, true, 'response ok')
     assert.ok(hello.rev, 'should have a revision')
-    return db.attachment.insert('new', 'att', buffer, 'image/bmp', {rev: hello.rev})
+    return db.attachment.insert('new', 'att', buffer, 'image/bmp', { rev: hello.rev })
   }).then(function (bmp) {
     assert.ok(bmp.rev, 'should store a revision')
     assert.end()

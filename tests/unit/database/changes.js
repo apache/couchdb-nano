@@ -17,13 +17,13 @@ const changesDatabase = require('../../helpers/unit').unit([
   'changes'
 ])
 
-changesDatabase('mock', {since: '10'}, {
+changesDatabase('mock', { since: '10' }, {
   headers: {
     accept: 'application/json',
     'content-type': 'application/json'
   },
   method: 'GET',
-  qs: {since: '10'},
+  qs: { since: '10' },
   uri: '/mock/_changes'
 })
 

@@ -25,7 +25,7 @@ if (helpers.unmocked) {
   it('should be able to get the changes feed', function (assert) {
     let i = 3
 
-    feed1 = db.follow({since: '0'})
+    feed1 = db.follow({ since: '0' })
 
     feed1.on('change', function (change) {
       assert.ok(change, 'change existed')
@@ -39,7 +39,7 @@ if (helpers.unmocked) {
     feed1.follow()
 
     setTimeout(function () {
-      db.insert({'bar': 'baz'}, 'barbaz')
+      db.insert({ 'bar': 'baz' }, 'barbaz')
     }, 100)
   })
 

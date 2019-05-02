@@ -20,8 +20,8 @@ const db = harness.locals.db
 it('should be able to bulk insert two docs', function (assert) {
   const p = db.bulk({
     'docs': [
-      {'key': 'baz', 'name': 'bazzel'},
-      {'key': 'bar', 'name': 'barry'}
+      { 'key': 'baz', 'name': 'bazzel' },
+      { 'key': 'bar', 'name': 'barry' }
     ]
   })
   assert.ok(helpers.isPromise(p), 'returns Promise')

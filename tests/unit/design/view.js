@@ -34,7 +34,7 @@ viewDesign('alice', 'by_id', {
 })
 
 viewDesign('alice', 'by_id', {
-  queries: [{keys: ['foobar', 'barfoo']}, {limit: 3, skip: 2}],
+  queries: [{ keys: ['foobar', 'barfoo'] }, { limit: 3, skip: 2 }],
   include_docs: true
 }, {
   body: '{"queries":[{"keys":["foobar","barfoo"]},{"limit":3,"skip":2}]}',

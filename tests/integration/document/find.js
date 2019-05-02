@@ -20,7 +20,7 @@ const it = harness.it
 it('should insert a bunch of items', helpers.insertThree)
 
 it('should be to do a mango query', function (assert) {
-  const p = db.find({selector: {foo: 'baz'}})
+  const p = db.find({ selector: { foo: 'baz' } })
   assert.ok(helpers.isPromise(p), 'returns Promise')
   p.then(function (response) {
     assert.ok(true, 'Promise is resolved')
@@ -33,7 +33,7 @@ it('should be to do a mango query', function (assert) {
 
 it('should be to do a mango query with streams', function (assert) {
   const resp = []
-  const p = db.findAsStream({selector: {foo: 'baz'}})
+  const p = db.findAsStream({ selector: { foo: 'baz' } })
     .on('data', function (part) {
       resp.push(part)
     })

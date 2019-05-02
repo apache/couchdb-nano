@@ -26,12 +26,12 @@ updatesDatabase({
   uri: '/_db_updates'
 })
 
-updatesDatabase({since: 1}, {
+updatesDatabase({ since: 1 }, {
   headers: {
     accept: 'application/json',
     'content-type': 'application/json'
   },
   method: 'GET',
-  qs: {since: 1},
+  qs: { since: 1 },
   uri: '/_db_updates'
 })

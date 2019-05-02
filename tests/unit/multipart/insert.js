@@ -17,11 +17,11 @@ const insertMultipart = require('../../helpers/unit').unit([
   'insert'
 ])
 
-insertMultipart({hey: 1}, [{
+insertMultipart({ hey: 1 }, [{
   name: 'att',
   data: 'some',
   'content_type': 'text/plain'
-}], {extra: 'stuff'}, {
+}], { extra: 'stuff' }, {
   headers: {
     'content-type': 'multipart/related'
   },
@@ -34,8 +34,8 @@ insertMultipart({hey: 1}, [{
         ',"hey":1}',
       'content-type': 'application/json'
     },
-    {body: 'some'}
+    { body: 'some' }
   ],
-  qs: {extra: 'stuff'},
+  qs: { extra: 'stuff' },
   uri: '/mock'
 })
