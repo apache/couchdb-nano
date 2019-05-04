@@ -182,6 +182,10 @@ declare namespace nano {
       params: DocumentFetchParams,
       callback?: Callback<DocumentFetchRevsResponse>
     ): Promise<DocumentFetchRevsResponse>;
+    // http://docs.couchdb.org/en/latest/api/database/find.html#db-index
+    createIndex(indexDef: CreateIndexRequest,
+                callback?:  Callback<CreateIndexResponse>
+    ): Promise<CreateIndexResponse>;
     multipart: Multipart<D>;
     attachment: Attachment;
     // http://docs.couchdb.org/en/latest/api/ddoc/render.html#get--db-_design-ddoc-_show-func
@@ -1268,6 +1272,39 @@ declare namespace nano {
 
     // Total execution time in milliseconds as measured by the database.
     execution_time_ms: number;
+  }
+
+  // http://docs.couchdb.org/en/latest/api/database/find.html#db-index
+  interface CreateIndexRequest {
+    // JSON object describing the index to create
+    index: {
+      // Array of field names following the sort syntax.
+      fields: SortOrder[],
+
+      // A selector to apply to documents at indexing time, creating a partial index.
+      partial_filter_selector?: MangoSelector
+    },
+
+    // Name of the design document in which the index will be created.
+    ddoc?: string
+
+    // Name of the index. If no name is provided, a name will be generated automatically.
+    name?: string,
+
+    // Can be "json" or "text". Defaults to json.
+    type?: 'json' | 'text'
+  }
+
+  // http://docs.couchdb.org/en/latest/api/database/find.html#db-index
+  interface CreateIndexResponse {
+    // Flag to show whether the index was created or one already exists. Can be “created” or “exists”.
+    result: string,
+
+    // Id of the design document the index was created in.
+    id: string,
+
+    // Name of the index created.
+    name: string
   }
 }
 
