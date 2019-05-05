@@ -1292,7 +1292,10 @@ declare namespace nano {
     name?: string,
 
     // Can be "json" or "text". Defaults to json.
-    type?: 'json' | 'text'
+    type?: 'json' | 'text',
+
+    // This field sets whether the created index will be a partitioned or global index.
+    partitioned: boolean
   }
 
   // http://docs.couchdb.org/en/latest/api/database/find.html#db-index
