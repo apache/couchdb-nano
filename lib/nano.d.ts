@@ -1295,7 +1295,7 @@ declare namespace nano {
     type?: 'json' | 'text',
 
     // This field sets whether the created index will be a partitioned or global index.
-    partitioned: boolean
+    partitioned?: boolean
   }
 
   // http://docs.couchdb.org/en/latest/api/database/find.html#db-index
