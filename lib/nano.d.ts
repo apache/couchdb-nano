@@ -59,6 +59,11 @@ declare namespace nano {
   }
 
   interface DatabaseScope {
+    replication: {
+        enable(source, target, opts0, callback0?): any;
+        disable(id, rev, opts0, callback0?): any;
+        query(id, opts0, callback0?): any;
+    };
     // http://docs.couchdb.org/en/latest/api/database/common.html#put--db
     create(name: string, params?: DatabaseCreateParams, callback?: Callback<DatabaseCreateResponse>): Promise<DatabaseCreateResponse>;
     // http://docs.couchdb.org/en/latest/api/database/common.html#get--db
