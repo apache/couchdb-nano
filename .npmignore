@@ -1,2 +1,5 @@
 tests
 scripts
+examples
+coverage
+.github
