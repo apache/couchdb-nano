@@ -1197,9 +1197,32 @@ declare namespace nano {
   type MangoValue = number | string | Date | boolean | null;
 
   // http://docs.couchdb.org/en/latest/api/database/find.html#selector-syntax
-  interface MangoSelector {
-    [key: string]: MangoSelector | MangoValue | MangoValue[];
+
+  enum ConditionOperands {
+    $lt = '$lt',
+    $lte = '$lte',
+    $eq = '$eq',
+    $ne = '$ne',
+    $gte = '$gte',
+    $gt = '$gt'
   }
+
+  enum ArrayFieldOperands {
+    $in = '$in',
+    $nin = '$nin'
+  }
+
+  enum CombinationOperands {
+      $or = '$or',
+      $and = '$and',
+      $nor = '$nor',
+      $all = '$all'
+  }
+
+  type MangoSelector = { [key: string]: MangoSelector | MangoValue | MangoValue[]; }
+    | Partial<{ [key in ConditionOperands]: MangoValue; }>
+    | Partial<{ [key in ArrayFieldOperands]: MangoValue[] }>
+    | Partial<{ [key in CombinationOperands]: MangoSelector[] }>
 
   // http://docs.couchdb.org/en/latest/api/database/find.html#sort-syntax
   type SortOrder = string | string[] | { [key: string]: 'asc' | 'desc' };
