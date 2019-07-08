@@ -350,14 +350,14 @@ declare namespace nano {
       contenttype: string,
       params: any
     ): Request
-    get(docname: string, attname: string, callback?: Callback<any>): Promise<any>;
+    get(docname: string, attname: string, callback?: Callback<Buffer>): Promise<Buffer>;
     getAsStream(docname: string, attname: string): Request;
     get(
       docname: string,
       attname: string,
       params: any,
-      callback?: Callback<any>
-    ): Promise<any>;
+      callback?: Callback<Buffer>
+    ): Promise<Buffer>;
     destroy(docname: string, attname: string, callback?: Callback<any>): Promise<any>;
     destroy(
       docname: string,
