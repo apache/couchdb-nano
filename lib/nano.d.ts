@@ -209,20 +209,20 @@ declare namespace nano {
       callback?: Callback<any>
     ): Promise<any>;
     // http://docs.couchdb.org/en/latest/api/ddoc/render.html#put--db-_design-ddoc-_update-func-docid
-    atomic(
+    atomic<R>(
       designname: string,
       updatename: string,
       docname: string,
-      callback?: Callback<OkResponse>
-    ): Promise<OkResponse>;
+      callback?: Callback<R>
+    ): Promise<R>;
     // http://docs.couchdb.org/en/latest/api/ddoc/render.html#put--db-_design-ddoc-_update-func-docid
-    atomic(
+    atomic<R>(
       designname: string,
       updatename: string,
       docname: string,
       body: any,
-      callback?: Callback<OkResponse>
-    ): Promise<OkResponse>;
+      callback?: Callback<R>
+    ): Promise<R>;
     // http://docs.couchdb.org/en/latest/api/ddoc/render.html#put--db-_design-ddoc-_update-func-docid
     updateWithHandler(
       designname: string,
