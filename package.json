@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "homepage": "http://github.com/apache/couchdb-nano",
   "repository": "http://github.com/apache/couchdb-nano",
-  "version": "8.1.0",
+  "version": "8.2.0",
   "author": "Apache CouchDB <dev@couchdb.apache.org> (http://couchdb.apache.org)",
   "keywords": [
     "couchdb",
@@ -17,36 +17,36 @@
     "database"
   ],
   "dependencies": {
-    "@types/request": "^2.47.1",
-    "cloudant-follow": "^0.18.1",
+    "@types/request": "^2.48.4",
+    "cloudant-follow": "^0.18.2",
     "debug": "^4.1.1",
     "errs": "^0.3.2",
     "request": "^2.88.0"
   },
   "devDependencies": {
     "async": "^2.6.2",
-    "istanbul": "^0.4.5",
-    "nock": "^10.0.6",
-    "standard": "^12.0.1",
-    "tape": "^4.10.1"
+    "jest": "^25.1.0",
+    "nock": "^11.7.2",
+    "standard": "^14.3.1"
   },
   "scripts": {
     "standard": "standard --fix",
-    "test": "standard && npm run mocha",
-    "mocha": "NOCK_OFF=true istanbul cover tape tests/*/*/*.js",
-    "unmocked": "NOCK_OFF=true tape tests/*/*/*.js",
-    "mocked": "tape tests/*/*/*.js",
-    "coverage": "open coverage/lcov-report/index.html",
-    "checkcoverage": "istanbul check-coverage --statements 100 --functions 100 --lines 100 --branches 100"
+    "test": "standard && npm run jest",
+    "jest": "jest test/* --coverage"
   },
   "main": "./lib/nano.js",
   "types": "./lib/nano.d.ts",
   "engines": {
-    "node": ">=6"
+    "node": ">=10"
   },
   "pre-commit": [
     "mocked",
     "test",
     "checkcoverage"
-  ]
+  ],
+  "standard": {
+    "env": [
+      "jest"
+    ]
+  }
 }
