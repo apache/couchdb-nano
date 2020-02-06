@@ -14,9 +14,8 @@ const Nano = require('..')
 const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
 
-test('should be able to follow changes feed - nano.db.follow', () => {
-  const db = nano.db.use('db')
-  const feed = db.follow({ since: 'now' })
+test('should be able to follow db updates- nano.followUpdates', () => {
+  const feed = nano.followUpdates()
   expect(feed.constructor.name).toBe('Feed')
   // no need to test the changes feed follower - it has its own tests
 })

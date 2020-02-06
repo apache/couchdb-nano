@@ -14,9 +14,18 @@ const Nano = require('..')
 const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
 
-test('should be able to follow changes feed - nano.db.follow', () => {
-  const db = nano.db.use('db')
-  const feed = db.follow({ since: 'now' })
-  expect(feed.constructor.name).toBe('Feed')
-  // no need to test the changes feed follower - it has its own tests
+test('should be able to use a database - nano.db.use', () => {
+  const db = nano.db.use('db1')
+  expect(typeof db).toBe('object')
+  expect(typeof db.get).toBe('function')
+  expect(typeof db.replication).toBe('object')
+  expect(db.config.db).toBe('db1')
+})
+
+test('should be able to use a database - nano.use', () => {
+  const db = nano.use('db2')
+  expect(typeof db).toBe('object')
+  expect(typeof db.get).toBe('function')
+  expect(typeof db.replication).toBe('object')
+  expect(db.config.db).toBe('db2')
 })
