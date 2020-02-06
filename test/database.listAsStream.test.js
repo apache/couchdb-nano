@@ -23,7 +23,7 @@ test('should get a streamed list of databases - GET /_all_dbs - nano.db.listAsSt
     .reply(200, response)
 
   return new Promise((resolve, reject) => {
-    // test GET /db/_all_dbs
+    // test GET /_all_dbs
     const s = nano.db.listAsStream()
     expect(typeof s).toBe('object')
     let buffer = ''
