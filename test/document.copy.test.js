@@ -31,12 +31,12 @@ test('should be able to copy a document - db.copy', async () => {
 
 test('should detect missing source doc id - db.copy', async () => {
   const db = nano.db.use('db')
-  await expect(db.copy(undefined, 'rabbbit2')).rejects.toThrow('Invalid doc id')
+  await expect(db.copy(undefined, 'rabbbit2')).rejects.toThrow('Invalid parameters')
 })
 
 test('should detect missing target doc id - db.copy', async () => {
   const db = nano.db.use('db')
-  await expect(db.copy('rabbit1')).rejects.toThrow('Invalid doc id')
+  await expect(db.copy('rabbit1')).rejects.toThrow('Invalid parameters')
 })
 
 test('should be able to copy a document in overwrite mode - db.copy', async () => {
@@ -73,4 +73,22 @@ test('should be able to copy a document in overwrite mode missing target - db.co
   const p = await db.copy('rabbit1', 'rabbit2', { overwrite: true })
   expect(p).toStrictEqual(response)
   expect(scope.isDone()).toBe(true)
+})
+
+test('should detect invalid parameters - db.copy', async () => {
+  const db = nano.db.use('db')
+  await expect(db.copy()).rejects.toThrowError('Invalid parameters')
+  await expect(db.copy('')).rejects.toThrowError('Invalid parameters')
+  await expect(db.copy('', 'rabbit2')).rejects.toThrowError('Invalid parameters')
+  await expect(db.copy('rabbit1', '')).rejects.toThrowError('Invalid parameters')
+})
+
+test('should detect missing parameters (callback) - db.copy', async () => {
+  return new Promise((resolve, reject) => {
+    const db = nano.db.use('db')
+    db.copy(undefined, undefined, (err, data) => {
+      expect(err).not.toBeNull()
+      resolve()
+    })
+  })
 })

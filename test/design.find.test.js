@@ -68,8 +68,8 @@ test('should handle 404 - POST /db/_find - db.find', async () => {
 
 test('should detect missing query - db.find', async () => {
   const db = nano.db.use('db')
-  await expect(db.find()).rejects.toThrow('Invalid query')
-  await expect(db.find('susan')).rejects.toThrow('Invalid query')
+  await expect(db.find()).rejects.toThrow('Invalid parameters')
+  await expect(db.find('susan')).rejects.toThrow('Invalid parameters')
 })
 
 test('should detect missing query (callback) - db.find', async () => {

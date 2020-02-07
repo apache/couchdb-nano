@@ -60,7 +60,17 @@ test('should be able to head a missing document - HEAD /db/id - db.head', async 
   expect(scope.isDone()).toBe(true)
 })
 
-test('should detect missing doc id - db.head', async () => {
+test('should detect missing parameters - db.head', async () => {
   const db = nano.db.use('db')
-  await expect(db.head()).rejects.toThrow('Invalid doc id')
+  await expect(db.head()).rejects.toThrow('Invalid parameters')
+})
+
+test('should detect missing parameters (callback) - db.head', async () => {
+  return new Promise((resolve, reject) => {
+    const db = nano.db.use('db')
+    db.head(undefined, (err, data) => {
+      expect(err).not.toBeNull()
+      resolve()
+    })
+  })
 })

@@ -57,14 +57,16 @@ test('should handle pre-existing database - PUT /db - nano.db.create', async () 
   expect(scope.isDone()).toBe(true)
 })
 
-test('should not attempt to create database with empty database name - nano.db.create', async () => {
-  expect(() => {
-    nano.db.create('')
-  }).toThrowError('missing dbName')
+test('should not attempt to create database with invalid parameters - nano.db.create', async () => {
+  await expect(nano.db.create()).rejects.toThrowError('Invalid parameters')
+  await expect(nano.db.create('')).rejects.toThrowError('Invalid parameters')
 })
 
-test('should not attempt to create database with missing database name - nano.db.create', async () => {
-  expect(() => {
-    nano.db.create()
-  }).toThrowError('missing dbName')
+test('should detect missing parameters (callback) - nano.db.create', async () => {
+  return new Promise((resolve, reject) => {
+    nano.db.create(undefined, undefined, (err, data) => {
+      expect(err).not.toBeNull()
+      resolve()
+    })
+  })
 })

@@ -84,14 +84,16 @@ test('should handle missing database - PUT /db - nano.db.create', async () => {
   expect(scope.isDone()).toBe(true)
 })
 
-test('should not attempt info fetch with empty dbName - nano.db.get', async () => {
-  expect(() => {
-    nano.db.get('')
-  }).toThrowError('missing dbName')
+test('should not attempt info fetch with missing parameters - nano.db.get', async () => {
+  await expect(nano.db.get()).rejects.toThrowError('Invalid parameters')
+  await expect(nano.db.get('')).rejects.toThrowError('Invalid parameters')
 })
 
-test('should not attempt info fetch with missing dbName - nano.db.get', async () => {
-  expect(() => {
-    nano.db.get()
-  }).toThrowError('missing dbName')
+test('should detect missing parameters (callback) - nano.db.get', async () => {
+  return new Promise((resolve, reject) => {
+    nano.db.get(undefined, (err, data) => {
+      expect(err).not.toBeNull()
+      resolve()
+    })
+  })
 })

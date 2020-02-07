@@ -29,7 +29,7 @@ test('should destroy a database - DELETE /db - nano.db.destroy', async () => {
   expect(scope.isDone()).toBe(true)
 })
 
-test('should handle non-existant database - DELETE /db - nano.db.create', async () => {
+test('should handle non-existant database - DELETE /db - nano.db.destroy', async () => {
   // mocks
   const scope = nock(COUCH_URL)
     .delete('/db')
@@ -44,13 +44,15 @@ test('should handle non-existant database - DELETE /db - nano.db.create', async 
 })
 
 test('should not attempt to destroy database with empty database name - nano.db.destroy', async () => {
-  expect(() => {
-    nano.db.destroy('')
-  }).toThrowError('missing dbName')
+  await expect(nano.db.destroy()).rejects.toThrowError('Invalid parameters')
+  await expect(nano.db.destroy('')).rejects.toThrowError('Invalid parameters')
 })
 
-test('should not attempt to destroy database with missing database name - nano.db.destroy', async () => {
-  expect(() => {
-    nano.db.destroy()
-  }).toThrowError('missing dbName')
+test('should detect missing parameters (callback) - nano.db.destroy', async () => {
+  return new Promise((resolve, reject) => {
+    nano.db.destroy(undefined, (err, data) => {
+      expect(err).not.toBeNull()
+      resolve()
+    })
+  })
 })

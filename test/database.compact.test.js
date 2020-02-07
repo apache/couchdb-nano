@@ -40,14 +40,16 @@ test('should be able to send compaction request with design doc - POST /db/_comp
   expect(scope.isDone()).toBe(true)
 })
 
-test('should not attempt compact with empty dbName - nano.db.compact', async () => {
-  expect(() => {
-    nano.db.compact('')
-  }).toThrowError('missing dbName')
+test('should not attempt compact with invalid parameters - nano.db.compact', async () => {
+  await expect(nano.db.compact('')).rejects.toThrowError('Invalid parameters')
+  await expect(nano.db.compact()).rejects.toThrowError('Invalid parameters')
 })
 
-test('should not attempt compact with missing dbName - nano.db.compact', async () => {
-  expect(() => {
-    nano.db.compact()
-  }).toThrowError('missing dbName')
+test('should detect missing parameters (callback) - nano.db.compact', async () => {
+  return new Promise((resolve, reject) => {
+    nano.db.compact(undefined, (err, data) => {
+      expect(err).not.toBeNull()
+      resolve()
+    })
+  })
 })

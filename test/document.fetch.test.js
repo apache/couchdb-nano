@@ -150,11 +150,21 @@ test('should be able to handle 404 - POST /db/_all_docs - db.fetch', async () =>
   expect(scope.isDone()).toBe(true)
 })
 
-test('should detect missing keys - db.fetch', async () => {
+test('should detect invalid parameters - db.fetch', async () => {
   const db = nano.db.use('db')
-  await expect(db.fetch()).rejects.toThrow('Invalid keys')
-  await expect(db.fetch({})).rejects.toThrow('Invalid keys')
-  await expect(db.fetch({ keys: {} })).rejects.toThrow('Invalid keys')
-  await expect(db.fetch({ keys: '123' })).rejects.toThrow('Invalid keys')
-  await expect(db.fetch({ keys: [] })).rejects.toThrow('Invalid keys')
+  await expect(db.fetch()).rejects.toThrow('Invalid parameters')
+  await expect(db.fetch({})).rejects.toThrow('Invalid parameters')
+  await expect(db.fetch({ keys: {} })).rejects.toThrow('Invalid parameters')
+  await expect(db.fetch({ keys: '123' })).rejects.toThrow('Invalid parameters')
+  await expect(db.fetch({ keys: [] })).rejects.toThrow('Invalid parameters')
+})
+
+test('should detect missing parameters (callback) - db.fetch', async () => {
+  return new Promise((resolve, reject) => {
+    const db = nano.db.use('db')
+    db.fetch(undefined, (err, data) => {
+      expect(err).not.toBeNull()
+      resolve()
+    })
+  })
 })

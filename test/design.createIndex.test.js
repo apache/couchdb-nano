@@ -67,8 +67,8 @@ test('should handle 404 - POST /db/_index - db.index', async () => {
 
 test('should detect missing index - db.createIndex', async () => {
   const db = nano.db.use('db')
-  await expect(db.createIndex()).rejects.toThrow('Invalid index definition')
-  await expect(db.createIndex('myindex')).rejects.toThrow('Invalid index definition')
+  await expect(db.createIndex()).rejects.toThrow('Invalid parameters')
+  await expect(db.createIndex('myindex')).rejects.toThrow('Invalid parameters')
 })
 
 test('should detect missing index (callback) - db.createIndex', async () => {

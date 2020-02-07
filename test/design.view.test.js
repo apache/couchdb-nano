@@ -147,10 +147,10 @@ test('should be able to handle 404 - db.view', async () => {
 
 test('should detect missing parameters - db.view', async () => {
   const db = nano.db.use('db')
-  await expect(db.view()).rejects.toThrow('Invalid view')
-  await expect(db.view('susan')).rejects.toThrow('Invalid view')
-  await expect(db.view('susan', '')).rejects.toThrow('Invalid view')
-  await expect(db.view('', 'susan')).rejects.toThrow('Invalid view')
+  await expect(db.view()).rejects.toThrow('Invalid parameters')
+  await expect(db.view('susan')).rejects.toThrow('Invalid parameters')
+  await expect(db.view('susan', '')).rejects.toThrow('Invalid parameters')
+  await expect(db.view('', 'susan')).rejects.toThrow('Invalid parameters')
 })
 
 test('should detect missing parameters (callback) - db.view', async () => {

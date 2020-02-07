@@ -77,10 +77,10 @@ test('should be able to handle 404 - db.atomic', async () => {
 
 test('should detect missing parameters - db.update', async () => {
   const db = nano.db.use('db')
-  await expect(db.atomic()).rejects.toThrow('Invalid update')
-  await expect(db.atomic('ddoc')).rejects.toThrow('Invalid update')
-  await expect(db.atomic('ddoc', 'updatename')).rejects.toThrow('Invalid update')
-  await expect(db.atomic('', 'updatename', 'docid')).rejects.toThrow('Invalid update')
+  await expect(db.atomic()).rejects.toThrow('Invalid parameters')
+  await expect(db.atomic('ddoc')).rejects.toThrow('Invalid parameters')
+  await expect(db.atomic('ddoc', 'updatename')).rejects.toThrow('Invalid parameters')
+  await expect(db.atomic('', 'updatename', 'docid')).rejects.toThrow('Invalid parameters')
 })
 
 test('should detect missing parameters (callback) - db.update', async () => {

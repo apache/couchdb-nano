@@ -63,26 +63,17 @@ test('should be able to supply additional parameters - POST /_replicate - nano.d
   expect(scope.isDone()).toBe(true)
 })
 
-test('should not attempt compact with empty source - nano.db.replicate', async () => {
-  expect(() => {
-    nano.db.replicate('')
-  }).toThrowError('missing source')
+test('should not attempt compact invalid parameters - nano.db.replicate', async () => {
+  await expect(nano.db.replicate('')).rejects.toThrowError('Invalid parameters')
+  await expect(nano.db.replicate(undefined, 'target')).rejects.toThrowError('Invalid parameters')
+  await expect(nano.db.replicate('', 'target')).rejects.toThrowError('Invalid parameters')
 })
 
-test('should not attempt compact with missing source - nano.db.replicate', async () => {
-  expect(() => {
-    nano.db.replicate(undefined, 'target')
-  }).toThrowError('missing source')
-})
-
-test('should not attempt compact with empty target - nano.db.replicate', async () => {
-  expect(() => {
-    nano.db.replicate('', 'target')
-  }).toThrowError('missing source')
-})
-
-test('should not attempt compact with missing target - nano.db.replicate', async () => {
-  expect(() => {
-    nano.db.replicate(undefined, 'target')
-  }).toThrowError('missing source')
+test('should detect missing parameters (callback) - nano.db.replicate', async () => {
+  return new Promise((resolve, reject) => {
+    nano.db.replicate(undefined, undefined, undefined, (err, data) => {
+      expect(err).not.toBeNull()
+      resolve()
+    })
+  })
 })

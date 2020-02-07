@@ -15,7 +15,7 @@ const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
 const nock = require('nock')
 
-test('should be able to fetch a list of document revisions - POST /db/_all_docs - db.fetch', async () => {
+test('should be able to fetch a list of document revisions - POST /db/_all_docs - db.fetchRevs', async () => {
   // mocks
   const keys = ['1000501', '1000543', '100077']
   const response = {
@@ -56,7 +56,7 @@ test('should be able to fetch a list of document revisions - POST /db/_all_docs 
   expect(scope.isDone()).toBe(true)
 })
 
-test('should be able to fetch a list of document revisions  with opts - GET /db/_all_docs - db.fetch', async () => {
+test('should be able to fetch a list of document revisions  with opts - GET /db/_all_docs - db.fetchRevs', async () => {
   // mocks
   const keys = ['1000501', '1000543', '100077']
   const response = {
@@ -97,7 +97,7 @@ test('should be able to fetch a list of document revisions  with opts - GET /db/
   expect(scope.isDone()).toBe(true)
 })
 
-test('should be able to handle 404 - POST /db/_all_docs - db.fetch', async () => {
+test('should be able to handle 404 - POST /db/_all_docs - db.fetchRevs', async () => {
   // mocks
   const keys = ['1000501', '1000543', '100077']
   const response = {
@@ -114,11 +114,21 @@ test('should be able to handle 404 - POST /db/_all_docs - db.fetch', async () =>
   expect(scope.isDone()).toBe(true)
 })
 
-test('should detect missing keys - db.fetch', async () => {
+test('should detect missing parameters - db.fetchRevs', async () => {
   const db = nano.db.use('db')
-  await expect(db.fetchRevs()).rejects.toThrow('Invalid keys')
-  await expect(db.fetchRevs({})).rejects.toThrow('Invalid keys')
-  await expect(db.fetchRevs({ keys: {} })).rejects.toThrow('Invalid keys')
-  await expect(db.fetchRevs({ keys: '123' })).rejects.toThrow('Invalid keys')
-  await expect(db.fetchRevs({ keys: [] })).rejects.toThrow('Invalid keys')
+  await expect(db.fetchRevs()).rejects.toThrow('Invalid parameters')
+  await expect(db.fetchRevs({})).rejects.toThrow('Invalid parameters')
+  await expect(db.fetchRevs({ keys: {} })).rejects.toThrow('Invalid parameters')
+  await expect(db.fetchRevs({ keys: '123' })).rejects.toThrow('Invalid parameters')
+  await expect(db.fetchRevs({ keys: [] })).rejects.toThrow('Invalid parameters')
+})
+
+test('should detect missing parameters (callback) - db.fetchRevs', async () => {
+  return new Promise((resolve, reject) => {
+    const db = nano.db.use('db')
+    db.fetchRevs(undefined, (err, data) => {
+      expect(err).not.toBeNull()
+      resolve()
+    })
+  })
 })

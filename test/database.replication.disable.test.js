@@ -45,26 +45,17 @@ test('should be able to handle a 404 - DELETE /_replicator - nano.db.replication
   expect(scope.isDone()).toBe(true)
 })
 
-test('should not to try to disable with missing id - nano.db.replication.disable', async () => {
-  expect(() => {
-    nano.db.replication.disable(undefined, '1-456')
-  }).toThrowError('missing id')
+test('should not to try to disable with invalid parameters - nano.db.replication.disable', async () => {
+  await expect(nano.db.replication.disable(undefined, '1-456')).rejects.toThrowError('Invalid parameters')
+  await expect(nano.db.replication.disable('', '1-456')).rejects.toThrowError('Invalid parameters')
+  await expect(nano.db.replication.disable('rep1')).rejects.toThrowError('Invalid parameters')
 })
 
-test('should not to try to disable with empty id - nano.db.replication.disable', async () => {
-  expect(() => {
-    nano.db.replication.disable('', '1-456')
-  }).toThrowError('missing id')
-})
-
-test('should not to try to disable with missing rev - nano.db.replication.disable', async () => {
-  expect(() => {
-    nano.db.replication.disable('rep1')
-  }).toThrowError('missing rev')
-})
-
-test('should not to try to disable with empty rev - nano.db.replication.disable', async () => {
-  expect(() => {
-    nano.db.replication.disable('rep1', '')
-  }).toThrowError('missing rev')
+test('should detect missing parameters (callback) - nano.db.replication.disable', async () => {
+  return new Promise((resolve, reject) => {
+    nano.db.replication.disable(undefined, undefined, (err, data) => {
+      expect(err).not.toBeNull()
+      resolve()
+    })
+  })
 })

@@ -45,7 +45,17 @@ test('should be able to handle 409 conflicts - DELETE /db/id - db.destroy', asyn
   expect(scope.isDone()).toBe(true)
 })
 
-test('should detect missing doc id - db.destroy', async () => {
+test('should detect missing parameters - db.destroy', async () => {
   const db = nano.db.use('db')
-  await expect(db.destroy(undefined, '1-123')).rejects.toThrow('Invalid doc id')
+  await expect(db.destroy(undefined, '1-123')).rejects.toThrow('Invalid parameters')
+})
+
+test('should detect missing parameters (callback) - db.destroy', async () => {
+  return new Promise((resolve, reject) => {
+    const db = nano.db.use('db')
+    db.destroy(undefined, undefined, (err, data) => {
+      expect(err).not.toBeNull()
+      resolve()
+    })
+  })
 })

@@ -77,14 +77,16 @@ test('should be able to query a replication and handle 404 - GET /_replicator/id
   expect(scope.isDone()).toBe(true)
 })
 
-test('should not attempt info fetch with empty id - nano.db.replication.query', async () => {
-  expect(() => {
-    nano.db.replication.query('')
-  }).toThrowError('missing id')
+test('should not attempt info fetch with invalid parameters - nano.db.replication.query', async () => {
+  await expect(nano.db.replication.query('')).rejects.toThrowError('Invalid parameters')
+  await expect(nano.db.replication.query()).rejects.toThrowError('Invalid parameters')
 })
 
-test('should not attempt info fetch with missing id - nano.db.replication.query', async () => {
-  expect(() => {
-    nano.db.replication.query()
-  }).toThrowError('missing id')
+test('should detect missing parameters (callback) - nano.db.replication.query', async () => {
+  return new Promise((resolve, reject) => {
+    nano.db.replication.query(undefined, undefined, (err, data) => {
+      expect(err).not.toBeNull()
+      resolve()
+    })
+  })
 })
