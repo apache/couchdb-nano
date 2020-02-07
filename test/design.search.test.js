@@ -15,7 +15,7 @@ const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
 const nock = require('nock')
 
-test('should be able to access a search index - GET /db/_design/ddoc/_search/searchname - db.search', async () => {
+test('should be able to access a search index - POST /db/_design/ddoc/_search/searchname - db.search', async () => {
   // mocks
   const response = {
     total_rows: 100000,
