@@ -11,6 +11,7 @@
 // the License.
 
 const Nano = require('..')
+const assert = require('assert')
 
 test('should be able to supply HTTP url - nano.config', () => {
   const HTTP_URL = 'http://localhost:5984'
@@ -60,4 +61,42 @@ test('should be able to supply logging function - nano.config', () => {
   const nano = Nano({ url: HTTPS_URL, log: logger })
   expect(nano.config.url).toBe(HTTPS_URL)
   expect(typeof nano.config.log).toBe('function')
+})
+
+test('should be able to handle missing URL - nano.config', () => {
+  try {
+    Nano()
+  } catch (e) {
+    expect(e instanceof assert.AssertionError)
+    expect(e.message).toBe('You must specify the endpoint url when invoking this module')
+  }
+})
+
+test('should be able to handle invalid URL #1 - nano.config', () => {
+  const INVALID_URL = 'badurl.com'
+  try {
+    Nano(INVALID_URL)
+  } catch (e) {
+    expect(e instanceof assert.AssertionError)
+    expect(e.message).toBe('url is not valid')
+  }
+})
+
+test('should be able to handle invalid URL #2 - nano.config', () => {
+  const INVALID_URL = 'badurl.com'
+  try {
+    Nano({ url: INVALID_URL })
+  } catch (e) {
+    expect(e instanceof assert.AssertionError)
+    expect(e.message).toBe('url is not valid')
+  }
+})
+
+test('exercise the parseUrl feature for proxies etc - nano.config', () => {
+  const HTTP_URL = 'http://localhost:5984/prefix'
+  const nano = Nano({
+    url: HTTP_URL,
+    parseUrl: false
+  })
+  expect(nano.config.url).toBe(HTTP_URL)
 })

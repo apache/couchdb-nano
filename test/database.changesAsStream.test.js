@@ -30,6 +30,10 @@ const response = {
   pending: 0
 }
 
+afterEach(() => {
+  nock.cleanAll()
+})
+
 test('should get a streamed list of changes - GET /_changes - nano.db.changesAsStream', async () => {
   // mocks
   const scope = nock(COUCH_URL)

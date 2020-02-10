@@ -39,6 +39,10 @@ const errResponse = {
   reason: 'Database does not exist.'
 }
 
+afterEach(() => {
+  nock.cleanAll()
+})
+
 test('should be able to fetch db updates - GET /_db_updates - nano.updates', async () => {
   // mocks
   const scope = nock(COUCH_URL)

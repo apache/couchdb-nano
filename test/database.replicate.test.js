@@ -22,6 +22,10 @@ const response = {
   source_last_seq: 28
 }
 
+afterEach(() => {
+  nock.cleanAll()
+})
+
 test('should be able to send replication request with local database names- POST /_replicate - nano.db.replicate', async () => {
   // mocks
   const scope = nock(COUCH_URL)
@@ -76,4 +80,17 @@ test('should detect missing parameters (callback) - nano.db.replicate', async ()
       resolve()
     })
   })
+})
+
+test('should be replicate from db.replicate - POST /_replicate - db.replicate', async () => {
+  // mocks
+  const scope = nock(COUCH_URL)
+    .post('/_replicate', { source: COUCH_URL + '/source', target: COUCH_URL + '/target' })
+    .reply(200, response)
+
+  // test POST /_replicate
+  const db = nano.db.use('source')
+  const p = await db.replicate('target')
+  expect(p).toEqual(response)
+  expect(scope.isDone()).toBe(true)
 })

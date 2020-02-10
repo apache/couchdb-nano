@@ -15,6 +15,10 @@ const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
 const nock = require('nock')
 
+afterEach(() => {
+  nock.cleanAll()
+})
+
 test('should be able to use an update function - PUT /db/_design/ddoc/_update/updatename/docid - db.atomic', async () => {
   const updateFunction = function (doc, req) {
     if (doc) {
@@ -87,6 +91,16 @@ test('should detect missing parameters (callback) - db.update', async () => {
   const db = nano.db.use('db')
   return new Promise((resolve, reject) => {
     db.atomic('', '', '', {}, (err, data) => {
+      expect(err).not.toBeNull()
+      resolve()
+    })
+  })
+})
+
+test('should detect missing parameters (callback no body) - db.update', async () => {
+  const db = nano.db.use('db')
+  return new Promise((resolve, reject) => {
+    db.atomic('', '', '', (err, data) => {
       expect(err).not.toBeNull()
       resolve()
     })

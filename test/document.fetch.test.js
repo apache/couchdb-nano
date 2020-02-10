@@ -15,6 +15,10 @@ const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
 const nock = require('nock')
 
+afterEach(() => {
+  nock.cleanAll()
+})
+
 test('should be able to fetch a list of documents - POST /db/_all_docs - db.fetch', async () => {
   // mocks
   const keys = ['1000501', '1000543', '100077']

@@ -15,6 +15,10 @@ const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
 const nock = require('nock')
 
+afterEach(() => {
+  nock.cleanAll()
+})
+
 test('should be able to insert documents in bulk - POST /db/_bulk_docs - db.bulk', async () => {
   // mocks
   const docs = [{ a: 1, b: 2 }, { a: 2, b: 3 }, { a: 3, b: 4 }]

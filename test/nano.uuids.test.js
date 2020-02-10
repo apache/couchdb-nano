@@ -15,6 +15,10 @@ const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
 const nock = require('nock')
 
+afterEach(() => {
+  nock.cleanAll()
+})
+
 test('should be able to fetch uuids - GET /_uuids - nano.uuids', async () => {
   // mocks
   const response = {
@@ -49,4 +53,26 @@ test('should be able to fetch more uuids - GET /_uuids?count=3 - nano.uuids', as
   const p = await nano.uuids(3)
   expect(p).toStrictEqual(response)
   expect(scope.isDone()).toBe(true)
+})
+
+test('should be able to fetch uuids callback - GET /_uuids - nano.uuids', async () => {
+  // mocks
+  const response = {
+    uuids: [
+      'c42ddf1272c7d05b2dc45b696200145f'
+    ]
+  }
+  const scope = nock(COUCH_URL)
+    .get('/_uuids?count=1')
+    .reply(200, response)
+
+  // test GET /_uuids
+  return new Promise((resolve, reject) => {
+    nano.uuids((err, data) => {
+      expect(err).toBe(null)
+      expect(data).toStrictEqual(response)
+      expect(scope.isDone()).toBe(true)
+      resolve()
+    })
+  })
 })

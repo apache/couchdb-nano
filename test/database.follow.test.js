@@ -13,10 +13,36 @@
 const Nano = require('..')
 const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
+const nock = require('nock')
+
+afterEach(() => {
+  nock.cleanAll()
+})
 
 test('should be able to follow changes feed - nano.db.follow', () => {
   const db = nano.db.use('db')
   const feed = db.follow({ since: 'now' })
   expect(feed.constructor.name).toBe('Feed')
+  // no need to test the changes feed follower - it has its own tests
+})
+
+test('should be able to follow changes feed (callback) - nano.db.follow', async () => {
+  // mocks
+  const scope = nock(COUCH_URL)
+    .get('/db')
+    .reply(404, {
+      error: 'not_found',
+      reason: 'Database does not exist.'
+    })
+
+  return new Promise((resolve, reject) => {
+    const db = nano.db.use('db')
+    const feed = db.follow({ since: 'now' }, (err, data) => {
+      expect(err).not.toBeNull()
+      expect(scope.isDone()).toBe(true)
+      resolve()
+    })
+    expect(feed.constructor.name).toBe('Feed')
+  })
   // no need to test the changes feed follower - it has its own tests
 })

@@ -16,6 +16,10 @@ const nano = Nano(COUCH_URL)
 const nock = require('nock')
 const response = { ok: true }
 
+afterEach(() => {
+  nock.cleanAll()
+})
+
 test('should destroy a database - DELETE /db - nano.db.destroy', async () => {
   // mocks
   const scope = nock(COUCH_URL)

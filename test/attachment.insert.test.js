@@ -14,8 +14,11 @@ const Nano = require('..')
 const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
 const nock = require('nock')
-
 const image = Buffer.from('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', 'base64')
+
+afterEach(() => {
+  nock.cleanAll()
+})
 
 test('should be able to insert document attachment - PUT /db/docname/attachment - db.attachment.insert', async () => {
   // mocks

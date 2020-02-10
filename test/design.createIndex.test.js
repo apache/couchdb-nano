@@ -15,6 +15,10 @@ const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
 const nock = require('nock')
 
+afterEach(() => {
+  nock.cleanAll()
+})
+
 test('should be able to create an index - POST /db/_index - db.index', async () => {
   // mocks
   const indexDef = {

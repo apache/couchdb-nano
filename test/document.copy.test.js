@@ -15,6 +15,10 @@ const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
 const nock = require('nock')
 
+afterEach(() => {
+  nock.cleanAll()
+})
+
 test('should be able to copy a document - db.copy', async () => {
   // mocks
   const response = { ok: true, id: 'rabbit2', rev: '1-123' }
@@ -53,6 +57,52 @@ test('should be able to copy a document in overwrite mode - db.copy', async () =
   const p = await db.copy('rabbit1', 'rabbit2', { overwrite: true })
   expect(p).toStrictEqual(response)
   expect(scope.isDone()).toBe(true)
+})
+
+test('should be able to handle an error  in overwrite mode # 1 - db.copy', async () => {
+  // mocks
+  const response = 'Internal server error'
+  const scope = nock(COUCH_URL)
+    .head('/db/rabbit2')
+    .reply(200, '', { ETag: '1-123' })
+    .intercept('/db/rabbit1', 'COPY')
+    .reply(500, response)
+
+  // test GET /db
+  const db = nano.db.use('db')
+  await expect(db.copy('rabbit1', 'rabbit2', { overwrite: true })).rejects.toThrow(response)
+  expect(scope.isDone()).toBe(true)
+})
+
+test('should be able to handle an error  in overwrite mode # 2 - db.copy', async () => {
+  // mocks
+  const response = 'Internal server error'
+  const scope = nock(COUCH_URL)
+    .head('/db/rabbit2')
+    .reply(500, response)
+
+  // test GET /db
+  const db = nano.db.use('db')
+  await expect(db.copy('rabbit1', 'rabbit2', { overwrite: true })).rejects.toThrow(response)
+  expect(scope.isDone()).toBe(true)
+})
+
+test('should be able to handle an error  in overwrite mode # 3 - db.copy', async () => {
+  // mocks
+  const response = 'Internal server error'
+  const scope = nock(COUCH_URL)
+    .head('/db/rabbit2')
+    .reply(500, response)
+
+  // test GET /db
+  return new Promise((resolve, reject) => {
+    const db = nano.db.use('db')
+    db.copy('rabbit1', 'rabbit2', { overwrite: true }, (err, data) => {
+      expect(err).not.toBeNull()
+      expect(scope.isDone()).toBe(true)
+      resolve()
+    })
+  })
 })
 
 test('should be able to copy a document in overwrite mode missing target - db.copy', async () => {

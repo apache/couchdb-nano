@@ -40,6 +40,10 @@ const errResponse = {
   reason: 'missing'
 }
 
+afterEach(() => {
+  nock.cleanAll()
+})
+
 test('should be able to query a replication - GET /_replicator/id - nano.db.replication.query', async () => {
   // mocks
   const scope = nock(COUCH_URL)
@@ -89,4 +93,17 @@ test('should detect missing parameters (callback) - nano.db.replication.query', 
       resolve()
     })
   })
+})
+
+test('should be able to query a replication from db.replication.quey - GET /_replicator/id - db.replication.query', async () => {
+  // mocks
+  const scope = nock(COUCH_URL)
+    .get('/_replicator/rep1')
+    .reply(200, response)
+
+  // test GET /_replicator/id
+  const db = nano.db.use('db')
+  const p = await db.replication.query('rep1')
+  expect(p).toEqual(response)
+  expect(scope.isDone()).toBe(true)
 })

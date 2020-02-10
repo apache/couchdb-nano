@@ -16,6 +16,10 @@ const nano = Nano(COUCH_URL)
 const nock = require('nock')
 const response = { ok: true }
 
+afterEach(() => {
+  nock.cleanAll()
+})
+
 test('should create a database - PUT /db - nano.db.create', async () => {
   // mocks
   const scope = nock(COUCH_URL)

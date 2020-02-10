@@ -41,6 +41,10 @@ const response = {
   instance_start_time: '0'
 }
 
+afterEach(() => {
+  nock.cleanAll()
+})
+
 test('should be able to fetch the database info - GET /db - nano.db.get', async () => {
   // mocks
   const scope = nock(COUCH_URL)

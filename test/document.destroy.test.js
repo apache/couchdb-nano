@@ -15,6 +15,10 @@ const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
 const nock = require('nock')
 
+afterEach(() => {
+  nock.cleanAll()
+})
+
 test('should be able to destroy a document - DELETE /db/id - db.destroy', async () => {
   // mocks
   const response = { ok: true, id: 'id', rev: '2-456' }

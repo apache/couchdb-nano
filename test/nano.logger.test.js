@@ -10,24 +10,34 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+const nock = require('nock')
 const Nano = require('..')
 const COUCH_URL = 'http://localhost:5984'
-const nano = Nano(COUCH_URL)
-const nock = require('nock')
 
 afterEach(() => {
   nock.cleanAll()
 })
 
-test('should be able to check your session - GET /_session - nano.auth', async () => {
+test('should be able to log output with user-defined function', async () => {
+  // setup Nano with custom logger
+  const logs = []
+  const nano = Nano({
+    url: COUCH_URL,
+    log: (data) => {
+      logs.push(data)
+    }
+  })
+
   // mocks
-  const response = { ok: true, userCtx: { name: null, roles: [] }, info: { authentication_db: '_users', authentication_handlers: ['cookie', 'default'] } }
+  const response = { _id: 'id', rev: '1-123', a: 1, b: 'two', c: true }
   const scope = nock(COUCH_URL)
-    .get('/_session')
+    .get('/db/id')
     .reply(200, response)
 
-  // test GET /_uuids
-  const p = await nano.session()
+  // test GET /db
+  const db = nano.db.use('db')
+  const p = await db.get('id')
   expect(p).toStrictEqual(response)
+  expect(logs.length).toBe(2)
   expect(scope.isDone()).toBe(true)
 })

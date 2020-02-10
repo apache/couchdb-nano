@@ -15,6 +15,10 @@ const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
 const nock = require('nock')
 
+afterEach(() => {
+  nock.cleanAll()
+})
+
 test('should get a streamed list of documents - GET /db/_all_docs - db.listAsStream', async () => {
   // mocks
   const response = {

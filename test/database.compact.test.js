@@ -16,6 +16,10 @@ const nano = Nano(COUCH_URL)
 const nock = require('nock')
 const response = { ok: true }
 
+afterEach(() => {
+  nock.cleanAll()
+})
+
 test('should be able to send compaction request - POST /db/_compact - nano.db.compact', async () => {
   // mocks
   const scope = nock(COUCH_URL)
@@ -52,4 +56,30 @@ test('should detect missing parameters (callback) - nano.db.compact', async () =
       resolve()
     })
   })
+})
+
+test('should be able to send compaction request from db.compact - POST /db/_compact - db.compact', async () => {
+  // mocks
+  const scope = nock(COUCH_URL)
+    .post('/db/_compact')
+    .reply(200, response)
+
+  // test POST /db/_compact
+  const db = nano.db.use('db')
+  const p = await db.compact()
+  expect(p).toEqual(response)
+  expect(scope.isDone()).toBe(true)
+})
+
+test('should be able to send compaction request with design doc from db.view.compact - POST /db/_compact - db.view.compact', async () => {
+  // mocks
+  const scope = nock(COUCH_URL)
+    .post('/db/_compact/ddoc')
+    .reply(200, response)
+
+  // test POST /db/_compact/ddoc
+  const db = nano.db.use('db')
+  const p = await db.view.compact('ddoc')
+  expect(p).toEqual(response)
+  expect(scope.isDone()).toBe(true)
 })

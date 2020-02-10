@@ -19,15 +19,16 @@ afterEach(() => {
   nock.cleanAll()
 })
 
-test('should be able to check your session - GET /_session - nano.auth', async () => {
+test('should be able to access a MapReduce view with a list - GET /db/_design/ddoc/_list/listname/viewname - db.viewWithList', async () => {
   // mocks
-  const response = { ok: true, userCtx: { name: null, roles: [] }, info: { authentication_db: '_users', authentication_handlers: ['cookie', 'default'] } }
+  const response = '1,2,3\n4,5,6\n7,8,9\n'
   const scope = nock(COUCH_URL)
-    .get('/_session')
-    .reply(200, response)
+    .get('/db/_design/ddoc/_list/listname/viewname')
+    .reply(200, response, { 'Content-type': 'text/csv' })
 
-  // test GET /_uuids
-  const p = await nano.session()
+  // test GET /db
+  const db = nano.db.use('db')
+  const p = await db.viewWithList('ddoc', 'viewname', 'listname')
   expect(p).toStrictEqual(response)
   expect(scope.isDone()).toBe(true)
 })

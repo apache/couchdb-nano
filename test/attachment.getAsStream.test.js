@@ -14,8 +14,11 @@ const Nano = require('..')
 const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
 const nock = require('nock')
-
 const image = Buffer.from('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', 'base64')
+
+afterEach(() => {
+  nock.cleanAll()
+})
 
 test('should be able to get an attachment as a stream - GET /db/id/attname - db.attachment.get', async () => {
   // mocks

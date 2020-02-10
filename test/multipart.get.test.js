@@ -14,7 +14,6 @@ const Nano = require('..')
 const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
 const nock = require('nock')
-
 const multipartResponse = ''.concat(
   '--e89b3e29388aef23453450d10e5aaed0',
   'Content-Type: application/json',
@@ -32,6 +31,10 @@ const multipartResponse = ''.concat(
   '5. Serve with X',
   '',
   '--e89b3e29388aef23453450d10e5aaed0--')
+
+afterEach(() => {
+  nock.cleanAll()
+})
 
 test('should be able to fetch a document with attachments - multipart GET /db - db.multipart.get', async () => {
   // mocks

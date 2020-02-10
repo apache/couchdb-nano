@@ -15,6 +15,10 @@ const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
 const nock = require('nock')
 
+afterEach(() => {
+  nock.cleanAll()
+})
+
 test('should be able to head a document - HEAD /db/id - db.head', async () => {
   // mocks
   const scope = nock(COUCH_URL)

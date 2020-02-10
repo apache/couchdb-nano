@@ -15,6 +15,10 @@ const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
 const nock = require('nock')
 
+afterEach(() => {
+  nock.cleanAll()
+})
+
 test('should be able to use a show function - GET /db/_design/ddoc/_show/showname/docid - db.show', async () => {
   const showFunction = function (doc, req) {
     return 'Hello, world!'

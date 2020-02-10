@@ -20,6 +20,10 @@ const errResponse = {
   reason: 'missing'
 }
 
+afterEach(() => {
+  nock.cleanAll()
+})
+
 test('should be able to delete a replication - DELETE /_replicator - nano.db.replication.disable', async () => {
   // mocks
   const scope = nock(COUCH_URL)
@@ -58,4 +62,18 @@ test('should detect missing parameters (callback) - nano.db.replication.disable'
       resolve()
     })
   })
+})
+
+test('should be able to delete a replication from db.replication.disable - DELETE /_replicator - db.replication.disable', async () => {
+  // mocks
+  const scope = nock(COUCH_URL)
+    .delete('/_replicator/rep1')
+    .query({ rev: '1-456' })
+    .reply(200, response)
+
+  // test DELETE /_replicator/id
+  const db = nano.db.use('db')
+  const p = await db.replication.disable('rep1', '1-456')
+  expect(p).toEqual(response)
+  expect(scope.isDone()).toBe(true)
 })

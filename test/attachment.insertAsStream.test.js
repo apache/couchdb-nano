@@ -15,7 +15,6 @@ const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
 const nock = require('nock')
 const fs = require('fs')
-
 const image = Buffer.from(''.concat(
   'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAsV',
   'BMVEUAAAD////////////////////////5ur3rEBn////////////////wDBL/',
@@ -26,6 +25,10 @@ const image = Buffer.from(''.concat(
   'zMxw/4OleiJlHeUtv2X6RbNO1Uqj9g0RMCuQO0vBIg4vMFeOpCWIWmDOw82fZx',
   'vaND1c8OG4vrdOqD8YwgpDYDxRgkSm5rwu0nQVBJuMg++pLXZyr5jnc1BaH4GT',
   'LvEliY253nA3pVhQqdPt0f/erJkMGMB8xucAAAAASUVORK5CYII='), 'base64')
+
+afterEach(() => {
+  nock.cleanAll()
+})
 
 test('should be able to insert document attachment as stream - PUT /db/docname/attachment - db.attachment.insertAsStream', async () => {
   // mocks

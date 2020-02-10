@@ -34,6 +34,10 @@ const errResponse = {
   reason: 'Database does not exist.'
 }
 
+afterEach(() => {
+  nock.cleanAll()
+})
+
 test('should be able to fetch the changes - GET /db/_changes - nano.db.changes', async () => {
   // mocks
   const scope = nock(COUCH_URL)
@@ -83,4 +87,17 @@ test('should detect missing parameters (callback) - nano.db.changes', async () =
       resolve()
     })
   })
+})
+
+test('should be able to fetch the changes from db.changes - GET /db/_changes - db.changes', async () => {
+  // mocks
+  const scope = nock(COUCH_URL)
+    .get('/db/_changes')
+    .reply(200, response)
+
+  // test GET /db/_changes
+  const db = nano.db.use('db')
+  const p = await db.changes()
+  expect(p).toStrictEqual(response)
+  expect(scope.isDone()).toBe(true)
 })

@@ -11,9 +11,13 @@
 // the License.
 
 const Nano = require('..')
-const COUCH_URL = 'http://localhost:5984'
-const nano = Nano(COUCH_URL)
+const COUCH_URL = 'http://localhost:59804'
+const nano = Nano({ url: COUCH_URL, cookie: true })
 const nock = require('nock')
+
+afterEach(() => {
+  nock.cleanAll()
+})
 
 test('check request can do GET requests - nano.request', async () => {
   // mocks
@@ -36,15 +40,16 @@ test('check request can do GET requests - nano.request', async () => {
 test('check request can do POST requests - nano.request', async () => {
   // mocks
   const response = { ok: true }
+  const doc = { _id: '_design/myddoc', a: true }
   const scope = nock(COUCH_URL)
-    .post('/db', { _id: '1', a: true })
+    .post('/db', doc)
     .reply(200, response)
 
   // test POST /db
   const req = {
     method: 'post',
     db: 'db',
-    body: { _id: '1', a: true }
+    body: doc
   }
   const p = await nano.request(req)
   expect(p).toStrictEqual(response)
@@ -277,6 +282,193 @@ test('check request formats key properly - nano.request', async () => {
     db: 'db',
     path: '_all_docs',
     qs: { key: val }
+  }
+  const p = await nano.request(req)
+  expect(p).toStrictEqual(response)
+  expect(scope.isDone()).toBe(true)
+})
+
+test('check request can do 500s - nano.request', async () => {
+  // mocks
+  const errorMessage = 'Internal server error'
+  const scope = nock(COUCH_URL)
+    .get('/db?a=1&b=2')
+    .reply(500, errorMessage)
+
+  // test GET /db?a=1&b=2
+  const req = {
+    method: 'get',
+    db: 'db',
+    qs: { a: 1, b: 2 }
+  }
+  await expect(nano.request(req)).rejects.toThrow(errorMessage)
+  expect(scope.isDone()).toBe(true)
+})
+
+test('check request can do 500s with callback - nano.request', async () => {
+  // mocks
+  const errorMessage = 'Internal server error'
+  const scope = nock(COUCH_URL)
+    .get('/db?a=1&b=2')
+    .reply(500, errorMessage)
+
+  // test GET /db?a=1&b=2
+  const req = {
+    method: 'get',
+    db: 'db',
+    qs: { a: 1, b: 2 }
+  }
+
+  return new Promise((resolve, reject) => {
+    nano.request(req, (err, data) => {
+      expect(err).not.toBe(null)
+      expect(scope.isDone()).toBe(true)
+      resolve()
+    })
+  })
+})
+
+test('check request handle empty parameter list - nano.request', async () => {
+  // mocks
+  const response = {
+    couchdb: 'Welcome',
+    version: '2.3.1',
+    git_sha: 'c298091a4',
+    uuid: '865f5b0c258c5749012ce7807b4b0622',
+    features: [
+      'pluggable-storage-engines',
+      'scheduler'
+    ],
+    vendor: {
+      name: 'The Apache Software Foundation'
+    }
+  }
+  const scope = nock(COUCH_URL)
+    .get('/')
+    .reply(200, response)
+
+  // test GET /
+  const p = await nano.request()
+  expect(p).toStrictEqual(response)
+  expect(scope.isDone()).toBe(true)
+})
+
+test('check request handle empty parameter list (callback) - nano.request', async () => {
+  // mocks
+  const response = {
+    couchdb: 'Welcome',
+    version: '2.3.1',
+    git_sha: 'c298091a4',
+    uuid: '865f5b0c258c5749012ce7807b4b0622',
+    features: [
+      'pluggable-storage-engines',
+      'scheduler'
+    ],
+    vendor: {
+      name: 'The Apache Software Foundation'
+    }
+  }
+  const scope = nock(COUCH_URL)
+    .get('/')
+    .reply(200, response)
+
+  // test GET /
+  return new Promise((resolve, reject) => {
+    nano.request((err, data) => {
+      expect(err).toBeNull()
+      expect(data).toStrictEqual(response)
+      expect(scope.isDone()).toBe(true)
+      resolve()
+    })
+  })
+})
+
+test('check request handles single string parameter - nano.request', async () => {
+  // mocks
+  const response = {
+    db_name: 'db',
+    purge_seq: '0-8KhNZEiqhyjKAgBm5Rxs',
+    update_seq: '23523-gUFPHo-6PQIAJ_EdrA',
+    sizes: {
+      file: 18215344,
+      external: 5099714,
+      active: 6727596
+    }
+  }
+  const scope = nock(COUCH_URL)
+    .get('/db')
+    .reply(200, response)
+
+  // test GET /
+  const p = await nano.request('db')
+  expect(p).toStrictEqual(response)
+  expect(scope.isDone()).toBe(true)
+})
+
+test('check request handles cookies - nano.request', async () => {
+  // mocks
+  const username = 'u'
+  const password = 'p'
+  const response = { ok: true, name: 'admin', roles: ['_admin', 'admin'] }
+  const scope = nock(COUCH_URL)
+    .post('/_session', 'name=u&password=p', { 'content-type': 'application/x-www-form-urlencoded; charset=utf-8' })
+    .reply(200, response, { 'Set-Cookie': 'AuthSession=YWRtaW46NUU0MTFBMDE6stHsxYnlDy4mYxwZEcnXHn4fm5w; Version=1; Expires=Mon, 10-Feb-2050 09:03:21 GMT; Max-Age=600; Path=/; HttpOnly' })
+
+  // test GET /_uuids
+  const req = {
+    method: 'post',
+    path: '_session',
+    form: {
+      name: username,
+      password: password
+    },
+    jar: true
+  }
+  const p = await nano.request(req)
+  expect(p).toStrictEqual(response)
+  expect(scope.isDone()).toBe(true)
+})
+
+test('check request can do GET a doc - nano.request', async () => {
+  // mocks
+  const response = { _id: 'docname/design', _rev: '1-123', ok: true }
+  const scope = nock(COUCH_URL)
+    .get('/db/_design/docname?a=1&b=2')
+    .reply(200, response)
+
+  // test GET /db?a=1&b=2
+  const req = {
+    method: 'get',
+    db: 'db',
+    doc: '_design/docname',
+    qs: { a: 1, b: 2 }
+  }
+  const p = await nano.request(req)
+  expect(p).toStrictEqual(response)
+  expect(scope.isDone()).toBe(true)
+})
+
+test('check request doesn\'t mangle bodies containing functions - nano.request', async () => {
+  // mocks
+  const emit = () => { }
+  const doc = {
+    a: 1,
+    views: {
+      bytime: {
+        map: function () { emit(doc.ts, true) }
+      }
+    }
+  }
+  const response = { id: 'jfjfjf', rev: '1-123', ok: true }
+  const scope = nock(COUCH_URL)
+    .post('/db', { a: 1, views: { bytime: { map: 'function () {\n          emit(doc.ts, true);\n        }' } } })
+    .reply(200, response)
+
+  // test GET /db?a=1&b=2
+  const req = {
+    method: 'post',
+    db: 'db',
+    body: doc
   }
   const p = await nano.request(req)
   expect(p).toStrictEqual(response)

@@ -14,7 +14,6 @@ const Nano = require('..')
 const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
 const nock = require('nock')
-
 const image1 = Buffer.from(''.concat(
   'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAsV',
   'BMVEUAAAD////////////////////////5ur3rEBn////////////////wDBL/',
@@ -46,6 +45,10 @@ const doc = {
     }
   }
 }
+
+afterEach(() => {
+  nock.cleanAll()
+})
 
 test('should be able to insert a document with attachments #1 - multipart POST /db - db.multipart.insert', async () => {
   // mocks

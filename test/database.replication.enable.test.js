@@ -16,6 +16,10 @@ const nano = Nano(COUCH_URL)
 const nock = require('nock')
 const response = { ok: true, id: 'abc', rev: '1-123' }
 
+afterEach(() => {
+  nock.cleanAll()
+})
+
 test('should be able to send replication request with local database names - POST /_replicator - nano.db.replication.enable', async () => {
   // mocks
   const scope = nock(COUCH_URL)
@@ -34,6 +38,20 @@ test('should be able to send replication request with URLs - POST /_replicator -
   const target = 'https://mydomain2.com/target'
   const scope = nock(COUCH_URL)
     .post('/_replicator', { source: source, target: target })
+    .reply(200, response)
+
+  // test POST /_replicator
+  const p = await nano.db.replication.enable(source, target)
+  expect(p).toEqual(response)
+  expect(scope.isDone()).toBe(true)
+})
+
+test('should be able to send replication request with objects - POST /_replicator - nano.db.replication.enable', async () => {
+  // mocks
+  const source = { config: { url: 'http://mydomain1.com', db: 'source' } }
+  const target = { config: { url: 'https://mydomain2.com', db: 'target' } }
+  const scope = nock(COUCH_URL)
+    .post('/_replicator', { source: 'http://mydomain1.com/source', target: 'https://mydomain2.com/target' })
     .reply(200, response)
 
   // test POST /_replicator
@@ -71,4 +89,17 @@ test('should detect missing parameters (callback) - nano.db.replication.enable',
       resolve()
     })
   })
+})
+
+test('should be able to send replication request db.replication.enable - POST /_replicator - db.replication.enable', async () => {
+  // mocks
+  const scope = nock(COUCH_URL)
+    .post('/_replicator', { source: COUCH_URL + '/source', target: COUCH_URL + '/target' })
+    .reply(200, response)
+
+  // test POST /_replicator
+  const db = nano.db.use('source')
+  const p = await db.replication.enable('target')
+  expect(p).toEqual(response)
+  expect(scope.isDone()).toBe(true)
 })
