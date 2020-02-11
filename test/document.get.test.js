@@ -33,6 +33,20 @@ test('should be able to get a document - GET /db/id - db.get', async () => {
   expect(scope.isDone()).toBe(true)
 })
 
+test('should be able to get a document from a partition - GET /db/pkey:id - db.get', async () => {
+  // mocks
+  const response = { _id: 'partkey:id', rev: '1-123', a: 1, b: 'two', c: true }
+  const scope = nock(COUCH_URL)
+    .get('/db/partkey%3Aid')
+    .reply(200, response)
+
+  // test GET /db
+  const db = nano.db.use('db')
+  const p = await db.get('partkey:id')
+  expect(p).toStrictEqual(response)
+  expect(scope.isDone()).toBe(true)
+})
+
 test('should be able to get a document with options - GET /db/id?conflicts=true - db.get', async () => {
   // mocks
   const response = { _id: 'id', rev: '1-123', a: 1, b: 'two', c: true }

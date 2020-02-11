@@ -302,6 +302,38 @@ declare namespace nano {
     // http://docs.couchdb.org/en/latest/api/database/find.html#db-find
     find(query: MangoQuery, callback?: Callback<MangoResponse<D>>): Promise <MangoResponse<D>>;
     server: ServerScope;
+    //https://docs.couchdb.org/en/latest/partitioned-dbs/index.html
+    partitionInfo(partitionKey: string, callback?: Callback<PartitionInfoResponse<D>>): Promise <PartitionInfoResponse>;
+    partitionedList(partitionKey: string, params?: DocumentListParams, callback?: Callback<DocumentListResponse<D>>): Promise<DocumentListResponse<D>>;
+    partitionedListAsStream(partitionKey: string, params?: DocumentListParams): Request;
+    partitionedFind(partitionKey: string, query: MangoQuery, callback?: Callback<MangoResponse<D>>): Promise <MangoResponse<D>>;
+    partitionedFindAsStream(partitionKey: string, query: MangoQuery): Request;
+    partitionedViewpartitionedSearch<V>(
+      partitionKey: string,
+      designname: string,
+      searchname: string,
+      params: DocumentSearchParams,
+      callback?: Callback<DocumentSearchResponse<V>>
+    ): Promise<DocumentSearchResponse<V>>;
+    partitionedSearchAsStream(
+      partitionKey: string,
+      designname: string,
+      searchname: string,
+      params: DocumentSearchParams
+    ): Request;
+    partitionedView<V>(
+      partitionKey: string,
+      designname: string,
+      viewname: string,
+      params: DocumentViewParams,
+      callback?: Callback<DocumentViewResponse<V,D>>
+    ): Promise<DocumentViewResponse<V,D>>;
+    partitionedViewAsStream<V>(
+      partitionKey: string,
+      designname: string,
+      viewname: string,
+      params: DocumentViewParams
+    ): Request;
   }
 
   interface AttachmentData {
@@ -1023,6 +1055,28 @@ declare namespace nano {
 
     highlights?: object;
 
+  }
+
+
+  // https://docs.couchdb.org/en/latest/partitioned-dbs/index.html
+  interface PartitionInfoResponse {
+    // Database name
+    db_name:  string;
+
+    // Partition sizes
+    sizes: {
+      active: integer;
+      external: integer;
+    }
+
+    // Partition name
+    partition: string;
+
+    // Document count
+    doc_count: number;
+
+    // Deleted document count
+    doc_del_count: number;
   }
 
   // https://console.bluemix.net/docs/services/Cloudant/api/search.html#queries
