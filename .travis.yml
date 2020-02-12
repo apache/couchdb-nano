@@ -1,8 +1,9 @@
 language: "node_js"
 node_js:
   - "node"
-  - "6"
   - "8"
+  - "10"
+  - "12"
 services:
   - docker
 os:
