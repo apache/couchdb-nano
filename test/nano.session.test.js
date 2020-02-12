@@ -26,7 +26,7 @@ test('should be able to check your session - GET /_session - nano.auth', async (
     .get('/_session')
     .reply(200, response)
 
-  // test GET /_uuids
+  // test GET /_session
   const p = await nano.session()
   expect(p).toStrictEqual(response)
   expect(scope.isDone()).toBe(true)

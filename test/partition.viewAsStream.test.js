@@ -19,7 +19,7 @@ afterEach(() => {
   nock.cleanAll()
 })
 
-test('should get a streamed list of documents from a view from  partition- GET /db/_partition/partition/_design/ddoc/_view/viewname - db.partitionedViewAsStream', async () => {
+test('should get a streamed list of documents from a view from  partition - GET /db/_partition/partition/_design/ddoc/_view/viewname - db.partitionedViewAsStream', async () => {
   // mocks
   const response = {
     rows: [
@@ -37,7 +37,7 @@ test('should get a streamed list of documents from a view from  partition- GET /
     .reply(200, response)
 
   return new Promise((resolve, reject) => {
-    // test GET /db/_all_docs
+    // test GET /db/_partition/partition/_design/ddoc/_view/viewnameGET /db/_all_docs
     const db = nano.db.use('db')
     const s = db.partitionedViewAsStream('partition', 'ddoc', 'viewname', params)
     expect(typeof s).toBe('object')

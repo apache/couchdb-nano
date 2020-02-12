@@ -34,7 +34,7 @@ test('should get a searched streamed list of documents from a partition- GET /db
     .reply(200, response)
 
   return new Promise((resolve, reject) => {
-    // test GET /db/_all_docs
+    // test GET /db/_partition/partition/_design/ddoc/_search/searchname
     const db = nano.db.use('db')
     const s = db.partitionedSearchAsStream('partition', 'ddoc', 'searchname', params)
     expect(typeof s).toBe('object')

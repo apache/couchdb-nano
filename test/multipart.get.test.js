@@ -42,7 +42,7 @@ test('should be able to fetch a document with attachments - multipart GET /db - 
     .get('/db/docid?attachments=true')
     .reply(200, multipartResponse, { 'content-type': 'multipart/related; boundary="e89b3e29388aef23453450d10e5aaed0"' })
 
-  // test POST /db
+  // test GET /db/id?attachments=true
   const db = nano.db.use('db')
   const p = await db.multipart.get('docid')
   expect(p.toString()).toStrictEqual(multipartResponse)
@@ -55,14 +55,14 @@ test('should be able to fetch a document with attachments with opts - multipart 
     .get('/db/docid?attachments=true&conflicts=true')
     .reply(200, multipartResponse, { 'content-type': 'multipart/related; boundary="e89b3e29388aef23453450d10e5aaed0"' })
 
-  // test POST /db
+  // test GET /db/id?attachments=true&x=y
   const db = nano.db.use('db')
   const p = await db.multipart.get('docid', { conflicts: true })
   expect(p.toString()).toStrictEqual(multipartResponse)
   expect(scope.isDone()).toBe(true)
 })
 
-test('should be able to handle 404 - db.search', async () => {
+test('should be able to handle 404 - db.multipart.get', async () => {
   // mocks
   const response = {
     error: 'not_found',

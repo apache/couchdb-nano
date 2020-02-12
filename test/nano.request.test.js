@@ -464,7 +464,7 @@ test('check request doesn\'t mangle bodies containing functions - nano.request',
     .post('/db', { a: 1, views: { bytime: { map: 'function () {\n          emit(doc.ts, true);\n        }' } } })
     .reply(200, response)
 
-  // test GET /db?a=1&b=2
+  // test POST /db
   const req = {
     method: 'post',
     db: 'db',

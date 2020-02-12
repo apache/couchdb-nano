@@ -25,7 +25,7 @@ test('should be able to head a document - HEAD /db/id - db.head', async () => {
     .head('/db/id')
     .reply(200, '', { ETag: '1-123' })
 
-  // test GET /db
+  // test HEAD /db
   const db = nano.db.use('db')
   const p = await db.head('id')
   // headers get lowercased
@@ -39,7 +39,7 @@ test('should be able to head a document with callback - HEAD /db/id - db.head', 
     .head('/db/id')
     .reply(200, '', { ETag: '1-123' })
 
-  // test GET /db
+  // test HEAD /db
   return new Promise((resolve, reject) => {
     const db = nano.db.use('db')
     db.head('id', (err, data, headers) => {
@@ -58,7 +58,7 @@ test('should be able to head a missing document - HEAD /db/id - db.head', async 
     .head('/db/id')
     .reply(404, '')
 
-  // test GET /db
+  // test HEAD /db
   const db = nano.db.use('db')
   await expect(db.head('id')).rejects.toThrow('couch returned 404')
   expect(scope.isDone()).toBe(true)

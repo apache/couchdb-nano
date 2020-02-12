@@ -60,7 +60,7 @@ test('should be able to fetch a list of document revisions - POST /db/_all_docs 
   expect(scope.isDone()).toBe(true)
 })
 
-test('should be able to fetch a list of document revisions  with opts - GET /db/_all_docs - db.fetchRevs', async () => {
+test('should be able to fetch a list of document revisions  with opts - POST /db/_all_docs - db.fetchRevs', async () => {
   // mocks
   const keys = ['1000501', '1000543', '100077']
   const response = {

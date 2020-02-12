@@ -53,7 +53,7 @@ test('should get a streamed list of documents from a partition- GET /db/_partiti
     .reply(200, response)
 
   return new Promise((resolve, reject) => {
-    // test GET /db/_all_docs
+    // test GET /db/_partition/_all_docs
     const db = nano.db.use('db')
     const s = db.partitionedListAsStream('partition')
     expect(typeof s).toBe('object')
@@ -95,7 +95,7 @@ test('should get a streamed list of documents from a partition with opts- GET /d
     .reply(200, response)
 
   return new Promise((resolve, reject) => {
-    // test GET /db/_all_docs
+    // test GET /db/_partition/_all_docs
     const db = nano.db.use('db')
     const s = db.partitionedListAsStream('partition', { limit: 1, include_docs: true })
     expect(typeof s).toBe('object')

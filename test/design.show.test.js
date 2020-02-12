@@ -28,7 +28,7 @@ test('should be able to use a show function - GET /db/_design/ddoc/_show/shownam
     .get('/db/_design/ddoc/_show/showname/docid')
     .reply(200, showFunction(), { 'Content-type': 'text/plain' })
 
-  // test POST /db/_find
+  // test GET /db/_design/ddoc/_show/showname/docid
   const db = nano.db.use('db')
   const p = await db.show('ddoc', 'showname', 'docid')
   expect(p).toStrictEqual(showFunction())
@@ -45,7 +45,7 @@ test('should be able to handle 404 - db.show', async () => {
     .get('/db/_design/ddoc/_show/showname/docid')
     .reply(404, response)
 
-  // test GET /db
+  // test GET /db/_design/ddoc/_show/showname/docid
   const db = nano.db.use('db')
   await expect(db.show('ddoc', 'showname', 'docid')).rejects.toThrow('missing')
   expect(scope.isDone()).toBe(true)

@@ -26,7 +26,7 @@ test('should be to get list of databases - GET /_all_dbs - nano.db.list', async 
     .get('/_all_dbs')
     .reply(200, response)
 
-  // test GET /db/_all_dbs
+  // test GET /_all_dbs
   const p = await nano.db.list()
   expect(p).toStrictEqual(response)
   expect(scope.isDone()).toBe(true)

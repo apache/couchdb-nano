@@ -26,7 +26,7 @@ afterEach(() => {
   nock.cleanAll()
 })
 
-test('should be able to send replication request with local database names- POST /_replicate - nano.db.replicate', async () => {
+test('should be able to send replication request with local database names - POST /_replicate - nano.db.replicate', async () => {
   // mocks
   const scope = nock(COUCH_URL)
     .post('/_replicate', { source: COUCH_URL + '/source', target: COUCH_URL + '/target' })

@@ -49,7 +49,7 @@ test('should be able to fetch db updates - GET /_db_updates - nano.updates', asy
     .get('/_db_updates')
     .reply(200, response)
 
-  // test GET /db
+  // test GET /_db_updates
   const p = await nano.updates()
   expect(p).toStrictEqual(response)
   expect(scope.isDone()).toBe(true)
@@ -61,7 +61,7 @@ test('should be able to fetch db updates with options - GET /_db_updates - nano.
     .get('/_db_updates?timeout=10000')
     .reply(200, response)
 
-  // test GET /db
+  // test GET /_db_updates
   const p = await nano.updates({ timeout: 10000 })
   expect(p).toStrictEqual(response)
   expect(scope.isDone()).toBe(true)
@@ -73,7 +73,7 @@ test('should handle 404 - GET /_db_updates - nano.updates', async () => {
     .get('/_db_updates')
     .reply(404, errResponse)
 
-  // test GET /db
+  // test GET /_db_updates
   await expect(nano.db.updates()).rejects.toThrow('Database does not exist.')
   expect(scope.isDone()).toBe(true)
 })

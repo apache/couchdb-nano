@@ -74,7 +74,7 @@ test('should be able to fetch the database info - GET /db - db.info', async () =
   expect(scope.isDone()).toBe(true)
 })
 
-test('should handle missing database - PUT /db - nano.db.create', async () => {
+test('should handle missing database - GET /db - nano.db.get', async () => {
   // mocks
   const scope = nock(COUCH_URL)
     .get('/db')

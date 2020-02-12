@@ -36,7 +36,7 @@ test('should be able to fetch partition info info - GET /db/_partition/partition
     .get('/db/_partition/partition')
     .reply(200, response)
 
-  // test GET /db
+  // test GET /db/_partition/partition
   const p = await db.partitionInfo('partition')
   expect(p).toStrictEqual(response)
   expect(scope.isDone()).toBe(true)
@@ -48,7 +48,7 @@ test('should be able to fetch partition info info (callback) - GET /db/_partitio
     .get('/db/_partition/partition')
     .reply(200, response)
 
-  // test GET /db
+  // test GET /db/_partition/partition
   return new Promise((resolve, reject) => {
     db.partitionInfo('partition', (err, data) => {
       expect(err).toBeNull()
@@ -68,7 +68,7 @@ test('should handle missing database - PUT /db - nano.db.create', async () => {
       reason: 'Database does not exist.'
     })
 
-  // test GET /db
+  // test GET /db/_partition/partition
   await expect(db.partitionInfo('partition')).rejects.toThrow('Database does not exist')
   expect(scope.isDone()).toBe(true)
 })

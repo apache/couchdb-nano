@@ -19,7 +19,7 @@ afterEach(() => {
   nock.cleanAll()
 })
 
-test('should be able to create an index - POST /db/_index - db.index', async () => {
+test('should be able to create an index - POST /db/_index - db.createIndex', async () => {
   // mocks
   const indexDef = {
     index: {
@@ -45,7 +45,7 @@ test('should be able to create an index - POST /db/_index - db.index', async () 
   expect(scope.isDone()).toBe(true)
 })
 
-test('should handle 404 - POST /db/_index - db.index', async () => {
+test('should handle 404 - POST /db/_index - db.createIndex', async () => {
   // mocks
   const indexDef = {
     index: {

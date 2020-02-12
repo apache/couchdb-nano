@@ -33,7 +33,7 @@ test('should be able to access a search index - POST /db/_design/ddoc/_search/se
     .post('/db/_design/ddoc/_search/searchname', params)
     .reply(200, response)
 
-  // test GET /db
+  // test POST /db/_design/ddoc/_search/searchnameGET /db
   const db = nano.db.use('db')
   const p = await db.search('ddoc', 'searchname', params)
   expect(p).toStrictEqual(response)
@@ -51,7 +51,7 @@ test('should be able to handle 404 - db.search', async () => {
     .post('/db/_design/ddoc/_search/searchname', params)
     .reply(404, response)
 
-  // test GET /db
+  // test POST /db/_design/ddoc/_search/searchname
   const db = nano.db.use('db')
   await expect(db.search('ddoc', 'searchname', params)).rejects.toThrow('missing')
   expect(scope.isDone()).toBe(true)

@@ -26,7 +26,7 @@ test('should be able to access a MapReduce view with a list - GET /db/_design/dd
     .get('/db/_design/ddoc/_list/listname/viewname')
     .reply(200, response, { 'Content-type': 'text/csv' })
 
-  // test GET /db
+  // test GET /db/_design/ddoc/_list/listname/viewname
   const db = nano.db.use('db')
   const p = await db.viewWithList('ddoc', 'viewname', 'listname')
   expect(p).toStrictEqual(response)

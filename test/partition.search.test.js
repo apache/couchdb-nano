@@ -19,7 +19,7 @@ afterEach(() => {
   nock.cleanAll()
 })
 
-test('should be able to access a partitioned search index - POST /db/_partition/partition/_design/ddoc/_search/searchname - db.partitionedSearch', async () => {
+test('should be able to access a partitioned search index - GET /db/_partition/partition/_design/ddoc/_search/searchname - db.partitionedSearch', async () => {
   // mocks
   const response = {
     total_rows: 100000,
@@ -33,7 +33,7 @@ test('should be able to access a partitioned search index - POST /db/_partition/
     .get('/db/_partition/partition/_design/ddoc/_search/searchname?q=*:*')
     .reply(200, response)
 
-  // test GET /db
+  // test GET /db/_partition/partition/_design/ddoc/_search/searchname
   const db = nano.db.use('db')
   const p = await db.partitionedSearch('partition', 'ddoc', 'searchname', params)
   expect(p).toStrictEqual(response)
@@ -51,7 +51,7 @@ test('should be able to handle 404 - db.partitionedSearch', async () => {
     .get('/db/_partition/partition/_design/ddoc/_search/searchname?q=*:*')
     .reply(404, response)
 
-  // test GET /db
+  // test GET /db/_partition/partition/_design/ddoc/_search/searchname
   const db = nano.db.use('db')
   await expect(db.partitionedSearch('partition', 'ddoc', 'searchname', params)).rejects.toThrow('missing')
   expect(scope.isDone()).toBe(true)

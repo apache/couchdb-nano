@@ -30,7 +30,7 @@ test('should be able to access a MapReduce view - GET /db/_design/ddoc/_view/vie
     .get('/db/_design/ddoc/_view/viewname')
     .reply(200, response)
 
-  // test GET /db
+  // test GET /db/_design/ddoc/_view/viewname
   const db = nano.db.use('db')
   const p = await db.view('ddoc', 'viewname')
   expect(p).toStrictEqual(response)
@@ -61,7 +61,7 @@ test('should be able to access a MapReduce view with opts - GET /db/_design/ddoc
     .get('/db/_design/ddoc/_view/viewname?group=true&startkey="BA"&endkey="BQ"')
     .reply(200, response)
 
-  // test GET /db
+  // test GET /db/_design/ddoc/_view/viewname
   const db = nano.db.use('db')
   const p = await db.view('ddoc', 'viewname', { group: true, startkey: 'BA', endkey: 'BQ' })
   expect(p).toStrictEqual(response)
@@ -81,7 +81,7 @@ test('should be able to access a MapReduce view with keys - POST /db/_design/ddo
     .post('/db/_design/ddoc/_view/viewname', { keys: keys })
     .reply(200, response)
 
-  // test GET /db
+  // test POST /db/_design/ddoc/_view/viewname
   const db = nano.db.use('db')
   const p = await db.view('ddoc', 'viewname', { keys: keys })
   expect(p).toStrictEqual(response)
@@ -126,7 +126,7 @@ test('should be able to access a MapReduce view with queries - POST /db/_design/
     .post('/db/_design/ddoc/_view/viewname', { queries: opts.queries })
     .reply(200, response)
 
-  // test GET /db
+  // test POST /db/_design/ddoc/_view/viewname
   const db = nano.db.use('db')
   const p = await db.view('ddoc', 'viewname', opts)
   expect(p).toStrictEqual(response)
@@ -143,7 +143,7 @@ test('should be able to handle 404 - db.view', async () => {
     .get('/db/_design/ddoc/_view/viewname?group=true&startkey="BA"&endkey="BQ"')
     .reply(404, response)
 
-  // test GET /db
+  // test GET /db/_design/ddoc/_view/viewname
   const db = nano.db.use('db')
   await expect(db.view('ddoc', 'viewname', { group: true, startkey: 'BA', endkey: 'BQ' })).rejects.toThrow('missing')
   expect(scope.isDone()).toBe(true)

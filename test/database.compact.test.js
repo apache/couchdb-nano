@@ -32,7 +32,7 @@ test('should be able to send compaction request - POST /db/_compact - nano.db.co
   expect(scope.isDone()).toBe(true)
 })
 
-test('should be able to send compaction request with design doc - POST /db/_compact - nano.db.compact', async () => {
+test('should be able to send compaction request with design doc - POST /db/_compact/ddoc - nano.db.compact', async () => {
   // mocks
   const scope = nock(COUCH_URL)
     .post('/db/_compact/ddoc')
@@ -71,7 +71,7 @@ test('should be able to send compaction request from db.compact - POST /db/_comp
   expect(scope.isDone()).toBe(true)
 })
 
-test('should be able to send compaction request with design doc from db.view.compact - POST /db/_compact - db.view.compact', async () => {
+test('should be able to send compaction request with design doc from db.view.compact - POST /db/_compact/ddoc - db.view.compact', async () => {
   // mocks
   const scope = nock(COUCH_URL)
     .post('/db/_compact/ddoc')

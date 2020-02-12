@@ -28,7 +28,7 @@ test('should be able to authenticate - POST /_session - nano.auth', async () => 
     .post('/_session', 'name=u&password=p', { 'content-type': 'application/x-www-form-urlencoded; charset=utf-8' })
     .reply(200, response, { 'Set-Cookie': 'AuthSession=YWRtaW46NUU0MTFBMDE6stHsxYnlDy4mYxwZEcnXHn4fm5w; Version=1; Expires=Mon, 10-Feb-2050 09:03:21 GMT; Max-Age=600; Path=/; HttpOnly' })
 
-  // test GET /_uuids
+  // test POST /_session
   const p = await nano.auth(username, password)
   expect(p).toStrictEqual(response)
   expect(scope.isDone()).toBe(true)

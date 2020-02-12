@@ -33,7 +33,7 @@ test('should be able to use an update function - PUT /db/_design/ddoc/_update/up
     .put('/db/_design/ddoc/_update/updatename/docid')
     .reply(200, response)
 
-  // test POST /db/_find
+  // test PUT /db/_design/ddoc/_update/updatename/docid
   const db = nano.db.use('db')
   const p = await db.atomic('ddoc', 'updatename', 'docid')
   expect(p).toStrictEqual(response)
@@ -55,7 +55,7 @@ test('should be able to use an update function with body - PUT /db/_design/ddoc/
     .put('/db/_design/ddoc/_update/updatename/docid', body)
     .reply(200, response)
 
-  // test POST /db/_find
+  // test PUT /db/_design/ddoc/_update/updatename/docid
   const db = nano.db.use('db')
   const p = await db.atomic('ddoc', 'updatename', 'docid', body)
   expect(p).toStrictEqual(response)
@@ -73,7 +73,7 @@ test('should be able to handle 404 - db.atomic', async () => {
     .put('/db/_design/ddoc/_update/updatename/docid', body)
     .reply(404, response)
 
-  // test GET /db
+  // test PUT /db/_design/ddoc/_update/updatename/docid
   const db = nano.db.use('db')
   await expect(db.atomic('ddoc', 'updatename', 'docid', body)).rejects.toThrow('missing')
   expect(scope.isDone()).toBe(true)

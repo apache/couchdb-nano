@@ -24,7 +24,7 @@ afterEach(() => {
   nock.cleanAll()
 })
 
-test('should be able to delete a replication - DELETE /_replicator - nano.db.replication.disable', async () => {
+test('should be able to delete a replication - DELETE /_replicator/id - nano.db.replication.disable', async () => {
   // mocks
   const scope = nock(COUCH_URL)
     .delete('/_replicator/rep1')
@@ -37,7 +37,7 @@ test('should be able to delete a replication - DELETE /_replicator - nano.db.rep
   expect(scope.isDone()).toBe(true)
 })
 
-test('should be able to handle a 404 - DELETE /_replicator - nano.db.replication.disable', async () => {
+test('should be able to handle a 404 - DELETE /_replicator/id - nano.db.replication.disable', async () => {
   // mocks
   const scope = nock(COUCH_URL)
     .delete('/_replicator/rep1')
@@ -64,7 +64,7 @@ test('should detect missing parameters (callback) - nano.db.replication.disable'
   })
 })
 
-test('should be able to delete a replication from db.replication.disable - DELETE /_replicator - db.replication.disable', async () => {
+test('should be able to delete a replication from db.replication.disable - DELETE /_replicator/id - db.replication.disable', async () => {
   // mocks
   const scope = nock(COUCH_URL)
     .delete('/_replicator/rep1')

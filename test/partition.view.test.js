@@ -30,7 +30,7 @@ test('should be able to access a partitioned view index - GET /db/_partition/par
     .get('/db/_partition/partition/_design/ddoc/_view/viewname')
     .reply(200, response)
 
-  // test GET /db
+  // test GET /db/_partition/partition/_design/ddoc/_view/viewname
   const db = nano.db.use('db')
   const p = await db.partitionedView('partition', 'ddoc', 'viewname')
   expect(p).toStrictEqual(response)
@@ -54,7 +54,7 @@ test('should be able to access a partitioned view index with opts - GET /db/_par
     .get('/db/_partition/partition/_design/ddoc/_view/viewname?reduce=false&startkey=%22a%22&endkey=%22b%22&limit=1')
     .reply(200, response)
 
-  // test GET /db
+  // test GET /db/_partition/partition/_design/ddoc/_view/viewname
   const db = nano.db.use('db')
   const p = await db.partitionedView('partition', 'ddoc', 'viewname', params)
   expect(p).toStrictEqual(response)
@@ -71,7 +71,7 @@ test('should be able to handle 404 - db.partitionedView', async () => {
     .get('/db/_partition/partition/_design/ddoc/_view/viewname')
     .reply(404, response)
 
-  // test GET /db
+  // test GET /db/_partition/partition/_design/ddoc/_view/viewname
   const db = nano.db.use('db')
   await expect(db.partitionedView('partition', 'ddoc', 'viewname')).rejects.toThrow('missing')
   expect(scope.isDone()).toBe(true)

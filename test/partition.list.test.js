@@ -67,7 +67,7 @@ test('should be list documents form a partition - GET /db/_partition/_all_docs -
     .get('/db/_partition/partition/_all_docs')
     .reply(200, response)
 
-  // test GET /db
+  // test GET /db/_partition/_all_docs
   const p = await db.partitionedList('partition')
   expect(p).toStrictEqual(response)
   expect(scope.isDone()).toBe(true)
@@ -98,7 +98,7 @@ test('should be list documents form a partition with opts - GET /db/_partition/_
     .get('/db/_partition/partition/_all_docs?limit=1&include_docs=true')
     .reply(200, optsResponse)
 
-  // test GET /db
+  // test GET /db/_partition/_all_docs
   const p = await db.partitionedList('partition', { limit: 1, include_docs: true })
   expect(p).toStrictEqual(optsResponse)
   expect(scope.isDone()).toBe(true)
@@ -110,7 +110,7 @@ test('should be able to list partition docs (callback) - GET /db/_partition/_all
     .get('/db/_partition/partition/_all_docs')
     .reply(200, response)
 
-  // test GET /db
+  // test GET /db/_partition/_all_docs
   return new Promise((resolve, reject) => {
     db.partitionedList('partition', (err, data) => {
       expect(err).toBeNull()
@@ -130,7 +130,7 @@ test('should handle missing database - GET /db/_partition/_all_docs - db.partiti
       reason: 'Database does not exist.'
     })
 
-  // test GET /db
+  // test GET /db/_partition/_all_docs
   await expect(db.partitionedList('partition')).rejects.toThrow('Database does not exist')
   expect(scope.isDone()).toBe(true)
 })

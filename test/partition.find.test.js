@@ -42,7 +42,7 @@ test('should be able to query a partitioned index - POST /db/_partition/partitio
     .post('/db/_partition/partition/_find', query)
     .reply(200, response)
 
-  // test POST /db/_find
+  // test POST /db/_partition/partition/_find
   const db = nano.db.use('db')
   const p = await db.partitionedFind('partition', query)
   expect(p).toStrictEqual(response)
@@ -64,7 +64,7 @@ test('should handle 404 - POST /db/_partition/partition/_find - db.partitionedFi
     .post('/db/_partition/partition/_find', query)
     .reply(404, response)
 
-  // test POST /db/_find
+  // test POST /db/_partition/partition/_find
   const db = nano.db.use('db')
   await expect(db.partitionedFind('partition', query)).rejects.toThrow('missing')
   expect(scope.isDone()).toBe(true)

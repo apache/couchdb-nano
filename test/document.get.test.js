@@ -26,7 +26,7 @@ test('should be able to get a document - GET /db/id - db.get', async () => {
     .get('/db/id')
     .reply(200, response)
 
-  // test GET /db
+  // test GET /db/id
   const db = nano.db.use('db')
   const p = await db.get('id')
   expect(p).toStrictEqual(response)
@@ -40,7 +40,7 @@ test('should be able to get a document from a partition - GET /db/pkey:id - db.g
     .get('/db/partkey%3Aid')
     .reply(200, response)
 
-  // test GET /db
+  // test GET /db/pkey:id
   const db = nano.db.use('db')
   const p = await db.get('partkey:id')
   expect(p).toStrictEqual(response)
@@ -54,7 +54,7 @@ test('should be able to get a document with options - GET /db/id?conflicts=true 
     .get('/db/id?conflicts=true')
     .reply(200, response)
 
-  // test GET /db
+  // test GET /db/id?x=y
   const db = nano.db.use('db')
   const p = await db.get('id', { conflicts: true })
   expect(p).toStrictEqual(response)
@@ -71,7 +71,7 @@ test('should be able to handle 404 - GET /db/id - db.get', async () => {
     .get('/db/id')
     .reply(404, response)
 
-  // test GET /db
+  // test GET /db/id
   const db = nano.db.use('db')
   await expect(db.get('id')).rejects.toThrow('missing')
   expect(scope.isDone()).toBe(true)

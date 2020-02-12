@@ -19,21 +19,21 @@ afterEach(() => {
   nock.cleanAll()
 })
 
-test('should be able to destroy a document - DELETE /db/id/attname - db.attachment.destroy', async () => {
+test('should be able to destroy an attachment - DELETE /db/id/attname - db.attachment.destroy', async () => {
   // mocks
   const response = { ok: true, id: 'id', rev: '2-456' }
   const scope = nock(COUCH_URL)
     .delete('/db/id/logo.jpg?rev=1-123')
     .reply(200, response)
 
-  // test DELETE /db/id
+  // test DELETE DELETE /db/id/attname
   const db = nano.db.use('db')
   const p = await db.attachment.destroy('id', 'logo.jpg', { rev: '1-123' })
   expect(p).toStrictEqual(response)
   expect(scope.isDone()).toBe(true)
 })
 
-test('should be able to handle 409 conflicts - DELETE /db/id - db.attachment.destroy', async () => {
+test('should be able to handle 409 conflicts - DELETE /db/id/attname- db.attachment.destroy', async () => {
   // mocks
   const response = {
     error: 'conflict',
@@ -43,7 +43,7 @@ test('should be able to handle 409 conflicts - DELETE /db/id - db.attachment.des
     .delete('/db/id/logo.jpg?rev=1-123')
     .reply(409, response)
 
-  // test DELETE /db/id
+  // test DELETE /db/id/attname
   const db = nano.db.use('db')
   await expect(db.attachment.destroy('id', 'logo.jpg', { rev: '1-123' })).rejects.toThrow('Document update conflict.')
   expect(scope.isDone()).toBe(true)
@@ -57,7 +57,7 @@ test('should detect missing doc id - db.attachment.destroy', async () => {
   await expect(db.attachment.destroy('', 'logo.jpg')).rejects.toThrow('Invalid parameters')
 })
 
-test('should detect missing parameters (callback) - db.attachment.get', async () => {
+test('should detect missing parameters (callback) - db.attachment.destroy', async () => {
   const db = nano.db.use('db')
   return new Promise((resolve, reject) => {
     db.attachment.destroy(undefined, undefined, undefined, (err, data) => {

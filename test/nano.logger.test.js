@@ -34,7 +34,7 @@ test('should be able to log output with user-defined function', async () => {
     .get('/db/id')
     .reply(200, response)
 
-  // test GET /db
+  // test GET /db/id
   const db = nano.db.use('db')
   const p = await db.get('id')
   expect(p).toStrictEqual(response)

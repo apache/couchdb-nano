@@ -50,27 +50,27 @@ afterEach(() => {
   nock.cleanAll()
 })
 
-test('should be able to insert a document with attachments #1 - multipart POST /db - db.multipart.insert', async () => {
+test('should be able to insert a document with attachments #1 - multipart PUT /db/id - db.multipart.insert', async () => {
   // mocks
   const response = { ok: true, id: '8s8g8h8h9', rev: '1-123' }
   const scope = nock(COUCH_URL, { reqheaders: { 'content-type': h => h.includes('multipart/related') } })
     .put('/db/docid')
     .reply(200, response)
 
-  // test POST /db
+  // test PUT /db/id
   const db = nano.db.use('db')
   const p = await db.multipart.insert(doc, images, 'docid')
   expect(p).toStrictEqual(response)
   expect(scope.isDone()).toBe(true)
 })
 
-test('should be able to insert a document with attachments #2 - multipart POST /db - db.multipart.insert', async () => {
+test('should be able to insert a document with attachments #2 - multipart PUT /db/id - db.multipart.insert', async () => {
   const response = { ok: true, id: '8s8g8h8h9', rev: '1-123' }
   const scope = nock(COUCH_URL, { reqheaders: { 'content-type': h => h.includes('multipart/related') } })
     .put('/db/docid')
     .reply(200, response)
 
-  // test POST /db
+  // test PUT /db/id
   const db = nano.db.use('db')
   const p = await db.multipart.insert(doc, images, { docName: 'docid' })
   expect(p).toStrictEqual(response)
@@ -87,7 +87,7 @@ test('should be able to handle 404 - db.multipart.insert', async () => {
     .put('/db/docid')
     .reply(404, response)
 
-  // test GET /db
+  // test PUT /db/id
   const db = nano.db.use('db')
   await expect(db.multipart.insert(doc, images, { docName: 'docid' })).rejects.toThrow('missing')
   expect(scope.isDone()).toBe(true)

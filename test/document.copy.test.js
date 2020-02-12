@@ -26,7 +26,7 @@ test('should be able to copy a document - db.copy', async () => {
     .intercept('/db/rabbit1', 'COPY')
     .reply(200, response)
 
-  // test GET /db
+  // test COPY /db/id
   const db = nano.db.use('db')
   const p = await db.copy('rabbit1', 'rabbit2')
   expect(p).toStrictEqual(response)
@@ -52,7 +52,7 @@ test('should be able to copy a document in overwrite mode - db.copy', async () =
     .intercept('/db/rabbit1', 'COPY')
     .reply(200, response)
 
-  // test GET /db
+  // test HEAD /db/id2 + COPY /db/id1
   const db = nano.db.use('db')
   const p = await db.copy('rabbit1', 'rabbit2', { overwrite: true })
   expect(p).toStrictEqual(response)
