@@ -13,8 +13,10 @@
 module.exports = function () {
   const nano = require('nano')('http://localhost:5984')
   const users = nano.use('users')
-  const VIEWS = { by_twitter_id:
-    { 'map': 'function(doc) { emit(doc.twitter.screen_name, doc); }' } }
+  const VIEWS = {
+    by_twitter_id:
+    { map: 'function(doc) { emit(doc.twitter.screen_name, doc); }' }
+  }
 
   /*****************************************************************************
  * user.get()

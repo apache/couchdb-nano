@@ -10,17 +10,24 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-const debug = require('debug')('nano/logger')
+const Nano = require('..')
+const COUCH_URL = 'http://localhost:5984'
+const nano = Nano(COUCH_URL)
+const nock = require('nock')
+const response = ['rita', 'sue', 'bob']
 
-module.exports = function logging (cfg) {
-  const log = cfg && cfg.log
-  const logStrategy = typeof log === 'function' ? log : debug
+afterEach(() => {
+  nock.cleanAll()
+})
 
-  return function logEvent (prefix) {
-    const eventId = (prefix ? prefix + '-' : '') +
-      (~~(Math.random() * 1e9)).toString(36)
-    return function log () {
-      logStrategy.call(this, eventId, [].slice.call(arguments, 0))
-    }
-  }
-}
+test('should be to get list of databases - GET /_all_dbs - nano.db.list', async () => {
+  // mocks
+  const scope = nock(COUCH_URL)
+    .get('/_all_dbs')
+    .reply(200, response)
+
+  // test GET /_all_dbs
+  const p = await nano.db.list()
+  expect(p).toStrictEqual(response)
+  expect(scope.isDone()).toBe(true)
+})

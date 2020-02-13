@@ -10,17 +10,12 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-const debug = require('debug')('nano/logger')
+const Nano = require('..')
+const COUCH_URL = 'http://localhost:5984'
+const nano = Nano(COUCH_URL)
 
-module.exports = function logging (cfg) {
-  const log = cfg && cfg.log
-  const logStrategy = typeof log === 'function' ? log : debug
-
-  return function logEvent (prefix) {
-    const eventId = (prefix ? prefix + '-' : '') +
-      (~~(Math.random() * 1e9)).toString(36)
-    return function log () {
-      logStrategy.call(this, eventId, [].slice.call(arguments, 0))
-    }
-  }
-}
+test('should be able to follow db updates- nano.followUpdates', () => {
+  const feed = nano.followUpdates()
+  expect(feed.constructor.name).toBe('Feed')
+  // no need to test the changes feed follower - it has its own tests
+})

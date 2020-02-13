@@ -12,8 +12,9 @@
 
 const nano = require('nano')
 const couch =
-    { 'master': 'http://localhost:5984/landing_m',
-      'replica': 'http://localhost:5984/landing_r'
+    {
+      master: 'http://localhost:5984/landing_m',
+      replica: 'http://localhost:5984/landing_r'
     }
 
 function insertWithRetry (db, email, retries, callback) {
@@ -47,7 +48,7 @@ function replicateWithRetry (masterUri, replicaUri, retries, callback) {
   retries = retries || 0
   var master = nano(couch.master)
   master.replicate(couch.replica, function (err, resp, head) {
-    if (err && err['error'] === 'db_not_found' && retries < 1) {
+    if (err && err.error === 'db_not_found' && retries < 1) {
       const replica = nano(couch.replica)
       const dbName = replica.config.db
       const server = nano(replica.config.url)

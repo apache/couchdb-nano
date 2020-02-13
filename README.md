@@ -64,6 +64,16 @@ See [Migration Guide for switching from Nano 6.x to 7.x](migration_6_to_7.md).
   - [db.fetch(docnames, [params], [callback])](#dbfetchdocnames-params-callback)
   - [db.fetchRevs(docnames, [params], [callback])](#dbfetchrevsdocnames-params-callback)
   - [db.createIndex(indexDef, [callback])](#dbcreateindexindexdef-callback)
+- [Partitioned database functions][#partition-functions]
+  - [db.partitionInfo(partitionKey, [callback])](#dbpartitioninfopartitionkey-callback))
+  - [db.partitionedList(partitionKey, [params], [callback])](#dbpartitionedlistpartitionkey-params-callback)
+  - [db.partitionedListAsStream(partitionKey, [params])](#dbpartitionedlistasstreampartitionkey-params)
+  - [db.partitionedFind(partitionKey, query, [callback])](#dbpartitionedfindpartitionkey-query-params)
+  - [db.partitionedFindAsStream(partitionKey, query)](#dbpartitionedfindasstreampartitionkey-query)
+  - [db.partitionedSearch(partitionKey, designName, searchName, params, [callback])](#dbpartitionedsearchpartitioney-designname-searchname-params-callback)
+  - [db.partitionedSearchAsStream(partitionKey, designName, searchName, params)](#dbpartitionedsearchasstreampartitionkey-designName-searchName-params)
+  - [db.partitionedView(partitionKey, designName, viewName, [params], [callback])](#dbpartitionediewpartitionkey-designname-viewname-params-callback)
+  - [db.partitionedViewAsStream(partitionKey, designName, viewName, [params])](#dbpartitionediewasstreampartitionkey-designname-viewname-params)
 - [Multipart functions](#multipart-functions)
   - [db.multipart.insert(doc, attachments, [params], [callback])](#dbmultipartinsertdoc-attachments-params-callback)
   - [db.multipart.get(docname, [params], [callback])](#dbmultipartgetdocname-params-callback)
@@ -700,6 +710,202 @@ const indexDef = {
 alice.createIndex(indexDef).then((result) => {
   console.log(result);
 });
+```
+
+## Partition Functions
+
+Functions related to [partitioned databses](https://docs.couchdb.org/en/latest/partitioned-dbs/index.html).
+
+Create a partitioned database by passing `{ partitioned: true }` to `db.create`:
+
+```js
+await nano.db.create('my-partitioned-db', { partitioned: true })
+```
+
+The database can be used as normal:
+
+```js
+const db = nano.db.use('my-partitioned-db')
+```
+
+but documents must have a two-part `_id` made up of `<partition key>:<document id>`. They are insert with `db.insert` as normal:
+
+```js
+const doc = { _id: 'canidae:dog', name: 'Dog', latin: 'Canis lupus familiaris' }
+await db.insert(doc)
+```
+
+Documents can be retrieved by their `_id` using `db.get`:
+
+```js
+const doc = db.get('canidae:dog')
+```
+
+Mango indexes can be created to operate on a per-partition index by supplying `partitioned: true` on creation:
+
+```js
+const i = {
+  ddoc: 'partitioned-query',
+  index: { fields: ['name'] },
+  name: 'name-index',
+  partitioned: true,
+  type: 'json'
+}
+ 
+// instruct CouchDB to create the index
+await db.index(i)
+```
+
+Search indexes can be created by writing a design document with `opts.partitioned = true`:
+
+```js
+// the search definition
+const func = function(doc) {
+  index('name', doc.name)
+  index('latin', doc.latin)
+}
+ 
+// the design document containing the search definition function
+const ddoc = {
+  _id: '_design/search-ddoc',
+  indexes: {
+    search-index: {
+      index: func.toString()
+    }
+  },
+  options: {
+    partitioned: true
+  }
+}
+ 
+await db.insert(ddoc)
+```
+
+MapReduce views can be created by writing a design document with `opts.partitioned = true`:
+
+```js
+const func = function(doc) {
+  emit(doc.family, doc.weight)
+}
+ 
+// Design Document
+const ddoc = {
+  _id: '_design/view-ddoc',
+  views: {
+    family-weight: {
+      map: func.toString(),
+      reduce: '_sum'
+    }
+  },
+  options: {
+    partitioned: true
+  }
+}
+ 
+// create design document
+await db.insert(ddoc)
+```
+
+### db.partitionInfo(partitionKey, [callback])
+
+Fetch the stats of a single partition:
+
+```js
+const stats = await alice.partitionInfo('canidae')
+```
+
+### db.partitionedList(partitionKey, [params], [callback])
+
+Fetch documents from a database partition:
+
+```js
+// fetch document id/revs from a partition
+const docs = await alice.partitionedList('canidae')
+
+// add document bodies but limit size of response
+const docs = await alice.partitionedList('canidae', { include_docs: true, limit: 5 })
+```
+
+### db.partitionedListAsStream(partitionKey, [params])
+
+Fetch documents from a partition as a stream:
+
+```js
+// fetch document id/revs from a partition
+nano.db.partitionedListAsStream('canidae').pipe(process.stdout)
+
+// add document bodies but limit size of response
+nano.db.partitionedListAsStream('canidae', { include_docs: true, limit: 5 }).pipe(process.stdout)
+```
+
+### db.partitionedFind(partitionKey, query, [params])
+
+Query documents from a partition by supplying a Mango selector:
+
+```js
+// find document whose name is 'wolf' in the 'canidae' partition
+await db.partitionedFind('canidae', { 'selector' : { 'name': 'Wolf' }})
+```
+
+### db.partitionedFindAsStream(partitionKey, query)
+
+Query documents from a partition by supplying a Mango selector as a stream:
+
+```js
+// find document whose name is 'wolf' in the 'canidae' partition
+db.partitionedFindAsStream('canidae', { 'selector' : { 'name': 'Wolf' }}).pipe(process.stdout)
+```
+
+### db.partitionedSearch(partitionKey, designName, searchName, params, [callback])
+
+Search documents from a partition by supplying a Lucene query:
+
+```js
+const params = {
+  q: 'name:\'Wolf\''
+}
+await db.partitionedSearch('canidae', 'search-ddoc', 'search-index', params)
+// { total_rows: ... , bookmark: ..., rows: [ ...] }
+```
+
+### db.partitionedSearchAsStream(partitionKey, designName, searchName, params)
+
+Search documents from a partition by supplying a Lucene query as a stream:
+
+```js
+const params = {
+  q: 'name:\'Wolf\''
+}
+db.partitionedSearchAsStream('canidae', 'search-ddoc', 'search-index', params).pipe(process.stdout)
+// { total_rows: ... , bookmark: ..., rows: [ ...] }
+```
+
+### db.partitionedView(partitionKey, designName, viewName, params, [callback])
+
+Fetch documents from a MapReduce view from a partition:
+
+```js
+const params = {
+  startkey: 'a',
+  endkey: 'b',
+  limit: 1
+}
+await db.partitionedView('canidae', 'view-ddoc', 'view-name', params)
+// { rows: [ { key: ... , value: [Object] } ] }
+```
+
+### db.partitionedViewAsStream(partitionKey, designName, viewName, params)
+
+Fetch documents from a MapReduce view from a partition as a stream:
+
+```js
+const params = {
+  startkey: 'a',
+  endkey: 'b',
+  limit: 1
+}
+db.partitionedView('canidae', 'view-ddoc', 'view-name', params).pipe(process.stdout)
+// { rows: [ { key: ... , value: [Object] } ] }
 ```
 
 ## Multipart functions
