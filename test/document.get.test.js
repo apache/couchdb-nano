@@ -91,3 +91,17 @@ test('should detect missing parameters (callback) - db.get', () => {
     })
   })
 })
+
+test('check request can fetch local documents - db.get', async () => {
+  // mocks
+  const response = { _id: '_local/id', _rev: '1-123', a: 1 }
+  const scope = nock(COUCH_URL)
+    .get('/db/_local/id')
+    .reply(200, response)
+
+  // test GET /db/_local/id
+  const db = nano.db.use('db')
+  const p = await db.get('_local/_id')
+  expect(p).toStrictEqual(response)
+  expect(scope.isDone()).toBe(true)
+})
