@@ -9,17 +9,20 @@
 /// <reference types="node" />
 
 import { EventEmitter } from "events";
-import { CoreOptions, Request } from "request";
 
 declare function nano(
   config: nano.Configuration | string
 ): nano.ServerScope;
 
 declare namespace nano {
+  interface requestDefaultsOptions {
+    timeout: number;
+  };
+
   interface Configuration {
     url: string;
     cookie?: string;
-    requestDefaults?: CoreOptions;
+    requestDefaults?: requestDefaultsOptions;
     log?(id: string, args: any): void;
     parseUrl?: boolean;
     request?(params: any): void;
@@ -72,7 +75,7 @@ declare namespace nano {
     destroy(name: string, callback?: Callback<OkResponse>): Promise<OkResponse>;
     // http://docs.couchdb.org/en/latest/api/server/common.html#get--_all_dbs
     list(callback?: Callback<string[]>): Promise<string[]>;
-    listAsStream(): Request;
+    listAsStream(): NodeJS.ReadStream;
     use<D>(db: string): DocumentScope<D>;
     compact(name: string, callback?: Callback<OkResponse>): Promise<OkResponse>;
     // http://docs.couchdb.org/en/latest/api/database/compact.html#post--db-_compact
@@ -95,9 +98,9 @@ declare namespace nano {
     // http://docs.couchdb.org/en/latest/api/database/compact.html#post--db-_compact
     changes(name: string, params: DatabaseChangesParams, callback?: Callback<DatabaseChangesResponse>): Promise<DatabaseChangesResponse>;
     // http://docs.couchdb.org/en/latest/api/database/changes.html#get--db-_changes
-    changesAsStream(name: string): Request;
+    changesAsStream(name: string): NodeJS.ReadStream;
     // http://docs.couchdb.org/en/latest/api/database/compact.html#post--db-_compact
-    changesAsStream(name: string, params: DatabaseChangesParams): Request;
+    changesAsStream(name: string, params: DatabaseChangesParams): NodeJS.ReadStream;
     follow(source: string, callback?: Callback<any>): EventEmitter;
     follow(source: string, params: DatabaseScopeFollowUpdatesParams, callback?: Callback<any>): EventEmitter;
     followUpdates(params?: any, callback?: Callback<any>): EventEmitter;
@@ -159,9 +162,9 @@ declare namespace nano {
     // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#get--db-_all_docs
     list(params: DocumentListParams, callback?: Callback<DocumentListResponse<D>>): Promise<DocumentListResponse<D>>;
     // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#get--db-_all_docs
-    listAsStream(): Request;
+    listAsStream(): NodeJS.ReadStream;
     // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#get--db-_all_docs
-    listAsStream(params: DocumentListParams): Request;
+    listAsStream(params: DocumentListParams): NodeJS.ReadStream;
     // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs
     fetch(docnames: BulkFetchDocsWrapper, callback?: Callback<DocumentFetchResponse<D>>): Promise<DocumentFetchResponse<D>>;
     // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs
@@ -239,7 +242,7 @@ declare namespace nano {
       designname: string,
       searchname: string,
       params: DocumentSearchParams
-    ): Request;
+    ): NodeJS.ReadStream;
     baseView<V>(
       designname: string,
       viewname: string,
@@ -267,14 +270,14 @@ declare namespace nano {
     viewAsStream<V>(
       designname: string,
       viewname: string
-    ): Request;
+    ): NodeJS.ReadStream;
     // http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view
     // http://docs.couchdb.org/en/latest/api/ddoc/views.html#post--db-_design-ddoc-_view-view
     viewAsStream<V>(
       designname: string,
       viewname: string,
       params: DocumentViewParams
-    ): Request;
+    ): NodeJS.ReadStream;
     // http://docs.couchdb.org/en/latest/api/ddoc/render.html#db-design-design-doc-list-list-name-view-name
     viewWithList(
       designname: string,
@@ -296,9 +299,9 @@ declare namespace nano {
     //https://docs.couchdb.org/en/latest/partitioned-dbs/index.html
     partitionInfo(partitionKey: string, callback?: Callback<PartitionInfoResponse<D>>): Promise <PartitionInfoResponse>;
     partitionedList(partitionKey: string, params?: DocumentListParams, callback?: Callback<DocumentListResponse<D>>): Promise<DocumentListResponse<D>>;
-    partitionedListAsStream(partitionKey: string, params?: DocumentListParams): Request;
+    partitionedListAsStream(partitionKey: string, params?: DocumentListParams): NodeJS.ReadStream;
     partitionedFind(partitionKey: string, query: MangoQuery, callback?: Callback<MangoResponse<D>>): Promise <MangoResponse<D>>;
-    partitionedFindAsStream(partitionKey: string, query: MangoQuery): Request;
+    partitionedFindAsStream(partitionKey: string, query: MangoQuery): NodeJS.ReadStream;
     partitionedViewpartitionedSearch<V>(
       partitionKey: string,
       designname: string,
@@ -311,7 +314,7 @@ declare namespace nano {
       designname: string,
       searchname: string,
       params: DocumentSearchParams
-    ): Request;
+    ): NodeJS.ReadStream;
     partitionedView<V>(
       partitionKey: string,
       designname: string,
@@ -324,7 +327,7 @@ declare namespace nano {
       designname: string,
       viewname: string,
       params: DocumentViewParams
-    ): Request;
+    ): NodeJS.ReadStream;
   }
 
   interface AttachmentData {
@@ -374,7 +377,7 @@ declare namespace nano {
       params: any
     ): Promise<DocumentInsertResponse>
     get(docname: string, attname: string, callback?: Callback<Buffer>): Promise<Buffer>;
-    getAsStream(docname: string, attname: string): Request;
+    getAsStream(docname: string, attname: string): NodeJS.ReadStream;
     get(
       docname: string,
       attname: string,
@@ -1348,7 +1351,7 @@ declare namespace nano {
   }
 
   // http://docs.couchdb.org/en/latest/api/database/find.html#db-index
-  interface CreateIndexRequest {
+  interface CreateIndexRequest{
     // JSON object describing the index to create
     index: {
       // Array of field names following the sort syntax.
