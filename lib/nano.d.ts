@@ -3,6 +3,7 @@
 // Definitions by: Tim Jacobi <https://github.com/timjacobi>
 //                 Kovács Vince <https://github.com/vincekovacs>
 //                 Glynn Bird <https://github.com/glynnbird>
+//                 Kyle Chine <https://github.com/kylechine>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 2.3
 
@@ -155,7 +156,7 @@ declare namespace nano {
     head(docname: string, callback?: Callback<any>): Promise<any>;
     // http://docs.couchdb.org/en/latest/api/document/common.html#delete--db-docid
     destroy(docname: string, rev: string, callback?: Callback<DocumentDestroyResponse>): Promise<DocumentDestroyResponse>;
-    bulk(docs: BulkModifyDocsWrapper, callback?: Callback<DocumentInsertResponse[]>): Promise<DocumentInsertResponse[]>;
+    bulk(docs: BulkModifyDocsWrapper, callback?: Callback<DocumentBulkResponse[]>): Promise<DocumentBulkResponse[]>;
     bulk(docs: BulkModifyDocsWrapper, params: any, callback?: Callback<DocumentInsertResponse[]>): Promise<DocumentInsertResponse[]>;
     // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#get--db-_all_docs
     list(callback?: Callback<DocumentListResponse<D>>): Promise<DocumentListResponse<D>>;
@@ -203,20 +204,20 @@ declare namespace nano {
       callback?: Callback<any>
     ): Promise<any>;
     // http://docs.couchdb.org/en/latest/api/ddoc/render.html#put--db-_design-ddoc-_update-func-docid
-    atomic(
+    atomic<R>(
       designname: string,
       updatename: string,
       docname: string,
-      callback?: Callback<OkResponse>
-    ): Promise<OkResponse>;
+      callback?: Callback<R>
+    ): Promise<R>;
     // http://docs.couchdb.org/en/latest/api/ddoc/render.html#put--db-_design-ddoc-_update-func-docid
-    atomic(
+    atomic<R>(
       designname: string,
       updatename: string,
       docname: string,
       body: any,
-      callback?: Callback<OkResponse>
-    ): Promise<OkResponse>;
+      callback?: Callback<R>
+    ): Promise<R>;
     // http://docs.couchdb.org/en/latest/api/ddoc/render.html#put--db-_design-ddoc-_update-func-docid
     updateWithHandler(
       designname: string,
@@ -484,9 +485,11 @@ declare namespace nano {
   // View
   // -------------------------------------
 
+  type DocumentInfer<D> = (doc: D & Document) => void
   interface View<D> {
-    map?(doc: D & Document): void;
-    reduce?(doc: D & Document): void;
+    map?:DocumentInfer<D>;
+    reduce?: string | DocumentInfer<D>
+    
   }
 
   interface ViewDocument<D> extends IdentifiedDocument {
@@ -794,6 +797,21 @@ declare namespace nano {
 
   interface DocumentResponseRow<D> extends DocumentResponseRowMeta {
     doc?: D & Document;
+  }
+
+  // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_bulk_docs
+  interface DocumentBulkResponse {
+    // Document ID. Available in all cases
+    id: string;
+
+    // New document revision token. Available if document has saved without errors.
+    rev?: string;
+
+    // Error type. Available if response code is 4xx
+    error?: string;
+
+    // Error reason. Available if response code is 4xx
+    reason?: string;
   }
 
   // http://docs.couchdb.org/en/latest/api/database/common.html#post--db
@@ -1319,7 +1337,7 @@ declare namespace nano {
   interface MangoResponse<D> {
     // Array of documents matching the search. In each matching document, the fields specified in
     // the fields part of the request body are listed, along with their values.
-    docs: D[];
+    docs: (D & {_id: string, _rev:string})[];
 
     // A string that enables you to specify which page of results you require. Used for paging through result sets.
     bookmark?: string;
