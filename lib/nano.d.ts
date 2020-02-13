@@ -1342,7 +1342,7 @@ declare namespace nano {
   interface MangoResponse<D> {
     // Array of documents matching the search. In each matching document, the fields specified in
     // the fields part of the request body are listed, along with their values.
-    docs: D[];
+    docs: (D & {_id: string, _rev:string})[];
 
     // A string that enables you to specify which page of results you require. Used for paging through result sets.
     bookmark?: string;
