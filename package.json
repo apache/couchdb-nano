@@ -17,11 +17,11 @@
     "database"
   ],
   "dependencies": {
-    "@types/request": "^2.48.4",
+    "axios": "^0.19.2",
     "cloudant-follow": "^0.18.2",
     "debug": "^4.1.1",
     "errs": "^0.3.2",
-    "request": "^2.88.0"
+    "qs": "^6.9.1"
   },
   "devDependencies": {
     "async": "^2.6.2",
@@ -32,7 +32,7 @@
   "scripts": {
     "standard": "standard --fix",
     "test": "standard && npm run jest",
-    "jest": "jest test/* --coverage"
+    "jest": "jest test/* --coverage --env=node"
   },
   "main": "./lib/nano.js",
   "types": "./lib/nano.d.ts",
