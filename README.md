@@ -949,13 +949,8 @@ fs.readFile('rabbit.png', (err, data) => {
 
 ### db.attachment.insertAsStream(docname, attname, att, contenttype, [params])
 
-It may be more memory-efficient to pipe a stream of data from a source (file, network etc) to a CouchDB attachment:
-
-```js
-  const rs = fs.createReadStream('logo.png');
-  const reply = await db.attachment.insertAsStream('mydoc', 'logo.png', rs, 'image/png',
-    { rev: '12-150985a725ec88be471921a54ce91452' })
-```
+As of Nano 9.x, the function `db.attachment.insertAsStream` is now deprecated. Now simply pass
+a readable stream to `db.attachment.insert` as the third paramseter.
 
 ### db.attachment.get(docname, attname, [params], [callback])
 

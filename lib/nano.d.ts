@@ -364,19 +364,6 @@ declare namespace nano {
       params: any,
       callback?: Callback<DocumentInsertResponse>
     ): Promise<DocumentInsertResponse>;
-    insertAsStream(
-      docname: string,
-      attname: string,
-      att: NodeJS.ReadReadStream,
-      contenttype: string
-    ): Promise<DocumentInsertResponse>;
-    insertAsStream(
-      docname: string,
-      attname: string,
-      att: NodeJS.ReadReadStream,
-      contenttype: string,
-      params: any
-    ): Promise<DocumentInsertResponse>
     get(docname: string, attname: string, callback?: Callback<Buffer>): Promise<Buffer>;
     getAsStream(docname: string, attname: string): NodeJS.ReadStream;
     get(
