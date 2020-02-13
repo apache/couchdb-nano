@@ -272,7 +272,7 @@ There is a full TypeScript definition included in the the *nano* package. Your T
 ```ts
 import * as Nano  from 'nano'
 
-let n = Nano('http://USERNAME:PASSSWORD@localhost:5984')
+let n = Nano('http://USERNAME:PASSWORD@localhost:5984')
 let db = n.db.use('people')
 
 interface iPerson extends Nano.MaybeDocument {
