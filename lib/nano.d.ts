@@ -490,9 +490,11 @@ declare namespace nano {
   // View
   // -------------------------------------
 
+  type DocumentInfer<D> = (doc: D & Document) => void
   interface View<D> {
-    map?(doc: D & Document): void;
-    reduce?(doc: D & Document): void;
+    map?:DocumentInfer<D>;
+    reduce?: string | DocumentInfer<D>
+    
   }
 
   interface ViewDocument<D> extends IdentifiedDocument {
