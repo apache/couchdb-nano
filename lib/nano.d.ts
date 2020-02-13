@@ -150,15 +150,6 @@ declare namespace nano {
     get(docname: string, params?: DocumentGetParams, callback?: Callback<DocumentGetResponse & D>): Promise<DocumentGetResponse & D>;
     // http://docs.couchdb.org/en/latest/api/document/common.html#head--db-docid
     head(docname: string, callback?: Callback<any>): Promise<any>;
-    // http://docs.couchdb.org/en/latest/api/document/common.html#copy--db-docid
-    copy(src_document: string, dst_document: string, callback?: Callback<DocumentCopyResponse>): Promise<DocumentCopyResponse>;
-    // http://docs.couchdb.org/en/latest/api/document/common.html#copy--db-docid
-    copy(
-      src_document: string,
-      dst_document: string,
-      options: DocumentCopyOptions,
-      callback?: Callback<DocumentCopyResponse>
-    ): Promise<DocumentCopyResponse>;
     // http://docs.couchdb.org/en/latest/api/document/common.html#delete--db-docid
     destroy(docname: string, rev: string, callback?: Callback<DocumentDestroyResponse>): Promise<DocumentDestroyResponse>;
     bulk(docs: BulkModifyDocsWrapper, callback?: Callback<DocumentInsertResponse[]>): Promise<DocumentInsertResponse[]>;

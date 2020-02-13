@@ -57,7 +57,6 @@ See [Migration Guide for switching from Nano 6.x to 7.x](migration_6_to_7.md).
   - [db.destroy(docname, rev, [callback])](#dbdestroydocname-rev-callback)
   - [db.get(docname, [params], [callback])](#dbgetdocname-params-callback)
   - [db.head(docname, [callback])](#dbheaddocname-callback)
-  - [db.copy(src_doc, dest_doc, opts, [callback])](#dbcopysrc_doc-dest_doc-opts-callback)
   - [db.bulk(docs, [params], [callback])](#dbbulkdocs-params-callback)
   - [db.list([params], [callback])](#dblistparams-callback)
   - [db.listAsStream([params])](#dblistasstreamparams)
@@ -616,17 +615,6 @@ alice.head('rabbit').then((headers) => {
 ```
 
 *Note:* if you call `alice.head` in the callback style, the headers are returned to you as the third argument of the callback function.
-
-### db.copy(src_doc, dest_doc, opts, [callback])
-
-Copies the contents (and attachments) of a document
-to a new document, or overwrite an existing target document
-
-```js
-alice.copy('rabbit', 'rabbit2', { overwrite: true }).then((body) => {
-  console.log(body);
-});
-```
 
 ### db.bulk(docs, [params], [callback])
 
