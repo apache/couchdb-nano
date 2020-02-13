@@ -363,16 +363,16 @@ declare namespace nano {
     insertAsStream(
       docname: string,
       attname: string,
-      att: any,
+      att: NodeJS.ReadReadStream,
       contenttype: string
-    ): Request;
+    ): Promise<DocumentInsertResponse>;
     insertAsStream(
       docname: string,
       attname: string,
-      att: any,
+      att: NodeJS.ReadReadStream,
       contenttype: string,
       params: any
-    ): Request
+    ): Promise<DocumentInsertResponse>
     get(docname: string, attname: string, callback?: Callback<Buffer>): Promise<Buffer>;
     getAsStream(docname: string, attname: string): Request;
     get(

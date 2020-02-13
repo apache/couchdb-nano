@@ -953,11 +953,8 @@ It may be more memory-efficient to pipe a stream of data from a source (file, ne
 
 ```js
   const rs = fs.createReadStream('logo.png');
-  const is = db.attachment.insertAsStream('mydoc', 'logo.png', null, 'image/png',
-    { rev: '12-150985a725ec88be471921a54ce91452' }).on('end', () => {
-      console.log('done')
-  });
-  rs.pipe(is);
+  const reply = await db.attachment.insertAsStream('mydoc', 'logo.png', rs, 'image/png',
+    { rev: '12-150985a725ec88be471921a54ce91452' })
 ```
 
 ### db.attachment.get(docname, attname, [params], [callback])

@@ -30,7 +30,7 @@ afterEach(() => {
   nock.cleanAll()
 })
 
-test('should be able to insert document attachment as stream - PUT /db/docname/attachment - db.attachment.insertAsStream', () => {
+test('should be able to insert document attachment as stream - PUT /db/docname/attachment - db.attachment.insertAsStream', async () => {
   // mocks
   const response = { ok: true, id: 'docname', rev: '2-456' }
   const scope = nock(COUCH_URL, { reqheaders: { 'content-type': 'image/jpg' } })
@@ -38,19 +38,9 @@ test('should be able to insert document attachment as stream - PUT /db/docname/a
     .reply(200, response)
 
   // test PUT /db/docname/attachment
-  return new Promise((resolve, reject) => {
-    const rs = fs.createReadStream('./test/logo.jpg')
-    const db = nano.db.use('db')
-    let reply = ''
-    const is = db.attachment.insertAsStream('docname', 'logo.jpg', null, 'image/jpg', { rev: '1-150' })
-      .on('data', (data) => {
-        reply += data.toString()
-      })
-      .on('end', () => {
-        expect(reply).toStrictEqual(JSON.stringify(response))
-        expect(scope.isDone()).toBe(true)
-        resolve()
-      })
-    rs.pipe(is)
-  })
+  const rs = fs.createReadStream('./test/logo.jpg')
+  const db = nano.db.use('db')
+  const reply = await db.attachment.insertAsStream('docname', 'logo.jpg', rs, 'image/jpg', { rev: '1-150' })
+  expect(reply).toStrictEqual(response)
+  expect(scope.isDone()).toBe(true)
 })
