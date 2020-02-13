@@ -101,7 +101,7 @@ test('check request can fetch local documents - db.get', async () => {
 
   // test GET /db/_local/id
   const db = nano.db.use('db')
-  const p = await db.get('_local/_id')
+  const p = await db.get('_local/id')
   expect(p).toStrictEqual(response)
   expect(scope.isDone()).toBe(true)
 })
