@@ -93,7 +93,7 @@ test('should not attempt info fetch with missing parameters - nano.db.get', asyn
   await expect(nano.db.get('')).rejects.toThrowError('Invalid parameters')
 })
 
-test('should detect missing parameters (callback) - nano.db.get', async () => {
+test('should detect missing parameters (callback) - nano.db.get', () => {
   return new Promise((resolve, reject) => {
     nano.db.get(undefined, (err, data) => {
       expect(err).not.toBeNull()

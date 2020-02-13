@@ -163,7 +163,7 @@ test('should detect invalid parameters - db.fetch', async () => {
   await expect(db.fetch({ keys: [] })).rejects.toThrow('Invalid parameters')
 })
 
-test('should detect missing parameters (callback) - db.fetch', async () => {
+test('should detect missing parameters (callback) - db.fetch', () => {
   return new Promise((resolve, reject) => {
     const db = nano.db.use('db')
     db.fetch(undefined, (err, data) => {

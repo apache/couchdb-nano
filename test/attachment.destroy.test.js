@@ -57,7 +57,7 @@ test('should detect missing doc id - db.attachment.destroy', async () => {
   await expect(db.attachment.destroy('', 'logo.jpg')).rejects.toThrow('Invalid parameters')
 })
 
-test('should detect missing parameters (callback) - db.attachment.destroy', async () => {
+test('should detect missing parameters (callback) - db.attachment.destroy', () => {
   const db = nano.db.use('db')
   return new Promise((resolve, reject) => {
     db.attachment.destroy(undefined, undefined, undefined, (err, data) => {

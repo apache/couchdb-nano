@@ -19,7 +19,7 @@ afterEach(() => {
   nock.cleanAll()
 })
 
-test('should be able to access a search index as a stream - POST /db/_design/ddoc/_search/searchname - db.searchAsStream', async () => {
+test('should be able to access a search index as a stream - POST /db/_design/ddoc/_search/searchname - db.searchAsStream', () => {
   // mocks
   const response = {
     total_rows: 100000,

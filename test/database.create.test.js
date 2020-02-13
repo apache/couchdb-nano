@@ -66,7 +66,7 @@ test('should not attempt to create database with invalid parameters - nano.db.cr
   await expect(nano.db.create('')).rejects.toThrowError('Invalid parameters')
 })
 
-test('should detect missing parameters (callback) - nano.db.create', async () => {
+test('should detect missing parameters (callback) - nano.db.create', () => {
   return new Promise((resolve, reject) => {
     nano.db.create(undefined, undefined, (err, data) => {
       expect(err).not.toBeNull()

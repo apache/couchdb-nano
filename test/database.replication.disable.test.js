@@ -55,7 +55,7 @@ test('should not to try to disable with invalid parameters - nano.db.replication
   await expect(nano.db.replication.disable('rep1')).rejects.toThrowError('Invalid parameters')
 })
 
-test('should detect missing parameters (callback) - nano.db.replication.disable', async () => {
+test('should detect missing parameters (callback) - nano.db.replication.disable', () => {
   return new Promise((resolve, reject) => {
     nano.db.replication.disable(undefined, undefined, (err, data) => {
       expect(err).not.toBeNull()

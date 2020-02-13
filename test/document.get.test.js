@@ -82,7 +82,7 @@ test('should detect missing doc id - db.get', async () => {
   await expect(db.get()).rejects.toThrow('Invalid parameters')
 })
 
-test('should detect missing parameters (callback) - db.get', async () => {
+test('should detect missing parameters (callback) - db.get', () => {
   return new Promise((resolve, reject) => {
     const db = nano.db.use('db')
     db.get(undefined, undefined, (err, data) => {

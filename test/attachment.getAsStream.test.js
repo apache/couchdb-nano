@@ -20,7 +20,7 @@ afterEach(() => {
   nock.cleanAll()
 })
 
-test('should be able to get an attachment as a stream - GET /db/id/attname - db.attachment.getAsStream', async () => {
+test('should be able to get an attachment as a stream - GET /db/id/attname - db.attachment.getAsStream', () => {
   // mocks
   const scope = nock(COUCH_URL)
     .get('/db/id/transparent.gif')

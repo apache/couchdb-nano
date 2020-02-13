@@ -80,7 +80,7 @@ test('should not attempt invalid parameters - nano.db.changes', async () => {
   await expect(nano.db.changes('')).rejects.toThrowError('Invalid parameters')
 })
 
-test('should detect missing parameters (callback) - nano.db.changes', async () => {
+test('should detect missing parameters (callback) - nano.db.changes', () => {
   return new Promise((resolve, reject) => {
     nano.db.changes(undefined, undefined, (err, data) => {
       expect(err).not.toBeNull()

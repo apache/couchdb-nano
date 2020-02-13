@@ -87,7 +87,7 @@ test('should be able to handle an error  in overwrite mode # 2 - db.copy', async
   expect(scope.isDone()).toBe(true)
 })
 
-test('should be able to handle an error  in overwrite mode # 3 - db.copy', async () => {
+test('should be able to handle an error  in overwrite mode # 3 - db.copy', () => {
   // mocks
   const response = 'Internal server error'
   const scope = nock(COUCH_URL)
@@ -133,7 +133,7 @@ test('should detect invalid parameters - db.copy', async () => {
   await expect(db.copy('rabbit1', '')).rejects.toThrowError('Invalid parameters')
 })
 
-test('should detect missing parameters (callback) - db.copy', async () => {
+test('should detect missing parameters (callback) - db.copy', () => {
   return new Promise((resolve, reject) => {
     const db = nano.db.use('db')
     db.copy(undefined, undefined, (err, data) => {

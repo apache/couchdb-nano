@@ -49,7 +49,7 @@ test('should not attempt compact with invalid parameters - nano.db.compact', asy
   await expect(nano.db.compact()).rejects.toThrowError('Invalid parameters')
 })
 
-test('should detect missing parameters (callback) - nano.db.compact', async () => {
+test('should detect missing parameters (callback) - nano.db.compact', () => {
   return new Promise((resolve, reject) => {
     nano.db.compact(undefined, (err, data) => {
       expect(err).not.toBeNull()

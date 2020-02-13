@@ -20,7 +20,7 @@ afterEach(() => {
   nock.cleanAll()
 })
 
-test('should get a streamed list of databases - GET /_all_dbs - nano.db.listAsStream', async () => {
+test('should get a streamed list of databases - GET /_all_dbs - nano.db.listAsStream', () => {
   // mocks
   const scope = nock(COUCH_URL)
     .get('/_all_dbs')

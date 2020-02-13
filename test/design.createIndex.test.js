@@ -75,7 +75,7 @@ test('should detect missing index - db.createIndex', async () => {
   await expect(db.createIndex('myindex')).rejects.toThrow('Invalid parameters')
 })
 
-test('should detect missing index (callback) - db.createIndex', async () => {
+test('should detect missing index (callback) - db.createIndex', () => {
   const db = nano.db.use('db')
   return new Promise((resolve, reject) => {
     db.createIndex('', (err, data) => {

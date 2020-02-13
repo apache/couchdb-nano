@@ -73,7 +73,7 @@ test('should not attempt compact invalid parameters - nano.db.replicate', async 
   await expect(nano.db.replicate('', 'target')).rejects.toThrowError('Invalid parameters')
 })
 
-test('should detect missing parameters (callback) - nano.db.replicate', async () => {
+test('should detect missing parameters (callback) - nano.db.replicate', () => {
   return new Promise((resolve, reject) => {
     nano.db.replicate(undefined, undefined, undefined, (err, data) => {
       expect(err).not.toBeNull()

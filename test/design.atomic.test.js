@@ -87,7 +87,7 @@ test('should detect missing parameters - db.update', async () => {
   await expect(db.atomic('', 'updatename', 'docid')).rejects.toThrow('Invalid parameters')
 })
 
-test('should detect missing parameters (callback) - db.update', async () => {
+test('should detect missing parameters (callback) - db.update', () => {
   const db = nano.db.use('db')
   return new Promise((resolve, reject) => {
     db.atomic('', '', '', {}, (err, data) => {
@@ -97,7 +97,7 @@ test('should detect missing parameters (callback) - db.update', async () => {
   })
 })
 
-test('should detect missing parameters (callback no body) - db.update', async () => {
+test('should detect missing parameters (callback no body) - db.update', () => {
   const db = nano.db.use('db')
   return new Promise((resolve, reject) => {
     db.atomic('', '', '', (err, data) => {

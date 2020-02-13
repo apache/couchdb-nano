@@ -26,7 +26,7 @@ test('should be able to follow changes feed - nano.db.follow', () => {
   // no need to test the changes feed follower - it has its own tests
 })
 
-test('should be able to follow changes feed (callback) - nano.db.follow', async () => {
+test('should be able to follow changes feed (callback) - nano.db.follow', () => {
   // mocks
   const scope = nock(COUCH_URL)
     .get('/db')
