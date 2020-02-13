@@ -3,6 +3,7 @@
 // Definitions by: Tim Jacobi <https://github.com/timjacobi>
 //                 Kovács Vince <https://github.com/vincekovacs>
 //                 Glynn Bird <https://github.com/glynnbird>
+//                 Kyle Chine <https://github.com/kylechine>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 2.3
 
@@ -209,20 +210,20 @@ declare namespace nano {
       callback?: Callback<any>
     ): Promise<any>;
     // http://docs.couchdb.org/en/latest/api/ddoc/render.html#put--db-_design-ddoc-_update-func-docid
-    atomic(
+    atomic<R>(
       designname: string,
       updatename: string,
       docname: string,
-      callback?: Callback<OkResponse>
-    ): Promise<OkResponse>;
+      callback?: Callback<R>
+    ): Promise<R>;
     // http://docs.couchdb.org/en/latest/api/ddoc/render.html#put--db-_design-ddoc-_update-func-docid
-    atomic(
+    atomic<R>(
       designname: string,
       updatename: string,
       docname: string,
       body: any,
-      callback?: Callback<OkResponse>
-    ): Promise<OkResponse>;
+      callback?: Callback<R>
+    ): Promise<R>;
     // http://docs.couchdb.org/en/latest/api/ddoc/render.html#put--db-_design-ddoc-_update-func-docid
     updateWithHandler(
       designname: string,
