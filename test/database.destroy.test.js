@@ -52,7 +52,7 @@ test('should not attempt to destroy database with empty database name - nano.db.
   await expect(nano.db.destroy('')).rejects.toThrowError('Invalid parameters')
 })
 
-test('should detect missing parameters (callback) - nano.db.destroy', async () => {
+test('should detect missing parameters (callback) - nano.db.destroy', () => {
   return new Promise((resolve, reject) => {
     nano.db.destroy(undefined, (err, data) => {
       expect(err).not.toBeNull()

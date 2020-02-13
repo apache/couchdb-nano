@@ -76,7 +76,7 @@ test('should detect missing query - db.find', async () => {
   await expect(db.find('susan')).rejects.toThrow('Invalid parameters')
 })
 
-test('should detect missing query (callback) - db.find', async () => {
+test('should detect missing query (callback) - db.find', () => {
   const db = nano.db.use('db')
   return new Promise((resolve, reject) => {
     db.find('', (err, data) => {

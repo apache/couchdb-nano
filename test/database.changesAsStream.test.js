@@ -34,7 +34,7 @@ afterEach(() => {
   nock.cleanAll()
 })
 
-test('should get a streamed list of changes - GET /_changes - nano.db.changesAsStream', async () => {
+test('should get a streamed list of changes - GET /_changes - nano.db.changesAsStream', () => {
   // mocks
   const scope = nock(COUCH_URL)
     .get('/db/_changes')
@@ -57,7 +57,7 @@ test('should get a streamed list of changes - GET /_changes - nano.db.changesAsS
   })
 })
 
-test('should get a streamed list of changes with opts - GET /_changes - nano.db.changesAsStream', async () => {
+test('should get a streamed list of changes with opts - GET /_changes - nano.db.changesAsStream', () => {
   // mocks
   const opts = { include_docs: true }
   const scope = nock(COUCH_URL)

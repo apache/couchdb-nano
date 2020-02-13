@@ -54,7 +54,7 @@ test('should detect missing parameters - db.destroy', async () => {
   await expect(db.destroy(undefined, '1-123')).rejects.toThrow('Invalid parameters')
 })
 
-test('should detect missing parameters (callback) - db.destroy', async () => {
+test('should detect missing parameters (callback) - db.destroy', () => {
   return new Promise((resolve, reject) => {
     const db = nano.db.use('db')
     db.destroy(undefined, undefined, (err, data) => {

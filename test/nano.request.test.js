@@ -114,7 +114,7 @@ test('check request can do HEAD requests - nano.request', async () => {
   expect(scope.isDone()).toBe(true)
 })
 
-test('check request can do GET requests with callback - nano.request', async () => {
+test('check request can do GET requests with callback - nano.request', () => {
   // mocks
   const response = { ok: true }
   const scope = nock(COUCH_URL)
@@ -137,7 +137,7 @@ test('check request can do GET requests with callback - nano.request', async () 
   })
 })
 
-test('check request can do failed GET requests with callback - nano.request', async () => {
+test('check request can do failed GET requests with callback - nano.request', () => {
   // mocks
   const response = {
     error: 'not_found',
@@ -305,7 +305,7 @@ test('check request can do 500s - nano.request', async () => {
   expect(scope.isDone()).toBe(true)
 })
 
-test('check request can do 500s with callback - nano.request', async () => {
+test('check request can do 500s with callback - nano.request', () => {
   // mocks
   const errorMessage = 'Internal server error'
   const scope = nock(COUCH_URL)
@@ -353,7 +353,7 @@ test('check request handle empty parameter list - nano.request', async () => {
   expect(scope.isDone()).toBe(true)
 })
 
-test('check request handle empty parameter list (callback) - nano.request', async () => {
+test('check request handle empty parameter list (callback) - nano.request', () => {
   // mocks
   const response = {
     couchdb: 'Welcome',

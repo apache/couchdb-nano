@@ -100,7 +100,7 @@ test('should detect missing docName - db.multipart.insert', async () => {
   await expect(db.multipart.insert({ a: 1 }, [{}], {})).rejects.toThrow('Invalid parameters')
 })
 
-test('should detect missing parameters (callback) - db.multipart.insert', async () => {
+test('should detect missing parameters (callback) - db.multipart.insert', () => {
   const db = nano.db.use('db')
   return new Promise((resolve, reject) => {
     db.multipart.insert(undefined, undefined, undefined, (err, data) => {

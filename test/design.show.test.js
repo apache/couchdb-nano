@@ -59,7 +59,7 @@ test('should detect missing parameters - db.show', async () => {
   await expect(db.show('', 'showname', 'docid')).rejects.toThrow('Invalid parameters')
 })
 
-test('should detect missing parameters (callback) - db.show', async () => {
+test('should detect missing parameters (callback) - db.show', () => {
   const db = nano.db.use('db')
   return new Promise((resolve, reject) => {
     db.show('', '', '', {}, (err, data) => {

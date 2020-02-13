@@ -41,7 +41,7 @@ test('check requests timeout - nano.request', async () => {
   await expect(nano.request(req)).rejects.toThrow('error happened in your connection')
 })
 
-test('check request timeout (callback) - nano.request', async () => {
+test('check request timeout (callback) - nano.request', () => {
   // mocks
   const response = { ok: true }
   nock(COUCH_URL)

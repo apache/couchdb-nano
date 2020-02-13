@@ -30,7 +30,7 @@ afterEach(() => {
   nock.cleanAll()
 })
 
-test('should be able to insert document attachment as stream - PUT /db/docname/attachment - db.attachment.insertAsStream', async () => {
+test('should be able to insert document attachment as stream - PUT /db/docname/attachment - db.attachment.insertAsStream', () => {
   // mocks
   const response = { ok: true, id: 'docname', rev: '2-456' }
   const scope = nock(COUCH_URL, { reqheaders: { 'content-type': 'image/jpg' } })

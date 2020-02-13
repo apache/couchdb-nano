@@ -157,7 +157,7 @@ test('should detect missing parameters - db.view', async () => {
   await expect(db.view('', 'susan')).rejects.toThrow('Invalid parameters')
 })
 
-test('should detect missing parameters (callback) - db.view', async () => {
+test('should detect missing parameters (callback) - db.view', () => {
   const db = nano.db.use('db')
   return new Promise((resolve, reject) => {
     db.view('', '', (err, data) => {

@@ -19,7 +19,7 @@ afterEach(() => {
   nock.cleanAll()
 })
 
-test('should be able to access a MapReduce view as a stream - GET /db/_design/ddoc/_view/viewname - db.viewAsStream', async () => {
+test('should be able to access a MapReduce view as a stream - GET /db/_design/ddoc/_view/viewname - db.viewAsStream', () => {
   // mocks
   const response = {
     rows: [

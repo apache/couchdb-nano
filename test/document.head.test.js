@@ -33,7 +33,7 @@ test('should be able to head a document - HEAD /db/id - db.head', async () => {
   expect(scope.isDone()).toBe(true)
 })
 
-test('should be able to head a document with callback - HEAD /db/id - db.head', async () => {
+test('should be able to head a document with callback - HEAD /db/id - db.head', () => {
   // mocks
   const scope = nock(COUCH_URL)
     .head('/db/id')
@@ -69,7 +69,7 @@ test('should detect missing parameters - db.head', async () => {
   await expect(db.head()).rejects.toThrow('Invalid parameters')
 })
 
-test('should detect missing parameters (callback) - db.head', async () => {
+test('should detect missing parameters (callback) - db.head', () => {
   return new Promise((resolve, reject) => {
     const db = nano.db.use('db')
     db.head(undefined, (err, data) => {

@@ -82,7 +82,7 @@ test('should not attempt compact with invalid parameters - nano.db.replication.e
   await expect(nano.db.replication.enable('source', '')).rejects.toThrowError('Invalid parameters')
 })
 
-test('should detect missing parameters (callback) - nano.db.replication.enable', async () => {
+test('should detect missing parameters (callback) - nano.db.replication.enable', () => {
   return new Promise((resolve, reject) => {
     nano.db.replication.enable(undefined, undefined, undefined, (err, data) => {
       expect(err).not.toBeNull()

@@ -19,7 +19,7 @@ afterEach(() => {
   nock.cleanAll()
 })
 
-test('should be able to query an index as a stream- POST /db/_find - db.findAsStream', async () => {
+test('should be able to query an index as a stream- POST /db/_find - db.findAsStream', () => {
   // mocks
   const query = {
     selector: {

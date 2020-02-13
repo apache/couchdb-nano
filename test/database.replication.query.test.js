@@ -86,7 +86,7 @@ test('should not attempt info fetch with invalid parameters - nano.db.replicatio
   await expect(nano.db.replication.query()).rejects.toThrowError('Invalid parameters')
 })
 
-test('should detect missing parameters (callback) - nano.db.replication.query', async () => {
+test('should detect missing parameters (callback) - nano.db.replication.query', () => {
   return new Promise((resolve, reject) => {
     nano.db.replication.query(undefined, undefined, (err, data) => {
       expect(err).not.toBeNull()

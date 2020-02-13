@@ -69,7 +69,7 @@ test('should get a streamed list of documents - GET /db/_all_docs - db.listAsStr
   })
 })
 
-test('should get a streamed list of documents with opts- GET /db/_all_docs - db.listAsStream', async () => {
+test('should get a streamed list of documents with opts- GET /db/_all_docs - db.listAsStream', () => {
   // mocks
   const response = {
     total_rows: 23516,
