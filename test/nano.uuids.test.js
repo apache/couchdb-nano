@@ -55,7 +55,7 @@ test('should be able to fetch more uuids - GET /_uuids?count=3 - nano.uuids', as
   expect(scope.isDone()).toBe(true)
 })
 
-test('should be able to fetch uuids callback - GET /_uuids - nano.uuids', async () => {
+test('should be able to fetch uuids callback - GET /_uuids - nano.uuids', () => {
   // mocks
   const response = {
     uuids: [
