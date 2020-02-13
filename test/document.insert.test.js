@@ -130,3 +130,35 @@ test('should be able to handle missing database - POST /db - db.insert', async (
   await expect(db.insert(doc)).rejects.toThrow('Database does not exist.')
   expect(scope.isDone()).toBe(true)
 })
+
+test('should be able to insert document with _local id - PUT /db/_local/id - db.insert', async () => {
+  // mocks
+  const doc = { a: 1, b: 2 }
+  const response = { ok: true, id: '_local/myid', rev: '1-123' }
+
+  const scope = nock(COUCH_URL)
+    .put('/db/_local/myid', doc)
+    .reply(200, response)
+
+  // test PUT /db
+  const db = nano.db.use('db')
+  const p = await db.insert(doc, '_local/myid')
+  expect(p).toStrictEqual(response)
+  expect(scope.isDone()).toBe(true)
+})
+
+test('should be able to insert document with local id in object - POST /db - db.insert', async () => {
+  // mocks
+  const doc = { _id: '_local/myid', a: 1, b: 2 }
+  const response = { ok: true, id: '_local/myid', rev: '1-123' }
+
+  const scope = nock(COUCH_URL)
+    .post('/db', doc)
+    .reply(200, response)
+
+  // test POST /db
+  const db = nano.db.use('db')
+  const p = await db.insert(doc)
+  expect(p).toStrictEqual(response)
+  expect(scope.isDone()).toBe(true)
+})
