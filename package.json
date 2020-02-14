@@ -24,14 +24,14 @@
     "request": "^2.88.0"
   },
   "devDependencies": {
-    "async": "^2.6.2",
     "jest": "^25.1.0",
     "nock": "^11.7.2",
-    "standard": "^14.3.1"
+    "standard": "^14.3.1",
+    "typescript": "^3.7.5"
   },
   "scripts": {
     "standard": "standard --fix",
-    "test": "standard && npm run jest",
+    "test": "standard && tsc lib/nano.d.ts && npm run jest",
     "jest": "jest test/* --coverage"
   },
   "main": "./lib/nano.js",
@@ -40,9 +40,7 @@
     "node": ">=10"
   },
   "pre-commit": [
-    "mocked",
-    "test",
-    "checkcoverage"
+    "test"
   ],
   "standard": {
     "env": [

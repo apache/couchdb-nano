@@ -304,7 +304,7 @@ declare namespace nano {
     find(query: MangoQuery, callback?: Callback<MangoResponse<D>>): Promise <MangoResponse<D>>;
     server: ServerScope;
     //https://docs.couchdb.org/en/latest/partitioned-dbs/index.html
-    partitionInfo(partitionKey: string, callback?: Callback<PartitionInfoResponse<D>>): Promise <PartitionInfoResponse>;
+    partitionInfo(partitionKey: string, callback?: Callback<PartitionInfoResponse>): Promise <PartitionInfoResponse>;
     partitionedList(partitionKey: string, params?: DocumentListParams, callback?: Callback<DocumentListResponse<D>>): Promise<DocumentListResponse<D>>;
     partitionedListAsStream(partitionKey: string, params?: DocumentListParams): Request;
     partitionedFind(partitionKey: string, query: MangoQuery, callback?: Callback<MangoResponse<D>>): Promise <MangoResponse<D>>;
@@ -1083,8 +1083,8 @@ declare namespace nano {
 
     // Partition sizes
     sizes: {
-      active: integer;
-      external: integer;
+      active: number;
+      external: number;
     }
 
     // Partition name
