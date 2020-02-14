@@ -18,6 +18,8 @@ declare function nano(
 declare namespace nano {
   interface requestDefaultsOptions {
     timeout: number;
+    agent: any;
+    headers: object;
   };
 
   interface Configuration {
