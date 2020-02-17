@@ -305,8 +305,8 @@ declare namespace nano {
     server: ServerScope;
     //https://docs.couchdb.org/en/latest/partitioned-dbs/index.html
     partitionInfo(partitionKey: string, callback?: Callback<PartitionInfoResponse>): Promise <PartitionInfoResponse>;
-    partitionedList(partitionKey: string, params?: DocumentListParams, callback?: Callback<DocumentListResponse<D>>): Promise<DocumentListResponse<D>>;
-    partitionedListAsStream(partitionKey: string, params?: DocumentListParams): Request;
+    partitionedList(partitionKey: string, params?: DocumentFetchParams, callback?: Callback<DocumentListResponse<D>>): Promise<DocumentListResponse<D>>;
+    partitionedListAsStream(partitionKey: string, params?: DocumentFetchParams): Request;
     partitionedFind(partitionKey: string, query: MangoQuery, callback?: Callback<MangoResponse<D>>): Promise <MangoResponse<D>>;
     partitionedFindAsStream(partitionKey: string, query: MangoQuery): Request;
     partitionedViewpartitionedSearch<V>(
