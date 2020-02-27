@@ -25,14 +25,14 @@
   },
   "devDependencies": {
     "jest": "^25.1.0",
-    "nock": "^11.7.2",
+    "nock": "^12.0.1",
     "standard": "^14.3.1",
     "typescript": "^3.7.5"
   },
   "scripts": {
     "standard": "standard --fix",
     "test": "standard && tsc lib/nano.d.ts && npm run jest",
-    "jest": "jest test/* --coverage"
+    "jest": "jest test/* --coverage --env node"
   },
   "main": "./lib/nano.js",
   "types": "./lib/nano.d.ts",

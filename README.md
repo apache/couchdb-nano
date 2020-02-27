@@ -1277,16 +1277,9 @@ To run (and configure) the test suite simply:
 ``` sh
 cd nano
 npm install
-npm test
+npm run test
 ```
 
-After adding a new test you can run it individually (with verbose output) using:
-
-``` sh
-nano_env=testing node tests/doc/list.js list_doc_params
-```
-
-where `list_doc_params` is the test name.
 
 ## Meta
 
