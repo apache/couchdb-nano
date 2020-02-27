@@ -20,7 +20,7 @@ declare namespace nano {
     timeout: number;
     agent: any;
     headers: object;
-  };
+  }
 
   interface Configuration {
     url: string;
@@ -49,11 +49,16 @@ declare namespace nano {
     updates(callback?: Callback<DatabaseUpdatesResponse>): Promise<DatabaseUpdatesResponse>;
     // http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates
     updates(params: UpdatesParams, callback?: Callback<DatabaseUpdatesResponse>): Promise<DatabaseUpdatesResponse>;
-    followUpdates(callback?: Callback<any>): EventEmitter;
-    followUpdates(params: any, callback?: Callback<any>): EventEmitter;
+    followUpdates(params?: any): FollowEmitter;
+    followUpdates(callback: Callback<any>);
+    followUpdates(params: any, callback: Callback<any>);
     uuids(num: number, callback?: Callback<any>): Promise<UUIDObject>;
   }
 
+  interface FollowEmitter extends EventEmitter {
+    follow();
+  }
+  
   interface UUIDObject {
     uuids: string[]
   }
@@ -104,9 +109,11 @@ declare namespace nano {
     changesAsStream(name: string): NodeJS.ReadStream;
     // http://docs.couchdb.org/en/latest/api/database/compact.html#post--db-_compact
     changesAsStream(name: string, params: DatabaseChangesParams): NodeJS.ReadStream;
-    follow(source: string, callback?: Callback<any>): EventEmitter;
-    follow(source: string, params: DatabaseScopeFollowUpdatesParams, callback?: Callback<any>): EventEmitter;
-    followUpdates(params?: any, callback?: Callback<any>): EventEmitter;
+    follow(source: string, params?: DatabaseScopeFollowUpdatesParams): FollowEmitter;
+    follow(source: string, params: DatabaseScopeFollowUpdatesParams, callback: Callback<any>);
+    followUpdates(params?: any): FollowEmitter;
+    followUpdates(params: DatabaseScopeFollowUpdatesParams, callback: Callback<any>);
+    followUpdates(callback: Callback<any>);
     // http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates
     updates(callback?: Callback<DatabaseUpdatesResponse>): Promise<DatabaseUpdatesResponse>;
     // http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates
@@ -134,8 +141,9 @@ declare namespace nano {
     changes(callback?: Callback<DatabaseChangesResponse>): Promise<DatabaseChangesResponse>;
     // http://docs.couchdb.org/en/latest/api/database/changes.html#get--db-_changes
     changes(params: DatabaseChangesParams, callback?: Callback<DatabaseChangesResponse>): Promise<DatabaseChangesResponse>;
-    follow(callback?: Callback<any>): EventEmitter;
-    follow(params: DocumentScopeFollowUpdatesParams, callback?: Callback<any>): EventEmitter;
+    follow(params?: DocumentScopeFollowUpdatesParams): FollowEmitter;
+    follow(params: DocumentScopeFollowUpdatesParams, callback: Callback<any>);
+    follow(callback: Callback<any>);
     // http://docs.couchdb.org/en/latest/api/server/authn.html#cookie-authentication
     auth(username: string, userpass: string, callback?: Callback<DatabaseAuthResponse>): Promise<DatabaseAuthResponse>;
     // http://docs.couchdb.org/en/latest/api/server/authn.html#get--_session
@@ -177,13 +185,13 @@ declare namespace nano {
       callback?: Callback<DocumentFetchResponse<D>>
     ): Promise<DocumentFetchResponse<D>>;
     // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs
-    fetchRevs(docnames: BulkFetchDocsWrapper, callback?: Callback<DocumentFetchRevsResponse>): Promise<DocumentFetchRevsResponse>;
+    fetchRevs(docnames: BulkFetchDocsWrapper, callback?: Callback<DocumentFetchRevsResponse<D>>): Promise<DocumentFetchRevsResponse<D>>;
     // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs
     fetchRevs(
       docnames: BulkFetchDocsWrapper,
       params: DocumentFetchParams,
-      callback?: Callback<DocumentFetchRevsResponse>
-    ): Promise<DocumentFetchRevsResponse>;
+      callback?: Callback<DocumentFetchRevsResponse<D>>
+    ): Promise<DocumentFetchRevsResponse<D>>;
     // http://docs.couchdb.org/en/latest/api/database/find.html#db-index
     createIndex(indexDef: CreateIndexRequest,
                 callback?:  Callback<CreateIndexResponse>
@@ -300,9 +308,9 @@ declare namespace nano {
     find(query: MangoQuery, callback?: Callback<MangoResponse<D>>): Promise <MangoResponse<D>>;
     server: ServerScope;
     //https://docs.couchdb.org/en/latest/partitioned-dbs/index.html
-    partitionInfo(partitionKey: string, callback?: Callback<PartitionInfoResponse<D>>): Promise <PartitionInfoResponse>;
-    partitionedList(partitionKey: string, params?: DocumentListParams, callback?: Callback<DocumentListResponse<D>>): Promise<DocumentListResponse<D>>;
-    partitionedListAsStream(partitionKey: string, params?: DocumentListParams): NodeJS.ReadStream;
+    partitionInfo(partitionKey: string, callback?: Callback<PartitionInfoResponse>): Promise <PartitionInfoResponse>;
+    partitionedList(partitionKey: string, params?: DocumentFetchParams, callback?: Callback<DocumentListResponse<D>>): Promise<DocumentListResponse<D>>;
+    partitionedListAsStream(partitionKey: string, params?: DocumentFetchParams): NodeJS.ReadStream;
     partitionedFind(partitionKey: string, query: MangoQuery, callback?: Callback<MangoResponse<D>>): Promise <MangoResponse<D>>;
     partitionedFindAsStream(partitionKey: string, query: MangoQuery): NodeJS.ReadStream;
     partitionedViewpartitionedSearch<V>(
@@ -1015,21 +1023,24 @@ declare namespace nano {
     start_key_doc_id?: string;
     update_seq?: boolean;
   }
+  interface DocumentLookupFailure {
+    key: string;
+    error: string;
+  }
 
   interface DocumentFetchResponse<D> {
     offset: number;
-    rows: Array<DocumentResponseRow<D>>;
+    rows: Array<DocumentResponseRow<D> | DocumentLookupFailure>;
     total_rows: number;
     update_seq?: number;
   }
 
-  interface DocumentFetchRevsResponse {
+  interface DocumentFetchRevsResponse<D> {
     offset: number;
-    rows: DocumentResponseRowMeta[];
+    rows: Array<DocumentResponseRow<D> | DocumentLookupFailure>;
     total_rows: number;
     update_seq?: number;
   }
-
 
   interface DocumentSearchResponse<V> {
 
@@ -1066,8 +1077,8 @@ declare namespace nano {
 
     // Partition sizes
     sizes: {
-      active: integer;
-      external: integer;
+      active: number;
+      external: number;
     }
 
     // Partition name
@@ -1249,35 +1260,15 @@ declare namespace nano {
     update_seq: any;
   }
 
-  type MangoValue = number | string | Date | boolean | null;
-
   // http://docs.couchdb.org/en/latest/api/database/find.html#selector-syntax
-
-  enum ConditionOperands {
-    $lt = '$lt',
-    $lte = '$lte',
-    $eq = '$eq',
-    $ne = '$ne',
-    $gte = '$gte',
-    $gt = '$gt'
+  type MangoValue = number | string | Date | boolean | object | null;
+  type MangoOperator = '$lt' | '$lte' | '$eq' | '$ne' | '$gte' | '$gt' |
+                    '$exists' | '$type' | 
+                    '$in' | '$nin' | '$size' | '$mod' | '$regex' |
+                    '$or' | '$and' | '$nor' | '$not' | '$all' | '$allMatch' | '$elemMatch';
+  type MangoSelector = {
+    [K in MangoOperator]: MangoSelector | MangoValue | MangoValue[];
   }
-
-  enum ArrayFieldOperands {
-    $in = '$in',
-    $nin = '$nin'
-  }
-
-  enum CombinationOperands {
-      $or = '$or',
-      $and = '$and',
-      $nor = '$nor',
-      $all = '$all'
-  }
-
-  type MangoSelector = { [key: string]: MangoSelector | MangoValue | MangoValue[]; }
-    | Partial<{ [key in ConditionOperands]: MangoValue; }>
-    | Partial<{ [key in ArrayFieldOperands]: MangoValue[] }>
-    | Partial<{ [key in CombinationOperands]: MangoSelector[] }>
 
   // http://docs.couchdb.org/en/latest/api/database/find.html#sort-syntax
   type SortOrder = string | string[] | { [key: string]: 'asc' | 'desc' };
