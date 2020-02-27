@@ -44,11 +44,16 @@ declare namespace nano {
     updates(callback?: Callback<DatabaseUpdatesResponse>): Promise<DatabaseUpdatesResponse>;
     // http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates
     updates(params: UpdatesParams, callback?: Callback<DatabaseUpdatesResponse>): Promise<DatabaseUpdatesResponse>;
-    followUpdates(callback?: Callback<any>): EventEmitter;
-    followUpdates(params: any, callback?: Callback<any>): EventEmitter;
+    followUpdates(params?: any): FollowEmitter;
+    followUpdates(callback: Callback<any>);
+    followUpdates(params: any, callback: Callback<any>);
     uuids(num: number, callback?: Callback<any>): Promise<UUIDObject>;
   }
 
+  interface FollowEmitter extends EventEmitter {
+    follow();
+  }
+  
   interface UUIDObject {
     uuids: string[]
   }
@@ -99,9 +104,11 @@ declare namespace nano {
     changesAsStream(name: string): Request;
     // http://docs.couchdb.org/en/latest/api/database/compact.html#post--db-_compact
     changesAsStream(name: string, params: DatabaseChangesParams): Request;
-    follow(source: string, callback?: Callback<any>): EventEmitter;
-    follow(source: string, params: DatabaseScopeFollowUpdatesParams, callback?: Callback<any>): EventEmitter;
-    followUpdates(params?: any, callback?: Callback<any>): EventEmitter;
+    follow(source: string, params?: DatabaseScopeFollowUpdatesParams): FollowEmitter;
+    follow(source: string, params: DatabaseScopeFollowUpdatesParams, callback: Callback<any>);
+    followUpdates(params?: any): FollowEmitter;
+    followUpdates(params: DatabaseScopeFollowUpdatesParams, callback: Callback<any>);
+    followUpdates(callback: Callback<any>);
     // http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates
     updates(callback?: Callback<DatabaseUpdatesResponse>): Promise<DatabaseUpdatesResponse>;
     // http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates
@@ -129,8 +136,9 @@ declare namespace nano {
     changes(callback?: Callback<DatabaseChangesResponse>): Promise<DatabaseChangesResponse>;
     // http://docs.couchdb.org/en/latest/api/database/changes.html#get--db-_changes
     changes(params: DatabaseChangesParams, callback?: Callback<DatabaseChangesResponse>): Promise<DatabaseChangesResponse>;
-    follow(callback?: Callback<any>): EventEmitter;
-    follow(params: DocumentScopeFollowUpdatesParams, callback?: Callback<any>): EventEmitter;
+    follow(params?: DocumentScopeFollowUpdatesParams): FollowEmitter;
+    follow(params: DocumentScopeFollowUpdatesParams, callback: Callback<any>);
+    follow(callback: Callback<any>);
     // http://docs.couchdb.org/en/latest/api/server/authn.html#cookie-authentication
     auth(username: string, userpass: string, callback?: Callback<DatabaseAuthResponse>): Promise<DatabaseAuthResponse>;
     // http://docs.couchdb.org/en/latest/api/server/authn.html#get--_session
