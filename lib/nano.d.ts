@@ -189,13 +189,13 @@ declare namespace nano {
       callback?: Callback<DocumentFetchResponse<D>>
     ): Promise<DocumentFetchResponse<D>>;
     // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs
-    fetchRevs(docnames: BulkFetchDocsWrapper, callback?: Callback<DocumentFetchRevsResponse>): Promise<DocumentFetchRevsResponse>;
+    fetchRevs(docnames: BulkFetchDocsWrapper, callback?: Callback<DocumentFetchRevsResponse<D>>): Promise<DocumentFetchRevsResponse<D>>;
     // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs
     fetchRevs(
       docnames: BulkFetchDocsWrapper,
       params: DocumentFetchParams,
-      callback?: Callback<DocumentFetchRevsResponse>
-    ): Promise<DocumentFetchRevsResponse>;
+      callback?: Callback<DocumentFetchRevsResponse<D>>
+    ): Promise<DocumentFetchRevsResponse<D>>;
     // http://docs.couchdb.org/en/latest/api/database/find.html#db-index
     createIndex(indexDef: CreateIndexRequest,
                 callback?:  Callback<CreateIndexResponse>
@@ -1040,21 +1040,24 @@ declare namespace nano {
     start_key_doc_id?: string;
     update_seq?: boolean;
   }
+  interface DocumentLookupFailure {
+    key: string;
+    error: string;
+  }
 
   interface DocumentFetchResponse<D> {
     offset: number;
-    rows: Array<DocumentResponseRow<D>>;
+    rows: Array<DocumentResponseRow<D> | DocumentLookupFailure>;
     total_rows: number;
     update_seq?: number;
   }
 
-  interface DocumentFetchRevsResponse {
+  interface DocumentFetchRevsResponse<D> {
     offset: number;
-    rows: DocumentResponseRowMeta[];
+    rows: Array<DocumentResponseRow<D> | DocumentLookupFailure>;
     total_rows: number;
     update_seq?: number;
   }
-
 
   interface DocumentSearchResponse<V> {
 
