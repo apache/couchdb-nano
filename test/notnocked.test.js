@@ -11,7 +11,7 @@
 // the License.
 
 const Nano = require('..')
-const COUCH_URL = 'http://localhost:5984'
+const COUCH_URL = 'http://admin:admin@localhost:5984'
 const nano = Nano(COUCH_URL)
 const dbName = 'notnocked' + new Date().getTime()
 let db
