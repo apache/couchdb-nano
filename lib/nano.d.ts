@@ -1274,35 +1274,15 @@ declare namespace nano {
     update_seq: any;
   }
 
-  type MangoValue = number | string | Date | boolean | null;
-
   // http://docs.couchdb.org/en/latest/api/database/find.html#selector-syntax
-
-  enum ConditionOperands {
-    $lt = '$lt',
-    $lte = '$lte',
-    $eq = '$eq',
-    $ne = '$ne',
-    $gte = '$gte',
-    $gt = '$gt'
+  type MangoValue = number | string | Date | boolean | object | null;
+  type MangoOperator = '$lt' | '$lte' | '$eq' | '$ne' | '$gte' | '$gt' |
+                    '$exists' | '$type' | 
+                    '$in' | '$nin' | '$size' | '$mod' | '$regex' |
+                    '$or' | '$and' | '$nor' | '$not' | '$all' | '$allMatch' | '$elemMatch';
+  type MangoSelector = {
+    [K in MangoOperator]: MangoSelector | MangoValue | MangoValue[];
   }
-
-  enum ArrayFieldOperands {
-    $in = '$in',
-    $nin = '$nin'
-  }
-
-  enum CombinationOperands {
-      $or = '$or',
-      $and = '$and',
-      $nor = '$nor',
-      $all = '$all'
-  }
-
-  type MangoSelector = { [key: string]: MangoSelector | MangoValue | MangoValue[]; }
-    | Partial<{ [key in ConditionOperands]: MangoValue; }>
-    | Partial<{ [key in ArrayFieldOperands]: MangoValue[] }>
-    | Partial<{ [key in CombinationOperands]: MangoSelector[] }>
 
   // http://docs.couchdb.org/en/latest/api/database/find.html#sort-syntax
   type SortOrder = string | string[] | { [key: string]: 'asc' | 'desc' };
