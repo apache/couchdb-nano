@@ -64,7 +64,7 @@ See [Migration Guide for switching from Nano 6.x to 7.x](migration_6_to_7.md).
   - [db.fetch(docnames, [params], [callback])](#dbfetchdocnames-params-callback)
   - [db.fetchRevs(docnames, [params], [callback])](#dbfetchrevsdocnames-params-callback)
   - [db.createIndex(indexDef, [callback])](#dbcreateindexindexdef-callback)
-- [Partitioned database functions][#partition-functions]
+- [Partitioned database functions](#partition-functions)
   - [db.partitionInfo(partitionKey, [callback])](#dbpartitioninfopartitionkey-callback))
   - [db.partitionedList(partitionKey, [params], [callback])](#dbpartitionedlistpartitionkey-params-callback)
   - [db.partitionedListAsStream(partitionKey, [params])](#dbpartitionedlistasstreampartitionkey-params)
