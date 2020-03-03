@@ -1284,7 +1284,7 @@ declare namespace nano {
                     '$in' | '$nin' | '$size' | '$mod' | '$regex' |
                     '$or' | '$and' | '$nor' | '$not' | '$all' | '$allMatch' | '$elemMatch';
   type MangoSelector = {
-    [K in MangoOperator]: MangoSelector | MangoValue | MangoValue[];
+    [K in MangoOperator | string]: MangoSelector | MangoValue | MangoValue[];
   }
 
   // http://docs.couchdb.org/en/latest/api/database/find.html#sort-syntax
