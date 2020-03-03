@@ -50,13 +50,13 @@ declare namespace nano {
     // http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates
     updates(params: UpdatesParams, callback?: Callback<DatabaseUpdatesResponse>): Promise<DatabaseUpdatesResponse>;
     followUpdates(params?: any): FollowEmitter;
-    followUpdates(callback: Callback<any>);
-    followUpdates(params: any, callback: Callback<any>);
+    followUpdates(callback: Callback<any>): void;
+    followUpdates(params: any, callback: Callback<any>): void;
     uuids(num: number, callback?: Callback<any>): Promise<UUIDObject>;
   }
 
   interface FollowEmitter extends EventEmitter {
-    follow();
+    follow(): void;
   }
   
   interface UUIDObject {
@@ -71,9 +71,9 @@ declare namespace nano {
 
   interface DatabaseScope {
     replication: {
-        enable(source, target, opts0, callback0?): any;
-        disable(id, rev, opts0, callback0?): any;
-        query(id, opts0, callback0?): any;
+        enable(source: string, target: string, opts0: object, callback0?: Callback<DatabaseCreateResponse>): Promise<DatabaseCreateResponse>;
+        disable(id:string, rev: string, opts0: object, callback0?: Callback<DatabaseCreateResponse>): Promise<DatabaseCreateResponse>;
+        query(id: string, opts0: object, callback0?: Callback<DatabaseGetResponse>): Promise<DatabaseGetResponse>;
     };
     // http://docs.couchdb.org/en/latest/api/database/common.html#put--db
     create(name: string, params?: DatabaseCreateParams, callback?: Callback<DatabaseCreateResponse>): Promise<DatabaseCreateResponse>;
@@ -110,10 +110,10 @@ declare namespace nano {
     // http://docs.couchdb.org/en/latest/api/database/compact.html#post--db-_compact
     changesAsStream(name: string, params: DatabaseChangesParams): NodeJS.ReadStream;
     follow(source: string, params?: DatabaseScopeFollowUpdatesParams): FollowEmitter;
-    follow(source: string, params: DatabaseScopeFollowUpdatesParams, callback: Callback<any>);
+    follow(source: string, params: DatabaseScopeFollowUpdatesParams, callback: Callback<any>): void;
     followUpdates(params?: any): FollowEmitter;
-    followUpdates(params: DatabaseScopeFollowUpdatesParams, callback: Callback<any>);
-    followUpdates(callback: Callback<any>);
+    followUpdates(params: DatabaseScopeFollowUpdatesParams, callback: Callback<any>): void;
+    followUpdates(callback: Callback<any>): void;
     // http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates
     updates(callback?: Callback<DatabaseUpdatesResponse>): Promise<DatabaseUpdatesResponse>;
     // http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates
@@ -142,8 +142,8 @@ declare namespace nano {
     // http://docs.couchdb.org/en/latest/api/database/changes.html#get--db-_changes
     changes(params: DatabaseChangesParams, callback?: Callback<DatabaseChangesResponse>): Promise<DatabaseChangesResponse>;
     follow(params?: DocumentScopeFollowUpdatesParams): FollowEmitter;
-    follow(params: DocumentScopeFollowUpdatesParams, callback: Callback<any>);
-    follow(callback: Callback<any>);
+    follow(params: DocumentScopeFollowUpdatesParams, callback: Callback<any>): void;
+    follow(callback: Callback<any>): void;
     // http://docs.couchdb.org/en/latest/api/server/authn.html#cookie-authentication
     auth(username: string, userpass: string, callback?: Callback<DatabaseAuthResponse>): Promise<DatabaseAuthResponse>;
     // http://docs.couchdb.org/en/latest/api/server/authn.html#get--_session
@@ -1267,7 +1267,7 @@ declare namespace nano {
                     '$in' | '$nin' | '$size' | '$mod' | '$regex' |
                     '$or' | '$and' | '$nor' | '$not' | '$all' | '$allMatch' | '$elemMatch';
   type MangoSelector = {
-    [K in MangoOperator]: MangoSelector | MangoValue | MangoValue[];
+    [K in MangoOperator | string]: MangoSelector | MangoValue | MangoValue[];
   }
 
   // http://docs.couchdb.org/en/latest/api/database/find.html#sort-syntax
