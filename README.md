@@ -23,9 +23,7 @@ or save `nano` as a dependency of your project with
 
     npm install --save nano
 
-Note the minimum required version of Node.js is 6.
-
-See [Migration Guide for switching from Nano 6.x to 7.x](migration_6_to_7.md).
+Note the minimum required version of Node.js is 10.
 
 ## Table of contents
 
@@ -61,6 +59,7 @@ See [Migration Guide for switching from Nano 6.x to 7.x](migration_6_to_7.md).
   - [db.fetch(docnames, [params], [callback])](#dbfetchdocnames-params-callback)
   - [db.fetchRevs(docnames, [params], [callback])](#dbfetchrevsdocnames-params-callback)
   - [db.createIndex(indexDef, [callback])](#dbcreateindexindexdef-callback)
+  - [db.changesReader...](##reading-changes-feed)
 - [Partitioned database functions](#partition-functions)
   - [db.partitionInfo(partitionKey, [callback])](#dbpartitioninfopartitionkey-callback))
   - [db.partitionedList(partitionKey, [params], [callback])](#dbpartitionedlistpartitionkey-params-callback)
@@ -1337,7 +1336,6 @@ npm install
 npm run test
 ```
 
-
 ## Meta
 
 * code: `git clone git://github.com/apache/couchdb-nano.git`
@@ -1352,6 +1350,8 @@ npm run test
 [4]: https://github.com/apache/couchdb-nano/blob/master/cfg/couch.example.js
 [8]: http://webchat.freenode.net?channels=%23couchdb-dev
 [request]:  https://github.com/request/request
+
+http://freenode.org/
 
 ## Release
 
