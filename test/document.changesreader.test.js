@@ -83,6 +83,22 @@ test('should respect the selector parameter - db.changesReader.start', async () 
   })
 })
 
+test('should respect the selector parameter - db.changesReader.spool', async () => {
+  var changeURL = `/${DBNAME}/_changes`
+  nock(COUCH_URL)
+    .post(changeURL, { selector: { name: 'fred' } })
+    .query({ since: 'now', seq_interval: 100, include_docs: false, filter: '_selector' })
+    .reply(200, { results: [], last_seq: '1-0', pending: 0 })
+
+  const db = nano.db.use(DBNAME)
+  const cr = db.changesReader.spool({ since: 'now', selector: { name: 'fred' } })
+  return new Promise((resolve, reject) => {
+    cr.on('end', function (data) {
+      resolve()
+    })
+  })
+})
+
 test('should emit change and batch events - db.changesReader.start', async () => {
   var changeURL = `/${DBNAME}/_changes`
   var changes = [{ seq: null, id: '1', changes: ['1-1'] },
