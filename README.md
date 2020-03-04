@@ -213,10 +213,7 @@ You can also pass options to the require to specify further configuration option
 // nano parses the URL and knows this is a database
 const opts = {
   url: "http://localhost:5984/foo",
-  requestDefaults: { "proxy" : "http://someproxy" },
-  log: (id, args) => {
-    console.log(id, args);
-  }
+  requestDefaults: { "proxy" : "http://someproxy" }
 };
 const db = require('nano')(opts);
 ```
@@ -1309,6 +1306,39 @@ attachment functions:
 and document level functions
 
 - db.listAsStream
+
+### Logging
+
+When instantiating Nano, you may supply the function that will perform the logging of requests and responses. In its simplest for, simply pass `console.log` as your logger:
+
+```js
+const nano = Nano({ url: process.env.COUCH_URL, log: console.log })
+// all requests and responses will be sent to console.log
+```
+
+You may supply your own logging function to format the data before output:
+
+```js
+const url = require('url')
+const logger = (data) => {
+  // only output logging if there is an environment variable set
+  if (process.env.LOG === 'nano') {
+    // if this is a request
+    if (typeof data.err === 'undefined') {
+      const u = new url.URL(data.uri)
+      console.log(data.method, u.pathname, data.qs)
+    } else {
+      // this is a response
+      const prefix = data.err ? 'ERR' : 'OK'
+      console.log(prefix, data.headers.statusCode, JSON.stringify(data.body).length)
+    }
+  }
+}
+const nano = Nano({ url: process.env.COUCH_URL, log: logger })
+// all requests and responses will be formatted by my code
+// GET /cities/_all_docs { limit: 5 }
+// OK 200 468
+```
 
 ## Tutorials, examples in the wild & screencasts
 

@@ -18,7 +18,6 @@
   ],
   "dependencies": {
     "axios": "^0.19.2",
-    "debug": "^4.1.1",
     "qs": "^6.9.1"
   },
   "devDependencies": {
