@@ -45,13 +45,11 @@ See [Migration Guide for switching from Nano 6.x to 7.x](migration_6_to_7.md).
   - [nano.db.replication.disable(id, [opts], [callback])](#nanodbreplicationdisableid-opts-callback)
   - [nano.db.changes(name, [params], [callback])](#nanodbchangesname-params-callback)
   - [nano.db.changesAsStream(name, [params])](#nanodbchangesasstreamname-params)
-  - [nano.db.follow(name, [params], [callback])](#nanodbfollowname-params-callback)
   - [nano.db.info([callback])](#nanodbinfocallback)
   - [nano.use(name)](#nanousename)
   - [nano.request(opts, [callback])](#nanorequestopts-callback)
   - [nano.config](#nanoconfig)
   - [nano.updates([params], [callback])](#nanoupdatesparams-callback)
-  - [nano.followUpdates([params], [callback])](#nanofollowupdatesparams-callback)
 - [Document functions](#document-functions)
   - [db.insert(doc, [params], [callback])](#dbinsertdoc-params-callback)
   - [db.destroy(docname, rev, [callback])](#dbdestroydocname-rev-callback)
@@ -437,21 +435,6 @@ Same as `nano.db.changes` but returns a stream.
 nano.db.changes('alice').pipe(process.stdout);
 ```
 
-### nano.db.follow(name, [params], [callback])
-
-Uses [Follow] to create a solid changes feed. Please consult `follow` documentation for more information as this is a very complete API on it's own:
-
-```js
-const feed = db.follow({since: "now"});
-feed.on('change', (change) => {
-  console.log("change: ", change);
-});
-feed.follow();
-process.nextTick( () => {
-  db.insert({"bar": "baz"}, "bar");
-});
-```
-
 ### nano.db.info([callback])
 
 Gets database information:
@@ -525,25 +508,6 @@ Listen to db updates, the available `params` are:
  * `eventsource`: Like, continuous, but sends the events in EventSource format.
 * `params.timeout` – Number of seconds until CouchDB closes the connection. Default is 60.
 * `params.heartbeat` – Whether CouchDB will send a newline character (\n) on timeout. Default is true.
-
-### nano.followUpdates([params], [callback])
-
-** changed in version 6 **
-
-Use [Follow] to create a solid
-[`_db_updates`](http://docs.couchdb.org/en/latest/api/server/common.html?highlight=db_updates#get--_db_updates) feed.
-Please consult follow documentation for more information as this is a very complete api on it's own
-
-```js
-const feed = nano.followUpdates({since: "now"});
-feed.on('change', (change) => {
-  console.log("change: ", change);
-});
-feed.follow();
-process.nextTick( () => {
-  nano.db.create('alice');
-});
-```
 
 ## Document functions
 
@@ -699,6 +663,99 @@ alice.createIndex(indexDef).then((result) => {
   console.log(result);
 });
 ```
+
+## Reading Changes Feed
+
+Nano provides a low-level API for making calls to CouchDB's changes feed, or if you want a 
+reliable, resumable changes feed follower, then you need the `changesReader`.
+
+There are three ways to start listening to the changes feed:
+
+1. `changesReader.start()` - to listen to changes indefinitely by repeated "long poll" requests. This mode continues to poll for changes forever.
+2. `changesReader.get()` - to listen to changes until the end of the changes feed is reached, by repeated "long poll" requests. Once a response with zero changes is received, the 'end' event will indicate the end of the changes and polling will stop.
+3. `changesReader.spool()` - listen to changes in one long HTTP request. (as opposed to repeated round trips) - spool is faster but less reliable.
+
+Set up your database connection and then choose `changesReader.start()` to listen to that database's changes:
+
+```js
+const db = nano.db.use('mydb')
+db.changesReader.start()
+  .on('change', (change) => { console.log(change) })
+  .on('batch', (b) => {
+    console.log('a batch of', b.length, 'changes has arrived');
+  }).on('seq', (s) => {
+    console.log('sequence token', s);
+  }).on('error', (e) => {
+    console.error('error', e);
+  })
+```
+
+> Note: you probably want to monitor *either* the `change` or `batch` event, not both.
+
+If you want `changesReader` to hold off making the next `_changes` API call until you are ready, then supply `wait:true` in the options to `get`/`start`. The next request will only fire when the 'batch' event's callback is called.
+
+```js
+changesReader.get({wait: true})
+  .on('batch', (b, callback) => {
+    console.log('a batch of', b.length, 'changes has arrived');
+    // call "callback" when you are ready to poll for new changes
+    // ** perform your asynchronous work here and call 'callback'
+    //    when you're done **
+    callback()
+  }).on('end', () => {
+    console.log('changes feed monitoring has stopped');
+  });
+```
+
+You may supply a number of options when you start to listen to the changes feed:
+
+| Parameter | Description                                                                                                                                                                             | Default value | e.g.                            |   |
+|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|---------------------------------|---|
+| batchSize | The maximum number of changes to ask CouchDB for per HTTP request. This is the maximum number of changes you will receive in a `batch` event. | 100           | 500                             |   |
+| since     | The position in the changes feed to start from where `0` means the beginning of time, `now` means the current position or a string token indicates a fixed position in the changes feed | now           | 390768-g1AAAAGveJzLYWBgYMlgTmGQ |   |
+| includeDocs | Whether to include document bodies or not | false | e.g. true |
+| wait | Got `get`/`start` mode, only processes requests the next batch of changes when the calling code indicates it's ready with a callback  | false | e.g. true |
+| fastChanges | Adds a seq_interval parameter to fetch changes more quickly | false           | true                             |   |
+| selector | Filters the changes feed with the supplied Mango selector | {"name":"fred}           | null                             |   |
+| timeout | The number of milliseconds a changes feed request waits for data| 60000         | 10000     
+
+The events it emits are as follows:s
+
+| Event  | Description                                                                                                                                                               | Data                       |   |
+|--------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------|---|
+| change | Each detected change is emitted individually. Only available in `get`/`start` modes.                                                                                                                          | A change object            |   |
+| batch  | Each batch of changes is emitted in bulk in quantities up to `batchSize`.                                                                                                                              | An array of change objects |   |
+| seq    | Each new sequence token (per HTTP request). This token can be passed into `ChangesReader` as the `since` parameter to resume changes feed consumption from a known point. Only available in `get`/`start` modes. | String                     |   |
+| error  | On a fatal error, a descriptive object is returned and change consumption stops.                                                                                         | Error object               |   |
+| end    | Emitted when the end of the changes feed is reached. `ChangesReader.get()` mode only,                                                                                     | Nothing                    |   |
+
+The *ChangesReader* library will handle many temporal errors such as network connectivity, service capacity limits and malformed data but it will emit an `error` event and exit when fed incorrect authentication credentials or an invalid `since` token.
+
+The `change` event delivers a change object that looks like this:
+
+```js
+{
+	"seq": "8-g1AAAAYIeJyt1M9NwzAUBnALKiFOdAO4gpRix3X",
+	"id": "2451be085772a9e588c26fb668e1cc52",
+	"changes": [{
+		"rev": "4-061b768b6c0b6efe1bad425067986587"
+	}],
+	"doc": {
+		"_id": "2451be085772a9e588c26fb668e1cc52",
+		"_rev": "4-061b768b6c0b6efe1bad425067986587",
+		"a": 3
+	}
+}
+```
+
+N.B
+
+- `doc` is only present if `includeDocs:true` is supplied
+- `seq` is not present for every change
+
+The `id` is the unique identifier of the document that changed and the `changes` array contains the document revision tokens that were written to the database.
+
+The `batch` event delivers an array of change objects.
 
 ## Partition Functions
 
@@ -1294,7 +1351,6 @@ npm run test
 [2]: http://github.com/apache/couchdb-nano/issues
 [4]: https://github.com/apache/couchdb-nano/blob/master/cfg/couch.example.js
 [8]: http://webchat.freenode.net?channels=%23couchdb-dev
-[follow]: https://www.npmjs.com/package/cloudant-follow
 [request]:  https://github.com/request/request
 
 ## Release

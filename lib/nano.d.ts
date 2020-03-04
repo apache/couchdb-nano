@@ -49,14 +49,7 @@ declare namespace nano {
     updates(callback?: Callback<DatabaseUpdatesResponse>): Promise<DatabaseUpdatesResponse>;
     // http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates
     updates(params: UpdatesParams, callback?: Callback<DatabaseUpdatesResponse>): Promise<DatabaseUpdatesResponse>;
-    followUpdates(params?: any): FollowEmitter;
-    followUpdates(callback: Callback<any>): void;
-    followUpdates(params: any, callback: Callback<any>): void;
     uuids(num: number, callback?: Callback<any>): Promise<UUIDObject>;
-  }
-
-  interface FollowEmitter extends EventEmitter {
-    follow(): void;
   }
   
   interface UUIDObject {
@@ -109,15 +102,41 @@ declare namespace nano {
     changesAsStream(name: string): NodeJS.ReadStream;
     // http://docs.couchdb.org/en/latest/api/database/compact.html#post--db-_compact
     changesAsStream(name: string, params: DatabaseChangesParams): NodeJS.ReadStream;
-    follow(source: string, params?: DatabaseScopeFollowUpdatesParams): FollowEmitter;
-    follow(source: string, params: DatabaseScopeFollowUpdatesParams, callback: Callback<any>): void;
-    followUpdates(params?: any): FollowEmitter;
-    followUpdates(params: DatabaseScopeFollowUpdatesParams, callback: Callback<any>): void;
-    followUpdates(callback: Callback<any>): void;
     // http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates
     updates(callback?: Callback<DatabaseUpdatesResponse>): Promise<DatabaseUpdatesResponse>;
     // http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates
     updates(params: UpdatesParams, callback?: Callback<DatabaseUpdatesResponse>): Promise<DatabaseUpdatesResponse>;
+  }
+
+
+  interface ChangesReaderOptions {
+    // number of changes per API call
+    batchSize?: number;
+    // whether to get a faster changes feed by supplying 'seq_interval'  
+    fastChanges?: boolean;
+    // where to begin the changes feed: 0, now or a sequence token
+    since?: string;
+    // whether to return document bodies too
+    includeDocs?: boolean;
+    // number of milliseconds when the longpoll request will timeout
+    timeout?: number;
+    // whether to require a callback before performing the next request (get/start only)
+    wait?: boolean;
+    // additional query string parameters
+    qs?: object;
+    // a MangoSelector defining the slice of the changes feed to return
+    selector?: MangoSelector;
+  }
+
+  interface ChangesReaderScope {
+    // fetch changes forever
+    start(opts: ChangesReaderOptions): EventEmitter;
+    // fetch changes and stop when an empty batch is received
+    get(opts: ChangesReaderOptions): EventEmitter;
+    // spool the change in one long feed, instead of batches
+    spool(opts: ChangesReaderOptions): EventEmitter;
+    // stop consuming the changes feed
+    stop(): void;
   }
 
   interface DocumentScope<D> {
@@ -141,9 +160,7 @@ declare namespace nano {
     changes(callback?: Callback<DatabaseChangesResponse>): Promise<DatabaseChangesResponse>;
     // http://docs.couchdb.org/en/latest/api/database/changes.html#get--db-_changes
     changes(params: DatabaseChangesParams, callback?: Callback<DatabaseChangesResponse>): Promise<DatabaseChangesResponse>;
-    follow(params?: DocumentScopeFollowUpdatesParams): FollowEmitter;
-    follow(params: DocumentScopeFollowUpdatesParams, callback: Callback<any>): void;
-    follow(callback: Callback<any>): void;
+    changesReader: ChangesReaderScope;
     // http://docs.couchdb.org/en/latest/api/server/authn.html#cookie-authentication
     auth(username: string, userpass: string, callback?: Callback<DatabaseAuthResponse>): Promise<DatabaseAuthResponse>;
     // http://docs.couchdb.org/en/latest/api/server/authn.html#get--_session
@@ -422,27 +439,6 @@ declare namespace nano {
     heartbeat: boolean;
     since: string;
   }
-
-  interface DocumentScopeFollowUpdatesParams {
-    include_docs?: boolean;
-    since?: string;
-    heartbeat?: number;
-    feed?: "continuous";
-    filter?: string | FollowUpdatesParamsFilterFunction;
-    query_params?: any;
-    headers?: any;
-    inactivity_ms?: number;
-    max_retry_seconds?: number;
-    initial_retry_delay?: number;
-    response_grace_time?: number;
-  }
-
-  interface DatabaseScopeFollowUpdatesParams
-    extends DocumentScopeFollowUpdatesParams {
-    db: string;
-  }
-
-  type FollowUpdatesParamsFilterFunction = (doc: any, req: any) => boolean;
 
   interface BulkModifyDocsWrapper {
     docs: any[];
