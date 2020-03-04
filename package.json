@@ -19,7 +19,6 @@
   "dependencies": {
     "axios": "^0.19.2",
     "debug": "^4.1.1",
-    "errs": "^0.3.2",
     "qs": "^6.9.1"
   },
   "devDependencies": {
