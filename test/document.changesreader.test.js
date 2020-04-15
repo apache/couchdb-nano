@@ -212,6 +212,28 @@ test('spooling changes - db.changesReader.spool', async () => {
   })
 })
 
+test('spooling changes - numeric seq - db.changesReader.spool', async () => {
+  var changeURL = `/${DBNAME}/_changes`
+  var fs = require('fs')
+  var reply = fs.readFileSync('./test/changes_numeric.json')
+  var replyObj = JSON.parse(reply)
+  nock(COUCH_URL)
+    .post(changeURL)
+    .query({ since: 0, include_docs: false, seq_interval: 100 })
+    .reply(200, reply)
+
+  const db = nano.db.use(DBNAME)
+  const cr = db.changesReader.spool({ since: 0 })
+  return new Promise((resolve, reject) => {
+    cr.on('batch', function (batch) {
+      expect(JSON.stringify(batch)).toBe(JSON.stringify(replyObj.results))
+    }).on('end', (lastSeq) => {
+      expect(lastSeq).toBe(replyObj.last_seq)
+      resolve()
+    })
+  })
+})
+
 test('should handle the batchSize parameter - db.changesReader.start', async () => {
   var changeURL = `/${DBNAME}/_changes`
   var limit = 44
