@@ -671,6 +671,8 @@ There are three ways to start listening to the changes feed:
 2. `changesReader.get()` - to listen to changes until the end of the changes feed is reached, by repeated "long poll" requests. Once a response with zero changes is received, the 'end' event will indicate the end of the changes and polling will stop.
 3. `changesReader.spool()` - listen to changes in one long HTTP request. (as opposed to repeated round trips) - spool is faster but less reliable.
 
+> Note: for `.get()` & `.start()`, the sequence of API calls can be paused by calling `changesReader.pause()` and resumed by calling `changesReader.resume()`.
+
 Set up your database connection and then choose `changesReader.start()` to listen to that database's changes:
 
 ```js
@@ -688,16 +690,18 @@ db.changesReader.start()
 
 > Note: you probably want to monitor *either* the `change` or `batch` event, not both.
 
-If you want `changesReader` to hold off making the next `_changes` API call until you are ready, then supply `wait:true` in the options to `get`/`start`. The next request will only fire when the 'batch' event's callback is called.
+If you want `changesReader` to hold off making the next `_changes` API call until you are ready, then supply `wait:true` in the options to `get`/`start`. The next request will only fire when you call `changesReader.resume()`:
 
 ```js
 changesReader.get({wait: true})
   .on('batch', (b, callback) => {
     console.log('a batch of', b.length, 'changes has arrived');
-    // call "callback" when you are ready to poll for new changes
-    // ** perform your asynchronous work here and call 'callback'
-    //    when you're done **
-    callback()
+    // do some asynchronous work here and call "changesReader.resume()" 
+    // when you're ready for the next API call to be dispatched.
+    // In this case, wait 5s before the next changes feed request.
+    setTimeout( () => {
+      changesReader.resume()
+    }, 5000)
   }).on('end', () => {
     console.log('changes feed monitoring has stopped');
   });
@@ -710,7 +714,7 @@ You may supply a number of options when you start to listen to the changes feed:
 | batchSize | The maximum number of changes to ask CouchDB for per HTTP request. This is the maximum number of changes you will receive in a `batch` event. | 100           | 500                             |   |
 | since     | The position in the changes feed to start from where `0` means the beginning of time, `now` means the current position or a string token indicates a fixed position in the changes feed | now           | 390768-g1AAAAGveJzLYWBgYMlgTmGQ |   |
 | includeDocs | Whether to include document bodies or not | false | e.g. true |
-| wait | Got `get`/`start` mode, only processes requests the next batch of changes when the calling code indicates it's ready with a callback  | false | e.g. true |
+| wait | For `get`/`start` mode, automatically pause the changes reader after each request. When the the user calls `resume()`, the changes reader will resume.  | false | e.g. true |
 | fastChanges | Adds a seq_interval parameter to fetch changes more quickly | false           | true                             |   |
 | selector | Filters the changes feed with the supplied Mango selector | {"name":"fred}           | null                             |   |
 | timeout | The number of milliseconds a changes feed request waits for data| 60000         | 10000     

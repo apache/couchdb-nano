@@ -184,8 +184,8 @@ it('should keep polling the changes feed (wait: true) - db.changesReader.start',
       db.changesReader.stop()
       resolve()
     })
-      .on('batch', function (data, callback) {
-        callback()
+      .on('batch', function (data) {
+        db.changesReader.resume()
       })
   })
 }, 10000)
@@ -322,18 +322,21 @@ test('stop after multiple batches - small batch stop - db.changesReader.get', as
     .post(changeURL)
     .query({ feed: 'longpoll', timeout: 60000, since: '45-0', limit: batchSize, include_docs: false })
     .reply(200, { results: batch2, last_seq: '50-0', pending: 0 })
+    .post(changeURL)
+    .query({ feed: 'longpoll', timeout: 60000, since: '50-0', limit: batchSize, include_docs: false })
+    .reply(200, { results: [], last_seq: '50-0', pending: 0 })
 
   const db = nano.db.use(DBNAME)
   const cr = db.changesReader.get({ batchSize: batchSize, since: since })
   var batchCount = 0
   return new Promise((resolve, reject) => {
     cr.on('seq', function (seq) {
-      if (batchCount === 0) {
-        expect(seq).toBe('45-0')
-        batchCount++
-      } else {
-        expect(seq).toBe('50-0')
+      switch (batchCount) {
+        case 0: expect(seq).toBe('45-0'); break
+        case 1: expect(seq).toBe('50-0'); break
+        case 2: expect(seq).toBe('50-0'); break
       }
+      batchCount++
     }).on('end', function (lastSeq) {
       expect(lastSeq).toBe('50-0')
       resolve()
