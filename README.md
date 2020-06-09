@@ -693,14 +693,14 @@ db.changesReader.start()
 If you want `changesReader` to hold off making the next `_changes` API call until you are ready, then supply `wait:true` in the options to `get`/`start`. The next request will only fire when you call `changesReader.resume()`:
 
 ```js
-changesReader.get({wait: true})
-  .on('batch', (b, callback) => {
+db.changesReader.get({wait: true})
+  .on('batch', (b) => {
     console.log('a batch of', b.length, 'changes has arrived');
     // do some asynchronous work here and call "changesReader.resume()" 
     // when you're ready for the next API call to be dispatched.
     // In this case, wait 5s before the next changes feed request.
     setTimeout( () => {
-      changesReader.resume()
+      db.changesReader.resume()
     }, 5000)
   }).on('end', () => {
     console.log('changes feed monitoring has stopped');
