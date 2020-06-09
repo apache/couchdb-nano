@@ -48,14 +48,26 @@ declare namespace nano {
     followUpdates(callback: Callback<any>): void;
     followUpdates(params: any, callback: Callback<any>): void;
     uuids(num: number, callback?: Callback<any>): Promise<UUIDObject>;
+    // https://docs.couchdb.org/en/stable/api/server/common.html#api-server-root
+    info(callback?: Callback<InfoResponse>): Promise<InfoResponse>;
   }
 
   interface FollowEmitter extends EventEmitter {
     follow(): void;
   }
-  
+
   interface UUIDObject {
     uuids: string[]
+  }
+
+  // https://docs.couchdb.org/en/stable/api/server/common.html#api-server-root
+  interface InfoResponse {
+    couchdb: string;
+    version: string;
+    git_sha: string;
+    uuid: string;
+    features: string[];
+    vendor: { name: string }
   }
 
   interface DatabaseCreateParams {

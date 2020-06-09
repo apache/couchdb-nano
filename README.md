@@ -52,6 +52,7 @@ See [Migration Guide for switching from Nano 6.x to 7.x](migration_6_to_7.md).
   - [nano.config](#nanoconfig)
   - [nano.updates([params], [callback])](#nanoupdatesparams-callback)
   - [nano.followUpdates([params], [callback])](#nanofollowupdatesparams-callback)
+  - [nano.info([callback])](#nanoinfocallback)
 - [Document functions](#document-functions)
   - [db.insert(doc, [params], [callback])](#dbinsertdoc-params-callback)
   - [db.destroy(docname, rev, [callback])](#dbdestroydocname-rev-callback)
@@ -545,6 +546,10 @@ process.nextTick( () => {
   nano.db.create('alice');
 });
 ```
+
+### nano.info([callback])
+
+Get meta information about database instance.
 
 ## Document functions
 
