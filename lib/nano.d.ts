@@ -33,9 +33,9 @@ declare namespace nano {
     db: DatabaseScope;
     use<D>(db: string): DocumentScope<D>;
     scope<D>(db: string): DocumentScope<D>;
-    request: Promise<any>;
-    relax: Promise<any>;
-    dinosaur: Promise<any>;
+    request(opts: RequestOptions | string, callback?: Callback<any>): Promise<any>;
+    relax(opts: RequestOptions | string, callback?: Callback<any>): Promise<any>;
+    dinosaur(opts: RequestOptions | string, callback?: Callback<any>): Promise<any>;
     // http://docs.couchdb.org/en/latest/api/server/authn.html#cookie-authentication
     auth(username: string, userpass: string, callback?: Callback<DatabaseAuthResponse>): Promise<DatabaseAuthResponse>;
     // http://docs.couchdb.org/en/latest/api/server/authn.html#get--_session
@@ -424,11 +424,6 @@ declare namespace nano {
     url: string;
     db: string;
   }
-
-  type RequestFunction = (
-    options?: RequestOptions | string,
-    callback?: Callback<any>
-  ) => void;
 
   interface RequestOptions {
     db?: string;
