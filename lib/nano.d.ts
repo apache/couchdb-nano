@@ -57,7 +57,7 @@ declare namespace nano {
   }
 
   interface UUIDObject {
-    uuids: string[]
+    uuids: string[];
   }
 
   // https://docs.couchdb.org/en/stable/api/server/common.html#api-server-root
@@ -814,6 +814,7 @@ declare namespace nano {
     value: {
       rev: string;
     };
+    error?: string;
   }
 
   interface DocumentResponseRow<D> extends DocumentResponseRowMeta {
@@ -1172,7 +1173,7 @@ declare namespace nano {
     sort?: string | string[];
 
     // Do not wait for the index to finish building to return results.
-    stale?: boolean
+    stale?: boolean;
   }
 
   // http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view
@@ -1291,7 +1292,7 @@ declare namespace nano {
                     '$in' | '$nin' | '$size' | '$mod' | '$regex' |
                     '$or' | '$and' | '$nor' | '$not' | '$all' | '$allMatch' | '$elemMatch';
   type MangoSelector = {
-    [K in MangoOperator | string]: MangoSelector | MangoValue | MangoValue[];
+    [K in MangoOperator | string]: MangoSelector| MangoSelector[] | MangoValue | MangoValue[];
   }
 
   // http://docs.couchdb.org/en/latest/api/database/find.html#sort-syntax
