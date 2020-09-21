@@ -54,6 +54,7 @@ declare namespace nano {
 
   interface FollowEmitter extends EventEmitter {
     follow(): void;
+    stop(): void;
   }
 
   interface UUIDObject {
