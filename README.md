@@ -48,6 +48,8 @@ Note the minimum required version of Node.js is 10.
   - [nano.request(opts, [callback])](#nanorequestopts-callback)
   - [nano.config](#nanoconfig)
   - [nano.updates([params], [callback])](#nanoupdatesparams-callback)
+  - [nano.info([callback])](#nanoinfocallback)
+
 - [Document functions](#document-functions)
   - [db.insert(doc, [params], [callback])](#dbinsertdoc-params-callback)
   - [db.destroy(docname, rev, [callback])](#dbdestroydocname-rev-callback)
@@ -82,6 +84,8 @@ Note the minimum required version of Node.js is 10.
 - [Views and design functions](#views-and-design-functions)
   - [db.view(designname, viewname, [params], [callback])](#dbviewdesignname-viewname-params-callback)
   - [db.viewAsStream(designname, viewname, [params])](#dbviewasstreamdesignname-viewname-params)
+  - [db.viewWithList(designname, viewname, listname, [params])](#dbviewwithlistdesignname-viewname-params)
+  - [db.viewWithListAsStream(designname__viewname, listname, [params])](#dbviewwithlistasstreamdesignname-viewname-params)
   - [db.show(designname, showname, doc_id, [params], [callback])](#dbshowdesignname-showname-doc_id-params-callback)
   - [db.atomic(designname, updatename, docname, [body], [callback])](#dbatomicdesignname-updatename-docname-body-callback)
   - [db.search(designname, viewname, params, [callback])](#dbsearchdesignname-searchname-params-callback)
@@ -1105,6 +1109,16 @@ Calls a list function fed by the given view from the specified design document.
 
 ```js
 alice.viewWithList('characters', 'happy_ones', 'my_list').then((body) => {
+  console.log(body);
+});
+```
+
+### db.viewWithListAsStream(designname, viewname, listname, [params], [callback])
+
+Calls a list function fed by the given view from the specified design document as a stream.
+
+```js
+alice.viewWithListAsStream('characters', 'happy_ones', 'my_list').then((body) => {
   console.log(body);
 });
 ```
