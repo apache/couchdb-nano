@@ -33,7 +33,7 @@ declare namespace nano {
     db: DatabaseScope;
     use<D>(db: string): DocumentScope<D>;
     scope<D>(db: string): DocumentScope<D>;
-    request(options: RequestOptions): Promise<any>;
+    request(options: RequestOptions, callback?: Callback<any>): Promise<any>;
     relax: Promise<any>;
     dinosaur: Promise<any>;
     // http://docs.couchdb.org/en/latest/api/server/authn.html#cookie-authentication
@@ -515,7 +515,7 @@ declare namespace nano {
   interface View<D> {
     map?:DocumentInfer<D>;
     reduce?: string | DocumentInfer<D>
-    
+
   }
 
   interface ViewDocument<D> extends IdentifiedDocument {
@@ -1292,7 +1292,7 @@ declare namespace nano {
   // http://docs.couchdb.org/en/latest/api/database/find.html#selector-syntax
   type MangoValue = number | string | Date | boolean | object | null;
   type MangoOperator = '$lt' | '$lte' | '$eq' | '$ne' | '$gte' | '$gt' |
-                    '$exists' | '$type' | 
+                    '$exists' | '$type' |
                     '$in' | '$nin' | '$size' | '$mod' | '$regex' |
                     '$or' | '$and' | '$nor' | '$not' | '$all' | '$allMatch' | '$elemMatch';
   type MangoSelector = {
