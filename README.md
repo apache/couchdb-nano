@@ -87,6 +87,8 @@ See [Migration Guide for switching from Nano 6.x to 7.x](migration_6_to_7.md).
 - [Views and design functions](#views-and-design-functions)
   - [db.view(designname, viewname, [params], [callback])](#dbviewdesignname-viewname-params-callback)
   - [db.viewAsStream(designname, viewname, [params])](#dbviewasstreamdesignname-viewname-params)
+  - [db.viewWithList(designname, viewname, listname, [params])](#dbviewwithlistdesignname-viewname-params)
+  - [db.viewWithListAsStream(designname__viewname, listname, [params])](#dbviewwithlistasstreamdesignname-viewname-params)
   - [db.show(designname, showname, doc_id, [params], [callback])](#dbshowdesignname-showname-doc_id-params-callback)
   - [db.atomic(designname, updatename, docname, [body], [callback])](#dbatomicdesignname-updatename-docname-body-callback)
   - [db.search(designname, viewname, params, [callback])](#dbsearchdesignname-searchname-params-callback)
@@ -1073,6 +1075,16 @@ Calls a list function fed by the given view from the specified design document.
 
 ```js
 alice.viewWithList('characters', 'happy_ones', 'my_list').then((body) => {
+  console.log(body);
+});
+```
+
+### db.viewWithListAsStream(designname, viewname, listname, [params], [callback])
+
+Calls a list function fed by the given view from the specified design document as a stream.
+
+```js
+alice.viewWithListAsStream('characters', 'happy_ones', 'my_list').then((body) => {
   console.log(body);
 });
 ```

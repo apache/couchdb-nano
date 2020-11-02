@@ -321,6 +321,21 @@ declare namespace nano {
       params: DocumentViewParams,
       callback?: Callback<any>
     ): Promise<any>;
+    // http://docs.couchdb.org/en/latest/api/ddoc/render.html#db-design-design-doc-list-list-name-view-name
+    viewWithListAsStream(
+        designname: string,
+        viewname: string,
+        listname: string,
+        callback?: Callback<any>
+    ): Promise<any>;
+    // http://docs.couchdb.org/en/latest/api/ddoc/render.html#db-design-design-doc-list-list-name-view-name
+    viewWithListAsStream(
+        designname: string,
+        viewname: string,
+        listname: string,
+        params: DocumentViewParams,
+        callback?: Callback<any>
+    ): Promise<any>;
     // http://docs.couchdb.org/en/latest/api/database/find.html#db-find
     find(query: MangoQuery, callback?: Callback<MangoResponse<D>>): Promise <MangoResponse<D>>;
     server: ServerScope;
@@ -511,7 +526,7 @@ declare namespace nano {
   interface View<D> {
     map?: string | DocumentInfer<D>;
     reduce?: string | DocumentInfer<D>
-    
+
   }
 
   interface ViewDocument<D> extends IdentifiedDocument {
@@ -1289,7 +1304,7 @@ declare namespace nano {
   // http://docs.couchdb.org/en/latest/api/database/find.html#selector-syntax
   type MangoValue = number | string | Date | boolean | object | null;
   type MangoOperator = '$lt' | '$lte' | '$eq' | '$ne' | '$gte' | '$gt' |
-                    '$exists' | '$type' | 
+                    '$exists' | '$type' |
                     '$in' | '$nin' | '$size' | '$mod' | '$regex' |
                     '$or' | '$and' | '$nor' | '$not' | '$all' | '$allMatch' | '$elemMatch';
   type MangoSelector = {
