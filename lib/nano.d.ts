@@ -53,7 +53,7 @@ declare namespace nano {
     // https://docs.couchdb.org/en/stable/api/server/common.html#api-server-root
     info(callback?: Callback<InfoResponse>): Promise<InfoResponse>;
   }
-  
+
   interface UUIDObject {
     uuids: string[];
   }
