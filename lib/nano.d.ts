@@ -33,7 +33,7 @@ declare namespace nano {
     db: DatabaseScope;
     use<D>(db: string): DocumentScope<D>;
     scope<D>(db: string): DocumentScope<D>;
-    request: Promise<any>;
+    request(options: RequestOptions): Promise<any>;
     relax: Promise<any>;
     dinosaur: Promise<any>;
     // http://docs.couchdb.org/en/latest/api/server/authn.html#cookie-authentication
