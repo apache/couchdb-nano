@@ -21,7 +21,7 @@ afterEach(() => {
 })
 
 test('should be able to follow changes feed - db.changesReader.start', async () => {
-  var changeURL = `/${DBNAME}/_changes`
+  const changeURL = `/${DBNAME}/_changes`
   nock(COUCH_URL)
     .post(changeURL)
     .query({ feed: 'longpoll', timeout: 60000, since: 'now', limit: 100, include_docs: false })
@@ -42,7 +42,7 @@ test('should be able to follow changes feed - db.changesReader.start', async () 
 })
 
 test('should respect the fastChanges flag - db.changesReader.start', async () => {
-  var changeURL = `/${DBNAME}/_changes`
+  const changeURL = `/${DBNAME}/_changes`
   nock(COUCH_URL)
     .post(changeURL)
     .query({ feed: 'longpoll', timeout: 60000, since: 'now', limit: 100, include_docs: false, seq_interval: 100 })
@@ -63,7 +63,7 @@ test('should respect the fastChanges flag - db.changesReader.start', async () =>
 })
 
 test('should respect the selector parameter - db.changesReader.start', async () => {
-  var changeURL = `/${DBNAME}/_changes`
+  const changeURL = `/${DBNAME}/_changes`
   nock(COUCH_URL)
     .post(changeURL, { selector: { name: 'fred' } })
     .query({ feed: 'longpoll', timeout: 60000, since: 'now', limit: 100, include_docs: false, filter: '_selector' })
@@ -84,7 +84,7 @@ test('should respect the selector parameter - db.changesReader.start', async () 
 })
 
 test('should respect the selector parameter - db.changesReader.spool', async () => {
-  var changeURL = `/${DBNAME}/_changes`
+  const changeURL = `/${DBNAME}/_changes`
   nock(COUCH_URL)
     .post(changeURL, { selector: { name: 'fred' } })
     .query({ since: 'now', seq_interval: 100, include_docs: false, filter: '_selector' })
@@ -100,8 +100,8 @@ test('should respect the selector parameter - db.changesReader.spool', async () 
 })
 
 test('should emit change and batch events - db.changesReader.start', async () => {
-  var changeURL = `/${DBNAME}/_changes`
-  var changes = [{ seq: null, id: '1', changes: ['1-1'] },
+  const changeURL = `/${DBNAME}/_changes`
+  const changes = [{ seq: null, id: '1', changes: ['1-1'] },
     { seq: null, id: '2', changes: ['1-1'] },
     { seq: null, id: '3', changes: ['1-1'] },
     { seq: null, id: '4', changes: ['1-1'] },
@@ -116,7 +116,7 @@ test('should emit change and batch events - db.changesReader.start', async () =>
 
   const db = nano.db.use(DBNAME)
   const cr = db.changesReader.start()
-  var i = 0
+  let i = 0
   return new Promise((resolve, reject) => {
     cr.on('change', function (c) {
       expect(c).toStrictEqual(changes[i++])
@@ -132,8 +132,8 @@ test('should emit change and batch events - db.changesReader.start', async () =>
 })
 
 it('should keep polling the changes feed - db.changesReader.start', async () => {
-  var changeURL = `/${DBNAME}/_changes`
-  var change = { seq: null, id: 'a', changes: ['1-1'] }
+  const changeURL = `/${DBNAME}/_changes`
+  const change = { seq: null, id: 'a', changes: ['1-1'] }
   nock(COUCH_URL)
     .post(changeURL)
     .query({ feed: 'longpoll', timeout: 1000, since: 'now', limit: 100, include_docs: false })
@@ -160,8 +160,8 @@ it('should keep polling the changes feed - db.changesReader.start', async () => 
 }, 10000)
 
 it('should keep polling the changes feed (wait: true) - db.changesReader.start', async () => {
-  var changeURL = `/${DBNAME}/_changes`
-  var change = { seq: null, id: 'a', changes: ['1-1'] }
+  const changeURL = `/${DBNAME}/_changes`
+  const change = { seq: null, id: 'a', changes: ['1-1'] }
   nock(COUCH_URL)
     .post(changeURL)
     .query({ feed: 'longpoll', timeout: 1000, since: 'now', limit: 100, include_docs: false })
@@ -191,10 +191,10 @@ it('should keep polling the changes feed (wait: true) - db.changesReader.start',
 }, 10000)
 
 test('spooling changes - db.changesReader.spool', async () => {
-  var changeURL = `/${DBNAME}/_changes`
-  var fs = require('fs')
-  var reply = fs.readFileSync('./test/changes.json')
-  var replyObj = JSON.parse(reply)
+  const changeURL = `/${DBNAME}/_changes`
+  const fs = require('fs')
+  const reply = fs.readFileSync('./test/changes.json')
+  const replyObj = JSON.parse(reply)
   nock(COUCH_URL)
     .post(changeURL)
     .query({ since: '0', include_docs: false, seq_interval: 100 })
@@ -213,10 +213,10 @@ test('spooling changes - db.changesReader.spool', async () => {
 })
 
 test('spooling changes - numeric seq - db.changesReader.spool', async () => {
-  var changeURL = `/${DBNAME}/_changes`
-  var fs = require('fs')
-  var reply = fs.readFileSync('./test/changes_numeric.json')
-  var replyObj = JSON.parse(reply)
+  const changeURL = `/${DBNAME}/_changes`
+  const fs = require('fs')
+  const reply = fs.readFileSync('./test/changes_numeric.json')
+  const replyObj = JSON.parse(reply)
   nock(COUCH_URL)
     .post(changeURL)
     .query({ since: 0, include_docs: false, seq_interval: 100 })
@@ -235,8 +235,8 @@ test('spooling changes - numeric seq - db.changesReader.spool', async () => {
 })
 
 test('should handle the batchSize parameter - db.changesReader.start', async () => {
-  var changeURL = `/${DBNAME}/_changes`
-  var limit = 44
+  const changeURL = `/${DBNAME}/_changes`
+  const limit = 44
   nock(COUCH_URL)
     .post(changeURL)
     .query({ feed: 'longpoll', timeout: 60000, since: 'now', limit: limit, include_docs: false })
@@ -258,9 +258,9 @@ test('should handle the batchSize parameter - db.changesReader.start', async () 
 })
 
 test('should respect the since parameter db.changesReader.start', async () => {
-  var changeURL = `/${DBNAME}/_changes`
-  var limit = 44
-  var since = 'thedawnoftime'
+  const changeURL = `/${DBNAME}/_changes`
+  const limit = 44
+  const since = 'thedawnoftime'
   nock(COUCH_URL)
     .post(changeURL)
     .query({ feed: 'longpoll', timeout: 60000, since: since, limit: limit, include_docs: false })
@@ -281,9 +281,9 @@ test('should respect the since parameter db.changesReader.start', async () => {
 })
 
 test('should stop on no changes - db.changesReader.get', async () => {
-  var changeURL = `/${DBNAME}/_changes`
-  var since = 'thedawnoftime'
-  var batchSize = 45
+  const changeURL = `/${DBNAME}/_changes`
+  const since = 'thedawnoftime'
+  const batchSize = 45
   nock(COUCH_URL)
     .post(changeURL)
     .query({ feed: 'longpoll', timeout: 60000, since: since, limit: batchSize, include_docs: false })
@@ -304,15 +304,15 @@ test('should stop on no changes - db.changesReader.get', async () => {
 })
 
 test('stop after multiple batches - small batch stop - db.changesReader.get', async () => {
-  var changeURL = `/${DBNAME}/_changes`
-  var since = 'now'
-  var batchSize = 45
-  var batch1 = []
-  var batch2 = []
-  for (var i = 0; i < batchSize; i++) {
+  const changeURL = `/${DBNAME}/_changes`
+  const since = 'now'
+  const batchSize = 45
+  const batch1 = []
+  const batch2 = []
+  for (let i = 0; i < batchSize; i++) {
     batch1.push({ seq: (i + 1) + '-0', id: 'a' + i, changes: ['1-1'] })
   }
-  for (i = 0; i < 5; i++) {
+  for (let i = 0; i < 5; i++) {
     batch2.push({ seq: (45 + i + 1) + '-0', id: 'b' + i, changes: ['1-1'] })
   }
   nock(COUCH_URL)
@@ -328,7 +328,7 @@ test('stop after multiple batches - small batch stop - db.changesReader.get', as
 
   const db = nano.db.use(DBNAME)
   const cr = db.changesReader.get({ batchSize: batchSize, since: since })
-  var batchCount = 0
+  let batchCount = 0
   return new Promise((resolve, reject) => {
     cr.on('seq', function (seq) {
       switch (batchCount) {
@@ -345,15 +345,15 @@ test('stop after multiple batches - small batch stop - db.changesReader.get', as
 })
 
 test('stop after multiple batches - zero stop - db.changesReader.get', async () => {
-  var changeURL = `/${DBNAME}/_changes`
-  var since = 'now'
-  var batchSize = 45
-  var batch1 = []
-  var batch2 = []
-  for (var i = 0; i < batchSize; i++) {
+  const changeURL = `/${DBNAME}/_changes`
+  const since = 'now'
+  const batchSize = 45
+  const batch1 = []
+  const batch2 = []
+  for (let i = 0; i < batchSize; i++) {
     batch1.push({ seq: null, id: 'a' + i, changes: ['1-1'] })
   }
-  for (i = 0; i < 5; i++) {
+  for (let i = 0; i < 5; i++) {
     batch2.push({ seq: null, id: 'b' + i, changes: ['1-1'] })
   }
   nock(COUCH_URL)
@@ -369,7 +369,7 @@ test('stop after multiple batches - zero stop - db.changesReader.get', async () 
 
   const db = nano.db.use(DBNAME)
   const cr = db.changesReader.get({ batchSize: batchSize, since: since })
-  var batchCount = 0
+  let batchCount = 0
   return new Promise((resolve, reject) => {
     cr.on('seq', function (seq) {
       if (batchCount === 0) {
@@ -385,7 +385,7 @@ test('stop after multiple batches - zero stop - db.changesReader.get', async () 
 })
 
 test('on bad credentials - db.changesReader.start', async () => {
-  var changeURL = `/${DBNAME}/_changes`
+  const changeURL = `/${DBNAME}/_changes`
   nock(COUCH_URL)
     .post(changeURL)
     .query({ feed: 'longpoll', timeout: 60000, since: 'now', limit: 100, include_docs: false })
@@ -401,7 +401,7 @@ test('on bad credentials - db.changesReader.start', async () => {
 })
 
 test('on bad since value - db.changesReader.start', async () => {
-  var changeURL = `/${DBNAME}/_changes`
+  const changeURL = `/${DBNAME}/_changes`
   nock(COUCH_URL)
     .post(changeURL)
     .query({ feed: 'longpoll', timeout: 60000, since: 'badtoken', limit: 100, include_docs: false })
@@ -418,8 +418,8 @@ test('on bad since value - db.changesReader.start', async () => {
 })
 
 test('should survive a HTTP 500 response - db.changesReader.start', async () => {
-  var changeURL = `/${DBNAME}/_changes`
-  var change = { seq: null, id: 'a', changes: ['1-1'] }
+  const changeURL = `/${DBNAME}/_changes`
+  const change = { seq: null, id: 'a', changes: ['1-1'] }
   nock(COUCH_URL)
     .post(changeURL)
     .query({ feed: 'longpoll', timeout: 1000, since: 'now', limit: 100, include_docs: false })
@@ -448,8 +448,8 @@ test('should survive a HTTP 500 response - db.changesReader.start', async () => 
 }, 10000)
 
 test('should survive HTTP 429 response - db.changesReader.start', async () => {
-  var changeURL = `/${DBNAME}/_changes`
-  var change = { seq: null, id: 'a', changes: ['1-1'] }
+  const changeURL = `/${DBNAME}/_changes`
+  const change = { seq: null, id: 'a', changes: ['1-1'] }
   nock(COUCH_URL)
     .post(changeURL)
     .query({ feed: 'longpoll', timeout: 1000, since: 'now', limit: 100, include_docs: false })
@@ -478,8 +478,8 @@ test('should survive HTTP 429 response - db.changesReader.start', async () => {
 }, 10000)
 
 test('should survive malformed JSON - db.changesReader.start', async () => {
-  var changeURL = `/${DBNAME}/_changes`
-  var change = { seq: null, id: 'a', changes: ['1-1'] }
+  const changeURL = `/${DBNAME}/_changes`
+  const change = { seq: null, id: 'a', changes: ['1-1'] }
   nock(COUCH_URL)
     .post(changeURL)
     .query({ feed: 'longpoll', timeout: 1000, since: 'now', limit: 100, include_docs: false })
