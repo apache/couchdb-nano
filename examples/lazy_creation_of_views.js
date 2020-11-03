@@ -71,14 +71,14 @@ module.exports = function () {
     }
     users.view('users', view, opts, function (e, b, h) {
       if (e) {
-        var currentView = VIEWS[view]
+        const currentView = VIEWS[view]
         if (!currentView) {
           e.message = 'View is not available'
           return callback(e, b, h)
         }
         if (tried.tried < tried.max_retries) {
           if (e.message === 'missing' || e.message === 'deleted') { // create design document
-            var designDoc = { views: {} }
+            const designDoc = { views: {} }
             designDoc.views[view] = currentView
             return users.insert(designDoc, '_design/users', function () {
               tried.tried += 1

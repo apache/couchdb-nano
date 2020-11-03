@@ -23,9 +23,7 @@ or save `nano` as a dependency of your project with
 
     npm install --save nano
 
-Note the minimum required version of Node.js is 6.
-
-See [Migration Guide for switching from Nano 6.x to 7.x](migration_6_to_7.md).
+Note the minimum required version of Node.js is 10.
 
 ## Table of contents
 
@@ -45,26 +43,25 @@ See [Migration Guide for switching from Nano 6.x to 7.x](migration_6_to_7.md).
   - [nano.db.replication.disable(id, [opts], [callback])](#nanodbreplicationdisableid-opts-callback)
   - [nano.db.changes(name, [params], [callback])](#nanodbchangesname-params-callback)
   - [nano.db.changesAsStream(name, [params])](#nanodbchangesasstreamname-params)
-  - [nano.db.follow(name, [params], [callback])](#nanodbfollowname-params-callback)
   - [nano.db.info([callback])](#nanodbinfocallback)
   - [nano.use(name)](#nanousename)
   - [nano.request(opts, [callback])](#nanorequestopts-callback)
   - [nano.config](#nanoconfig)
   - [nano.updates([params], [callback])](#nanoupdatesparams-callback)
-  - [nano.followUpdates([params], [callback])](#nanofollowupdatesparams-callback)
   - [nano.info([callback])](#nanoinfocallback)
+
 - [Document functions](#document-functions)
   - [db.insert(doc, [params], [callback])](#dbinsertdoc-params-callback)
   - [db.destroy(docname, rev, [callback])](#dbdestroydocname-rev-callback)
   - [db.get(docname, [params], [callback])](#dbgetdocname-params-callback)
   - [db.head(docname, [callback])](#dbheaddocname-callback)
-  - [db.copy(src_doc, dest_doc, opts, [callback])](#dbcopysrc_doc-dest_doc-opts-callback)
   - [db.bulk(docs, [params], [callback])](#dbbulkdocs-params-callback)
   - [db.list([params], [callback])](#dblistparams-callback)
   - [db.listAsStream([params])](#dblistasstreamparams)
   - [db.fetch(docnames, [params], [callback])](#dbfetchdocnames-params-callback)
   - [db.fetchRevs(docnames, [params], [callback])](#dbfetchrevsdocnames-params-callback)
   - [db.createIndex(indexDef, [callback])](#dbcreateindexindexdef-callback)
+  - [db.changesReader...](##reading-changes-feed)
 - [Partitioned database functions](#partition-functions)
   - [db.partitionInfo(partitionKey, [callback])](#dbpartitioninfopartitionkey-callback))
   - [db.partitionedList(partitionKey, [params], [callback])](#dbpartitionedlistpartitionkey-params-callback)
@@ -220,10 +217,7 @@ You can also pass options to the require to specify further configuration option
 // nano parses the URL and knows this is a database
 const opts = {
   url: "http://localhost:5984/foo",
-  requestDefaults: { "proxy" : "http://someproxy" },
-  log: (id, args) => {
-    console.log(id, args);
-  }
+  requestDefaults: { "proxy" : "http://someproxy" }
 };
 const db = require('nano')(opts);
 ```
@@ -441,21 +435,6 @@ Same as `nano.db.changes` but returns a stream.
 nano.db.changes('alice').pipe(process.stdout);
 ```
 
-### nano.db.follow(name, [params], [callback])
-
-Uses [Follow] to create a solid changes feed. Please consult `follow` documentation for more information as this is a very complete API on it's own:
-
-```js
-const feed = db.follow({since: "now"});
-feed.on('change', (change) => {
-  console.log("change: ", change);
-});
-feed.follow();
-process.nextTick( () => {
-  db.insert({"bar": "baz"}, "bar");
-});
-```
-
 ### nano.db.info([callback])
 
 Gets database information:
@@ -530,29 +509,6 @@ Listen to db updates, the available `params` are:
 * `params.timeout` – Number of seconds until CouchDB closes the connection. Default is 60.
 * `params.heartbeat` – Whether CouchDB will send a newline character (\n) on timeout. Default is true.
 
-### nano.followUpdates([params], [callback])
-
-** changed in version 6 **
-
-Use [Follow] to create a solid
-[`_db_updates`](http://docs.couchdb.org/en/latest/api/server/common.html?highlight=db_updates#get--_db_updates) feed.
-Please consult follow documentation for more information as this is a very complete api on it's own
-
-```js
-const feed = nano.followUpdates({since: "now"});
-feed.on('change', (change) => {
-  console.log("change: ", change);
-});
-feed.follow();
-process.nextTick( () => {
-  nano.db.create('alice');
-});
-```
-
-### nano.info([callback])
-
-Get meta information about database instance.
-
 ## Document functions
 
 ### db.insert(doc, [params], [callback])
@@ -623,17 +579,6 @@ alice.head('rabbit').then((headers) => {
 ```
 
 *Note:* if you call `alice.head` in the callback style, the headers are returned to you as the third argument of the callback function.
-
-### db.copy(src_doc, dest_doc, opts, [callback])
-
-Copies the contents (and attachments) of a document
-to a new document, or overwrite an existing target document
-
-```js
-alice.copy('rabbit', 'rabbit2', { overwrite: true }).then((body) => {
-  console.log(body);
-});
-```
 
 ### db.bulk(docs, [params], [callback])
 
@@ -718,6 +663,103 @@ alice.createIndex(indexDef).then((result) => {
   console.log(result);
 });
 ```
+
+## Reading Changes Feed
+
+Nano provides a low-level API for making calls to CouchDB's changes feed, or if you want a 
+reliable, resumable changes feed follower, then you need the `changesReader`.
+
+There are three ways to start listening to the changes feed:
+
+1. `changesReader.start()` - to listen to changes indefinitely by repeated "long poll" requests. This mode continues to poll for changes forever.
+2. `changesReader.get()` - to listen to changes until the end of the changes feed is reached, by repeated "long poll" requests. Once a response with zero changes is received, the 'end' event will indicate the end of the changes and polling will stop.
+3. `changesReader.spool()` - listen to changes in one long HTTP request. (as opposed to repeated round trips) - spool is faster but less reliable.
+
+> Note: for `.get()` & `.start()`, the sequence of API calls can be paused by calling `changesReader.pause()` and resumed by calling `changesReader.resume()`.
+
+Set up your database connection and then choose `changesReader.start()` to listen to that database's changes:
+
+```js
+const db = nano.db.use('mydb')
+db.changesReader.start()
+  .on('change', (change) => { console.log(change) })
+  .on('batch', (b) => {
+    console.log('a batch of', b.length, 'changes has arrived');
+  }).on('seq', (s) => {
+    console.log('sequence token', s);
+  }).on('error', (e) => {
+    console.error('error', e);
+  })
+```
+
+> Note: you probably want to monitor *either* the `change` or `batch` event, not both.
+
+If you want `changesReader` to hold off making the next `_changes` API call until you are ready, then supply `wait:true` in the options to `get`/`start`. The next request will only fire when you call `changesReader.resume()`:
+
+```js
+db.changesReader.get({wait: true})
+  .on('batch', (b) => {
+    console.log('a batch of', b.length, 'changes has arrived');
+    // do some asynchronous work here and call "changesReader.resume()" 
+    // when you're ready for the next API call to be dispatched.
+    // In this case, wait 5s before the next changes feed request.
+    setTimeout( () => {
+      db.changesReader.resume()
+    }, 5000)
+  }).on('end', () => {
+    console.log('changes feed monitoring has stopped');
+  });
+```
+
+You may supply a number of options when you start to listen to the changes feed:
+
+| Parameter | Description                                                                                                                                                                             | Default value | e.g.                            |   |
+|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|---------------------------------|---|
+| batchSize | The maximum number of changes to ask CouchDB for per HTTP request. This is the maximum number of changes you will receive in a `batch` event. | 100           | 500                             |   |
+| since     | The position in the changes feed to start from where `0` means the beginning of time, `now` means the current position or a string token indicates a fixed position in the changes feed | now           | 390768-g1AAAAGveJzLYWBgYMlgTmGQ |   |
+| includeDocs | Whether to include document bodies or not | false | e.g. true |
+| wait | For `get`/`start` mode, automatically pause the changes reader after each request. When the the user calls `resume()`, the changes reader will resume.  | false | e.g. true |
+| fastChanges | Adds a seq_interval parameter to fetch changes more quickly | false           | true                             |   |
+| selector | Filters the changes feed with the supplied Mango selector | {"name":"fred}           | null                             |   |
+| timeout | The number of milliseconds a changes feed request waits for data| 60000         | 10000     
+
+The events it emits are as follows:s
+
+| Event  | Description                                                                                                                                                               | Data                       |   |
+|--------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------|---|
+| change | Each detected change is emitted individually. Only available in `get`/`start` modes.                                                                                                                          | A change object            |   |
+| batch  | Each batch of changes is emitted in bulk in quantities up to `batchSize`.                                                                                                                              | An array of change objects |   |
+| seq    | Each new sequence token (per HTTP request). This token can be passed into `ChangesReader` as the `since` parameter to resume changes feed consumption from a known point. Only available in `get`/`start` modes. | String                     |   |
+| error  | On a fatal error, a descriptive object is returned and change consumption stops.                                                                                         | Error object               |   |
+| end    | Emitted when the end of the changes feed is reached. `ChangesReader.get()` mode only,                                                                                     | Nothing                    |   |
+
+The *ChangesReader* library will handle many temporal errors such as network connectivity, service capacity limits and malformed data but it will emit an `error` event and exit when fed incorrect authentication credentials or an invalid `since` token.
+
+The `change` event delivers a change object that looks like this:
+
+```js
+{
+	"seq": "8-g1AAAAYIeJyt1M9NwzAUBnALKiFOdAO4gpRix3X",
+	"id": "2451be085772a9e588c26fb668e1cc52",
+	"changes": [{
+		"rev": "4-061b768b6c0b6efe1bad425067986587"
+	}],
+	"doc": {
+		"_id": "2451be085772a9e588c26fb668e1cc52",
+		"_rev": "4-061b768b6c0b6efe1bad425067986587",
+		"a": 3
+	}
+}
+```
+
+N.B
+
+- `doc` is only present if `includeDocs:true` is supplied
+- `seq` is not present for every change
+
+The `id` is the unique identifier of the document that changed and the `changes` array contains the document revision tokens that were written to the database.
+
+The `batch` event delivers an array of change objects.
 
 ## Partition Functions
 
@@ -968,16 +1010,8 @@ fs.readFile('rabbit.png', (err, data) => {
 
 ### db.attachment.insertAsStream(docname, attname, att, contenttype, [params])
 
-It may be more memory-efficient to pipe a stream of data from a source (file, network etc) to a CouchDB attachment:
-
-```js
-  const rs = fs.createReadStream('logo.png');
-  const is = db.attachment.insertAsStream('mydoc', 'logo.png', null, 'image/png',
-    { rev: '12-150985a725ec88be471921a54ce91452' }).on('end', () => {
-      console.log('done')
-  });
-  rs.pipe(is);
-```
+As of Nano 9.x, the function `db.attachment.insertAsStream` is now deprecated. Now simply pass
+a readable stream to `db.attachment.insert` as the third paramseter.
 
 ### db.attachment.get(docname, attname, [params], [callback])
 
@@ -1291,6 +1325,39 @@ and document level functions
 
 - db.listAsStream
 
+### Logging
+
+When instantiating Nano, you may supply the function that will perform the logging of requests and responses. In its simplest for, simply pass `console.log` as your logger:
+
+```js
+const nano = Nano({ url: process.env.COUCH_URL, log: console.log })
+// all requests and responses will be sent to console.log
+```
+
+You may supply your own logging function to format the data before output:
+
+```js
+const url = require('url')
+const logger = (data) => {
+  // only output logging if there is an environment variable set
+  if (process.env.LOG === 'nano') {
+    // if this is a request
+    if (typeof data.err === 'undefined') {
+      const u = new url.URL(data.uri)
+      console.log(data.method, u.pathname, data.qs)
+    } else {
+      // this is a response
+      const prefix = data.err ? 'ERR' : 'OK'
+      console.log(prefix, data.headers.statusCode, JSON.stringify(data.body).length)
+    }
+  }
+}
+const nano = Nano({ url: process.env.COUCH_URL, log: logger })
+// all requests and responses will be formatted by my code
+// GET /cities/_all_docs { limit: 5 }
+// OK 200 468
+```
+
 ## Tutorials, examples in the wild & screencasts
 
 * article: [nano - a minimalistic CouchDB client for nodejs](http://writings.nunojob.com/2011/08/nano-minimalistic-couchdb-client-for-nodejs.html)
@@ -1314,16 +1381,8 @@ To run (and configure) the test suite simply:
 ``` sh
 cd nano
 npm install
-npm test
+npm run test
 ```
-
-After adding a new test you can run it individually (with verbose output) using:
-
-``` sh
-nano_env=testing node tests/doc/list.js list_doc_params
-```
-
-where `list_doc_params` is the test name.
 
 ## Meta
 
@@ -1338,8 +1397,9 @@ where `list_doc_params` is the test name.
 [2]: http://github.com/apache/couchdb-nano/issues
 [4]: https://github.com/apache/couchdb-nano/blob/master/cfg/couch.example.js
 [8]: http://webchat.freenode.net?channels=%23couchdb-dev
-[follow]: https://www.npmjs.com/package/cloudant-follow
 [request]:  https://github.com/request/request
+
+http://freenode.org/
 
 ## Release
 

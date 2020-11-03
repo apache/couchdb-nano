@@ -46,7 +46,7 @@ function replicateWithRetry (masterUri, replicaUri, retries, callback) {
   }
   callback = callback || function () {}
   retries = retries || 0
-  var master = nano(couch.master)
+  const master = nano(couch.master)
   master.replicate(couch.replica, function (err, resp, head) {
     if (err && err.error === 'db_not_found' && retries < 1) {
       const replica = nano(couch.replica)

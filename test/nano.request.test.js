@@ -474,3 +474,39 @@ test('check request doesn\'t mangle bodies containing functions - nano.request',
   expect(p).toStrictEqual(response)
   expect(scope.isDone()).toBe(true)
 })
+
+test('check request sends user-agent header - nano.request', async () => {
+  // mocks
+  const response = { ok: true }
+  const scope = nock(COUCH_URL, { reqheaders: { 'user-agent': /^nano/ } })
+    .get('/db?a=1&b=2')
+    .reply(200, response)
+
+  // test GET /db?a=1&b=2
+  const req = {
+    method: 'get',
+    db: 'db',
+    qs: { a: 1, b: 2 }
+  }
+  const p = await nano.request(req)
+  expect(p).toStrictEqual(response)
+  expect(scope.isDone()).toBe(true)
+})
+
+test('check request sends headers for gzipped responses - nano.request', async () => {
+  // mocks
+  const response = { ok: true }
+  const scope = nock(COUCH_URL, { reqheaders: { 'accept-encoding': /gzip/ } })
+    .get('/db?a=1&b=2')
+    .reply(200, response)
+
+  // test GET /db?a=1&b=2
+  const req = {
+    method: 'get',
+    db: 'db',
+    qs: { a: 1, b: 2 }
+  }
+  const p = await nano.request(req)
+  expect(p).toStrictEqual(response)
+  expect(scope.isDone()).toBe(true)
+})

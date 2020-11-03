@@ -14,7 +14,18 @@ const Nano = require('..')
 const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
 const nock = require('nock')
+const fs = require('fs')
 const image = Buffer.from('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', 'base64')
+const image2 = Buffer.from(''.concat(
+  'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAsV',
+  'BMVEUAAAD////////////////////////5ur3rEBn////////////////wDBL/',
+  'AADuBAe9EB3IEBz/7+//X1/qBQn2AgP/f3/ilpzsDxfpChDtDhXeCA76AQH/v7',
+  '/84eLyWV/uc3bJPEf/Dw/uw8bRWmP1h4zxSlD6YGHuQ0f6g4XyQkXvCA36MDH6',
+  'wMH/z8/yAwX64ODeh47BHiv/Ly/20dLQLTj98PDXWmP/Pz//39/wGyJ7Iy9JAA',
+  'AADHRSTlMAbw8vf08/bz+Pv19jK/W3AAAAg0lEQVR4Xp3LRQ4DQRBD0QqTm4Y5',
+  'zMxw/4OleiJlHeUtv2X6RbNO1Uqj9g0RMCuQO0vBIg4vMFeOpCWIWmDOw82fZx',
+  'vaND1c8OG4vrdOqD8YwgpDYDxRgkSm5rwu0nQVBJuMg++pLXZyr5jnc1BaH4GT',
+  'LvEliY253nA3pVhQqdPt0f/erJkMGMB8xucAAAAASUVORK5CYII='), 'base64')
 
 afterEach(() => {
   nock.cleanAll()
@@ -66,4 +77,19 @@ test('should detect missing parameters (callback) - db.attachment.insert', () =>
       resolve()
     })
   })
+})
+
+test('should be able to insert document attachment as stream - PUT /db/docname/attachment - db.attachment.insert', async () => {
+  // mocks
+  const response = { ok: true, id: 'docname', rev: '2-456' }
+  const scope = nock(COUCH_URL, { reqheaders: { 'content-type': 'image/jpg' } })
+    .put('/db/docname/logo.jpg?rev=1-150', image2)
+    .reply(200, response)
+
+  // test PUT /db/docname/attachment
+  const rs = fs.createReadStream('./test/logo.jpg')
+  const db = nano.db.use('db')
+  const reply = await db.attachment.insert('docname', 'logo.jpg', rs, 'image/jpg', { rev: '1-150' })
+  expect(reply).toStrictEqual(response)
+  expect(scope.isDone()).toBe(true)
 })
