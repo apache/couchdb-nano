@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/apache/couchdb-nano.svg?branch=master)](https://travis-ci.org/apache/couchdb-nano)![Coverage](https://img.shields.io/badge/coverage-100%-ff69b4.svg)[![dependencies Status](https://david-dm.org/apache/couchdb-nano/status.svg)](https://david-dm.org/apache/couchdb-nano)[![NPM](http://img.shields.io/npm/v/nano.svg?style=flat-square)](https://www.npmjs.com/package/nano)
+[![Build Status](https://travis-ci.org/apache/couchdb-nano.svg?branch=main)](https://travis-ci.org/apache/couchdb-nano)![Coverage](https://img.shields.io/badge/coverage-100%-ff69b4.svg)[![dependencies Status](https://david-dm.org/apache/couchdb-nano/status.svg)](https://david-dm.org/apache/couchdb-nano)[![NPM](http://img.shields.io/npm/v/nano.svg?style=flat-square)](https://www.npmjs.com/package/nano)
 
 # Nano
 
@@ -1389,13 +1389,13 @@ npm run test
 * code: `git clone git://github.com/apache/couchdb-nano.git`
 * home: <http://github.com/apache/couchdb-nano>
 * bugs: <http://github.com/apache/couchdb-nano/issues>
-* build: [![Build Status](https://travis-ci.org/apache/couchdb-nano.svg?branch=master)](https://travis-ci.org/apache/couchdb-nano)
+* build: [![Build Status](https://travis-ci.org/apache/couchdb-nano.svg?branch=main)](https://travis-ci.org/apache/couchdb-nano)
 * deps: [![dependencies Status](https://david-dm.org/apache/couchdb-nano/status.svg)](https://david-dm.org/apache/couchdb-nano)
 * chat: [Freenode IRC @ #couchdb-dev][8]
 
 [1]: http://npmjs.org
 [2]: http://github.com/apache/couchdb-nano/issues
-[4]: https://github.com/apache/couchdb-nano/blob/master/cfg/couch.example.js
+[4]: https://github.com/apache/couchdb-nano/blob/main/cfg/couch.example.js
 [8]: http://webchat.freenode.net?channels=%23couchdb-dev
 [request]:  https://github.com/request/request
 
@@ -1403,10 +1403,10 @@ http://freenode.org/
 
 ## Release
 
-To create a new release of nano. Run the following commands on the master branch
+To create a new release of nano. Run the following commands on the main branch
 
 ```sh
   npm version {patch|minor|major}
-  github push  origin master --tags
+  github push  origin main --tags
   npm publish
 ```
