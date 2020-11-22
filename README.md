@@ -61,7 +61,7 @@ Note the minimum required version of Node.js is 10.
   - [db.fetch(docnames, [params], [callback])](#dbfetchdocnames-params-callback)
   - [db.fetchRevs(docnames, [params], [callback])](#dbfetchrevsdocnames-params-callback)
   - [db.createIndex(indexDef, [callback])](#dbcreateindexindexdef-callback)
-  - [db.changesReader...](##reading-changes-feed)
+  - [db.changesReader...](#reading-changes-feed)
 - [Partitioned database functions](#partition-functions)
   - [db.partitionInfo(partitionKey, [callback])](#dbpartitioninfopartitionkey-callback))
   - [db.partitionedList(partitionKey, [params], [callback])](#dbpartitionedlistpartitionkey-params-callback)
