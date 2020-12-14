@@ -16,16 +16,21 @@ declare function nano(
 ): nano.ServerScope;
 
 declare namespace nano {
-  interface requestDefaultsOptions {
+  interface RequestDefaultOptionsAuth {
+    username: string,
+    password: string
+  }
+  interface RequestDefaultsOptions {
     timeout: number;
     agent: any;
     headers: object;
+    auth: RequestDefaultOptionsAuth;
   }
 
   interface Configuration {
     url: string;
     cookie?: string;
-    requestDefaults?: requestDefaultsOptions;
+    requestDefaults?: RequestDefaultsOptions;
     log?(id: string, args: any): void;
     parseUrl?: boolean;
     request?(params: any): void;
