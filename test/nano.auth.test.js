@@ -12,7 +12,7 @@
 
 const Nano = require('..')
 const COUCH_URL = 'http://localhost:5984'
-const nano = Nano(COUCH_URL)
+const nano = Nano({ url: COUCH_URL, jar: true })
 const nock = require('nock')
 
 afterEach(() => {
@@ -24,14 +24,19 @@ test('should be able to authenticate - POST /_session - nano.auth', async () => 
   const username = 'u'
   const password = 'p'
   const response = { ok: true, name: 'admin', roles: ['_admin', 'admin'] }
-  const cookie = 'AuthSession=YWRtaW46NUU0MTFBMDE6stHsxYnlDy4mYxwZEcnXHn4fm5w; Version=1; Expires=Mon, 10-Feb-2050 09:03:21 GMT; Max-Age=600; Path=/; HttpOnly'
+  const authsession = 'AuthSession=YWRtaW46NUU0MTFBMDE6stHsxYnlDy4mYxwZEcnXHn4fm5w;'
+  const cookie = authsession + ' Version=1; Expires=Mon, 10-Feb-2050 09:03:21 GMT; Max-Age=600; Path=/; HttpOnly'
   const scope = nock(COUCH_URL)
     .post('/_session', 'name=u&password=p', { 'content-type': 'application/x-www-form-urlencoded; charset=utf-8' })
     .reply(200, response, { 'Set-Cookie': cookie })
+    .get('/_all_dbs')
+    .reply(200, ['a'])
 
   // test POST /_session
   const p = await nano.auth(username, password)
   expect(p).toStrictEqual(response)
-  expect(nano.config.cookie).toStrictEqual(cookie)
+  await nano.db.list()
+  expect(nano.config.cookies.length).toBe(1)
+  expect(nano.config.cookies[0].toString().startsWith(authsession)).toBe(true)
   expect(scope.isDone()).toBe(true)
 })
