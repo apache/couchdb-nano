@@ -36,7 +36,31 @@ declare namespace nano {
     request?(params: any): void;
   }
 
-  type Callback<R> = (error: any, response: R, headers?: any) => void;
+  type Callback<R> = (error: RequestError | null, response: R, headers?: any) => void;
+
+  // An error triggered by nano
+  interface RequestError extends Error {
+    // An error code.
+    error?: string; // 'not_found', 'file_exists'
+    // Human readable reason for the error.
+    reason?: string; // 'missing', 'The database could not be created, the file already exists.';
+    // Was the problem at the socket or couch level
+    scope?: 'couch'  | 'socket';
+    // Status code returned by the server
+    statusCode?: number; // 404;
+    // Request sent to Couch
+    request?: {
+      method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+      headers?: { [key: string]: string | number };
+      uri?: string; // 'http://couchhost:5984/db/tsp2',
+      qs?: any; // { revs_info: true }
+    };
+    // Response headers
+    headers?: { [key: string]: string | number };
+    // Error identifier
+    errid?: 'non_200' | 'request'; // string; // 'non_200'
+    description?: string;
+  }
 
   interface ServerScope {
     readonly config: ServerConfig;
