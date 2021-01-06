@@ -1,11 +1,20 @@
-// Type definitions for nano 6.4
-// Project: https://github.com/apache/couchdb-nano
-// Definitions by: Tim Jacobi <https://github.com/timjacobi>
-//                 Kovács Vince <https://github.com/vincekovacs>
-//                 Glynn Bird <https://github.com/glynnbird>
-//                 Kyle Chine <https://github.com/kylechine>
-// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
-// TypeScript Version: 2.3
+/**
+ * @file nano.d.ts
+ *
+ * Type definitions for nano 6.4
+ *
+ * Project: https://github.com/apache/couchdb-nano
+ *
+ * Definitions by: Tim Jacobi <https://github.com/timjacobi>
+ *                 Kovács Vince <https://github.com/vincekovacs>
+ *                 Glynn Bird <https://github.com/glynnbird>
+ *                 Kyle Chine <https://github.com/kylechine>
+ *                 Jean-Christophe Hoelt <https://github.com/j3k0>
+ *
+ * Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
+ *
+ * TypeScript Version: 2.3
+ */
 
 /// <reference types="node" />
 
@@ -38,26 +47,26 @@ declare namespace nano {
 
   type Callback<R> = (error: RequestError | null, response: R, headers?: any) => void;
 
-  // An error triggered by nano
+  /** An error triggered by nano */
   interface RequestError extends Error {
-    // An error code.
+    /** An error code. */
     error?: string; // 'not_found', 'file_exists'
-    // Human readable reason for the error.
+    /** Human readable reason for the error. */
     reason?: string; // 'missing', 'The database could not be created, the file already exists.';
-    // Was the problem at the socket or couch level
+    /** Was the problem at the socket or couch level */
     scope?: 'couch'  | 'socket';
-    // Status code returned by the server
+    /** Status code returned by the server */
     statusCode?: number; // 404;
-    // Request sent to Couch
+    /** Request sent to Couch */
     request?: {
       method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
       headers?: { [key: string]: string | number };
       uri?: string; // 'http://couchhost:5984/db/tsp2',
       qs?: any; // { revs_info: true }
     };
-    // Response headers
+    /** Response headers */
     headers?: { [key: string]: string | number };
-    // Error identifier
+    /** Error identifier */
     errid?: 'non_200' | 'request'; // string; // 'non_200'
     description?: string;
   }
@@ -70,16 +79,16 @@ declare namespace nano {
     request(opts: RequestOptions | string, callback?: Callback<any>): Promise<any>;
     relax(opts: RequestOptions | string, callback?: Callback<any>): Promise<any>;
     dinosaur(opts: RequestOptions | string, callback?: Callback<any>): Promise<any>;
-    // http://docs.couchdb.org/en/latest/api/server/authn.html#cookie-authentication
+    /** @see {@link http://docs.couchdb.org/en/latest/api/server/authn.html#cookie-authentication} */
     auth(username: string, userpass: string, callback?: Callback<DatabaseAuthResponse>): Promise<DatabaseAuthResponse>;
-    // http://docs.couchdb.org/en/latest/api/server/authn.html#get--_session
+    /** @see {@link http://docs.couchdb.org/en/latest/api/server/authn.html#get--_session} */
     session(callback?: Callback<DatabaseSessionResponse>): Promise<DatabaseSessionResponse>;
-    // http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates
+    /** @see {@link http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates} */
     updates(callback?: Callback<DatabaseUpdatesResponse>): Promise<DatabaseUpdatesResponse>;
-    // http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates
+    /** @see {@link http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates} */
     updates(params: UpdatesParams, callback?: Callback<DatabaseUpdatesResponse>): Promise<DatabaseUpdatesResponse>;
     uuids(num: number, callback?: Callback<any>): Promise<UUIDObject>;
-    // https://docs.couchdb.org/en/stable/api/server/common.html#api-server-root
+    /** @see {@link https://docs.couchdb.org/en/stable/api/server/common.html#api-server-root} */
     info(callback?: Callback<InfoResponse>): Promise<InfoResponse>;
   }
 
@@ -87,7 +96,7 @@ declare namespace nano {
     uuids: string[];
   }
 
-  // https://docs.couchdb.org/en/stable/api/server/common.html#api-server-root
+  /** @see {@link https://docs.couchdb.org/en/stable/api/server/common.html#api-server-root} */
   interface InfoResponse {
     couchdb: string;
     version: string;
@@ -109,161 +118,161 @@ declare namespace nano {
         disable(id:string, rev: string, opts0: object, callback0?: Callback<DatabaseCreateResponse>): Promise<DatabaseCreateResponse>;
         query(id: string, opts0: object, callback0?: Callback<DatabaseGetResponse>): Promise<DatabaseGetResponse>;
     };
-    // http://docs.couchdb.org/en/latest/api/database/common.html#put--db
+    /** @see {@link http://docs.couchdb.org/en/latest/api/database/common.html#put--db} */
     create(name: string, params?: DatabaseCreateParams, callback?: Callback<DatabaseCreateResponse>): Promise<DatabaseCreateResponse>;
-    // http://docs.couchdb.org/en/latest/api/database/common.html#get--db
+    /** @see {@link http://docs.couchdb.org/en/latest/api/database/common.html#get--db} */
     get(name: string, callback?: Callback<DatabaseGetResponse>): Promise<DatabaseGetResponse>;
-    // http://docs.couchdb.org/en/latest/api/database/common.html#delete--db
+    /** @see {@link http://docs.couchdb.org/en/latest/api/database/common.html#delete--db} */
     destroy(name: string, callback?: Callback<OkResponse>): Promise<OkResponse>;
-    // http://docs.couchdb.org/en/latest/api/server/common.html#get--_all_dbs
+    /** @see {@link http://docs.couchdb.org/en/latest/api/server/common.html#get--_all_dbs} */
     list(callback?: Callback<string[]>): Promise<string[]>;
     listAsStream(): NodeJS.ReadStream;
     use<D>(db: string): DocumentScope<D>;
     compact(name: string, callback?: Callback<OkResponse>): Promise<OkResponse>;
-    // http://docs.couchdb.org/en/latest/api/database/compact.html#post--db-_compact
+    /** @see {@link http://docs.couchdb.org/en/latest/api/database/compact.html#post--db-_compact} */
     compact(name: string, designname: string, callback?: Callback<OkResponse>): Promise<OkResponse>;
-    // http://docs.couchdb.org/en/latest/api/server/common.html#post--_replicate
+    /** @see {@link http://docs.couchdb.org/en/latest/api/server/common.html#post--_replicate} */
     replicate<D>(
       source: string | DocumentScope<D>,
       target: string | DocumentScope<D>,
       callback?: Callback<DatabaseReplicateResponse>
     ): Promise<DatabaseReplicateResponse>;
-    // http://docs.couchdb.org/en/latest/api/server/common.html#post--_replicate
+    /** @see {@link http://docs.couchdb.org/en/latest/api/server/common.html#post--_replicate} */
     replicate<D>(
       source: string | DocumentScope<D>,
       target: string | DocumentScope<D>,
       options: DatabaseReplicateOptions,
       callback?: Callback<DatabaseReplicateResponse>
     ): Promise<DatabaseReplicateResponse>;
-    // http://docs.couchdb.org/en/latest/api/database/changes.html#get--db-_changes
+    /** @see {@link http://docs.couchdb.org/en/latest/api/database/changes.html#get--db-_changes} */
     changes(name: string, callback?: Callback<DatabaseChangesResponse>): Promise<DatabaseChangesResponse>;
-    // http://docs.couchdb.org/en/latest/api/database/compact.html#post--db-_compact
+    /** @see {@link http://docs.couchdb.org/en/latest/api/database/compact.html#post--db-_compact} */
     changes(name: string, params: DatabaseChangesParams, callback?: Callback<DatabaseChangesResponse>): Promise<DatabaseChangesResponse>;
-    // http://docs.couchdb.org/en/latest/api/database/changes.html#get--db-_changes
+    /** @see {@link http://docs.couchdb.org/en/latest/api/database/changes.html#get--db-_changes} */
     changesAsStream(name: string): NodeJS.ReadStream;
-    // http://docs.couchdb.org/en/latest/api/database/compact.html#post--db-_compact
+    /** @see {@link http://docs.couchdb.org/en/latest/api/database/compact.html#post--db-_compact} */
     changesAsStream(name: string, params: DatabaseChangesParams): NodeJS.ReadStream;
-    // http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates
+    /** @see {@link http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates} */
     updates(callback?: Callback<DatabaseUpdatesResponse>): Promise<DatabaseUpdatesResponse>;
-    // http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates
+    /** @see {@link http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates} */
     updates(params: UpdatesParams, callback?: Callback<DatabaseUpdatesResponse>): Promise<DatabaseUpdatesResponse>;
   }
 
 
   interface ChangesReaderOptions {
-    // number of changes per API call
+    /** number of changes per API call */
     batchSize?: number;
-    // whether to get a faster changes feed by supplying 'seq_interval'  
+    /** whether to get a faster changes feed by supplying 'seq_interval'   */
     fastChanges?: boolean;
-    // where to begin the changes feed: 0, now or a sequence token
+    /** where to begin the changes feed: 0, now or a sequence token */
     since?: string;
-    // whether to return document bodies too
+    /** whether to return document bodies too */
     includeDocs?: boolean;
-    // number of milliseconds when the longpoll request will timeout
+    /** number of milliseconds when the longpoll request will timeout */
     timeout?: number;
-    // whether to require a callback before performing the next request (get/start only)
+    /** whether to require a callback before performing the next request (get/start only) */
     wait?: boolean;
-    // additional query string parameters
+    /** additional query string parameters */
     qs?: object;
-    // a MangoSelector defining the slice of the changes feed to return
+    /** a MangoSelector defining the slice of the changes feed to return */
     selector?: MangoSelector;
   }
 
   interface ChangesReaderScope {
-    // fetch changes forever
+    /** fetch changes forever */
     start(opts: ChangesReaderOptions): EventEmitter;
-    // fetch changes and stop when an empty batch is received
+    /** fetch changes and stop when an empty batch is received */
     get(opts: ChangesReaderOptions): EventEmitter;
-    // spool the change in one long feed, instead of batches
+    /** spool the change in one long feed, instead of batches */
     spool(opts: ChangesReaderOptions): EventEmitter;
-    // stop consuming the changes feed
+    /** stop consuming the changes feed */
     stop(): void;
   }
 
   interface DocumentScope<D> {
     readonly config: ServerConfig;
-    // http://docs.couchdb.org/en/latest/api/database/common.html#get--db
+    /** @see {@link http://docs.couchdb.org/en/latest/api/database/common.html#get--db} */
     info(callback?: Callback<DatabaseGetResponse>): Promise<DatabaseGetResponse>;
-    // http://docs.couchdb.org/en/latest/api/server/common.html#post--_replicate
+    /** @see {@link http://docs.couchdb.org/en/latest/api/server/common.html#post--_replicate} */
     replicate<D>(
       target: string | DocumentScope<D>,
       callback?: Callback<DatabaseReplicateResponse>
     ): Promise<DatabaseReplicateResponse>;
-    // http://docs.couchdb.org/en/latest/api/server/common.html#post--_replicate
+    /** @see {@link http://docs.couchdb.org/en/latest/api/server/common.html#post--_replicate} */
     replicate(
       target: string | DocumentScope<D>,
       options: any,
       callback?: Callback<DatabaseReplicateResponse>
     ): Promise<DatabaseReplicateResponse>;
-    // http://docs.couchdb.org/en/latest/api/database/compact.html#post--db-_compact
+    /** @see {@link http://docs.couchdb.org/en/latest/api/database/compact.html#post--db-_compact} */
     compact(callback?: Callback<OkResponse>): Promise<OkResponse>;
-    // http://docs.couchdb.org/en/latest/api/database/changes.html#get--db-_changes
+    /** @see {@link http://docs.couchdb.org/en/latest/api/database/changes.html#get--db-_changes} */
     changes(callback?: Callback<DatabaseChangesResponse>): Promise<DatabaseChangesResponse>;
-    // http://docs.couchdb.org/en/latest/api/database/changes.html#get--db-_changes
+    /** @see {@link http://docs.couchdb.org/en/latest/api/database/changes.html#get--db-_changes} */
     changes(params: DatabaseChangesParams, callback?: Callback<DatabaseChangesResponse>): Promise<DatabaseChangesResponse>;
     changesReader: ChangesReaderScope;
-    // http://docs.couchdb.org/en/latest/api/server/authn.html#cookie-authentication
+    /** @see {@link http://docs.couchdb.org/en/latest/api/server/authn.html#cookie-authentication} */
     auth(username: string, userpass: string, callback?: Callback<DatabaseAuthResponse>): Promise<DatabaseAuthResponse>;
-    // http://docs.couchdb.org/en/latest/api/server/authn.html#get--_session
+    /** @see {@link http://docs.couchdb.org/en/latest/api/server/authn.html#get--_session} */
     session(callback?: Callback<DatabaseSessionResponse>): Promise<DatabaseSessionResponse>;
-    // http://docs.couchdb.org/en/latest/api/database/common.html#post--db
-    // http://docs.couchdb.org/en/latest/api/document/common.html#put--db-docid
+    /** @see {@link http://docs.couchdb.org/en/latest/api/database/common.html#post--db}
+     * @see {@link http://docs.couchdb.org/en/latest/api/document/common.html#put--db-docid} */
     insert(document: ViewDocument<D> | D & MaybeDocument, callback?: Callback<DocumentInsertResponse>): Promise<DocumentInsertResponse>;
-    // http://docs.couchdb.org/en/latest/api/database/common.html#post--db
-    // http://docs.couchdb.org/en/latest/api/document/common.html#put--db-docid
+    /** @see {@link http://docs.couchdb.org/en/latest/api/database/common.html#post--db}
+     * @see {@link http://docs.couchdb.org/en/latest/api/document/common.html#put--db-docid} */
     insert(
       document: ViewDocument<D> | D & MaybeDocument,
       params: DocumentInsertParams | string | null,
       callback?: Callback<DocumentInsertResponse>
     ): Promise<DocumentInsertResponse>;
-    // http://docs.couchdb.org/en/latest/api/document/common.html#get--db-docid
+    /** @see {@link http://docs.couchdb.org/en/latest/api/document/common.html#get--db-docid} */
     get(docname: string, callback?: Callback<DocumentGetResponse & D>): Promise<DocumentGetResponse & D>;
-    // http://docs.couchdb.org/en/latest/api/document/common.html#get--db-docid
+    /** @see {@link http://docs.couchdb.org/en/latest/api/document/common.html#get--db-docid} */
     get(docname: string, params?: DocumentGetParams, callback?: Callback<DocumentGetResponse & D>): Promise<DocumentGetResponse & D>;
-    // http://docs.couchdb.org/en/latest/api/document/common.html#head--db-docid
+    /** @see {@link http://docs.couchdb.org/en/latest/api/document/common.html#head--db-docid} */
     head(docname: string, callback?: Callback<any>): Promise<any>;
-    // http://docs.couchdb.org/en/latest/api/document/common.html#delete--db-docid
+    /** @see {@link http://docs.couchdb.org/en/latest/api/document/common.html#delete--db-docid} */
     destroy(docname: string, rev: string, callback?: Callback<DocumentDestroyResponse>): Promise<DocumentDestroyResponse>;
     bulk(docs: BulkModifyDocsWrapper, callback?: Callback<DocumentBulkResponse[]>): Promise<DocumentBulkResponse[]>;
     bulk(docs: BulkModifyDocsWrapper, params: any, callback?: Callback<DocumentInsertResponse[]>): Promise<DocumentInsertResponse[]>;
-    // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#get--db-_all_docs
+    /** @see {@link http://docs.couchdb.org/en/latest/api/database/bulk-api.html#get--db-_all_docs} */
     list(callback?: Callback<DocumentListResponse<D>>): Promise<DocumentListResponse<D>>;
-    // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#get--db-_all_docs
+    /** @see {@link http://docs.couchdb.org/en/latest/api/database/bulk-api.html#get--db-_all_docs} */
     list(params: DocumentListParams, callback?: Callback<DocumentListResponse<D>>): Promise<DocumentListResponse<D>>;
-    // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#get--db-_all_docs
+    /** @see {@link http://docs.couchdb.org/en/latest/api/database/bulk-api.html#get--db-_all_docs} */
     listAsStream(): NodeJS.ReadStream;
-    // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#get--db-_all_docs
+    /** @see {@link http://docs.couchdb.org/en/latest/api/database/bulk-api.html#get--db-_all_docs} */
     listAsStream(params: DocumentListParams): NodeJS.ReadStream;
-    // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs
+    /** @see {@link http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs} */
     fetch(docnames: BulkFetchDocsWrapper, callback?: Callback<DocumentFetchResponse<D>>): Promise<DocumentFetchResponse<D>>;
-    // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs
+    /** @see {@link http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs} */
     fetch(
       docnames: BulkFetchDocsWrapper,
       params: DocumentFetchParams,
       callback?: Callback<DocumentFetchResponse<D>>
     ): Promise<DocumentFetchResponse<D>>;
-    // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs
+    /** @see {@link http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs} */
     fetchRevs(docnames: BulkFetchDocsWrapper, callback?: Callback<DocumentFetchRevsResponse<D>>): Promise<DocumentFetchRevsResponse<D>>;
-    // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs
+    /** @see {@link http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs} */
     fetchRevs(
       docnames: BulkFetchDocsWrapper,
       params: DocumentFetchParams,
       callback?: Callback<DocumentFetchRevsResponse<D>>
     ): Promise<DocumentFetchRevsResponse<D>>;
-    // http://docs.couchdb.org/en/latest/api/database/find.html#db-index
+    /** @see {@link http://docs.couchdb.org/en/latest/api/database/find.html#db-index} */
     createIndex(indexDef: CreateIndexRequest,
                 callback?:  Callback<CreateIndexResponse>
     ): Promise<CreateIndexResponse>;
     multipart: Multipart<D>;
     attachment: Attachment;
-    // http://docs.couchdb.org/en/latest/api/ddoc/render.html#get--db-_design-ddoc-_show-func
+    /** @see {@link http://docs.couchdb.org/en/latest/api/ddoc/render.html#get--db-_design-ddoc-_show-func} */
     show(
       designname: string,
       showname: string,
       doc_id: string,
       callback?: Callback<any>
     ): Promise<any>;
-    // http://docs.couchdb.org/en/latest/api/ddoc/render.html#get--db-_design-ddoc-_show-func
+    /** @see {@link http://docs.couchdb.org/en/latest/api/ddoc/render.html#get--db-_design-ddoc-_show-func} */
     show(
       designname: string,
       showname: string,
@@ -271,14 +280,14 @@ declare namespace nano {
       params: any,
       callback?: Callback<any>
     ): Promise<any>;
-    // http://docs.couchdb.org/en/latest/api/ddoc/render.html#put--db-_design-ddoc-_update-func-docid
+    /** @see {@link http://docs.couchdb.org/en/latest/api/ddoc/render.html#put--db-_design-ddoc-_update-func-docid} */
     atomic<R>(
       designname: string,
       updatename: string,
       docname: string,
       callback?: Callback<R>
     ): Promise<R>;
-    // http://docs.couchdb.org/en/latest/api/ddoc/render.html#put--db-_design-ddoc-_update-func-docid
+    /** @see {@link http://docs.couchdb.org/en/latest/api/ddoc/render.html#put--db-_design-ddoc-_update-func-docid} */
     atomic<R>(
       designname: string,
       updatename: string,
@@ -286,14 +295,14 @@ declare namespace nano {
       body: any,
       callback?: Callback<R>
     ): Promise<R>;
-    // http://docs.couchdb.org/en/latest/api/ddoc/render.html#put--db-_design-ddoc-_update-func-docid
+    /** @see {@link http://docs.couchdb.org/en/latest/api/ddoc/render.html#put--db-_design-ddoc-_update-func-docid} */
     updateWithHandler(
       designname: string,
       updatename: string,
       docname: string,
       callback?: Callback<OkResponse>
     ): Promise<OkResponse>;
-    // http://docs.couchdb.org/en/latest/api/ddoc/render.html#put--db-_design-ddoc-_update-func-docid
+    /** @see {@link http://docs.couchdb.org/en/latest/api/ddoc/render.html#put--db-_design-ddoc-_update-func-docid} */
     updateWithHandler(
       designname: string,
       updatename: string,
@@ -319,42 +328,42 @@ declare namespace nano {
       params?: any,
       callback?: Callback<any>
     ): Promise<any>;
-    // http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view
-    // http://docs.couchdb.org/en/latest/api/ddoc/views.html#post--db-_design-ddoc-_view-view
+    /** @see {@link http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view}
+     * @see {@link http://docs.couchdb.org/en/latest/api/ddoc/views.html#post--db-_design-ddoc-_view-view} */
     view<V>(
       designname: string,
       viewname: string,
       callback?: Callback<DocumentViewResponse<V,D>>
     ): Promise<DocumentViewResponse<V,D>>;
-    // http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view
-    // http://docs.couchdb.org/en/latest/api/ddoc/views.html#post--db-_design-ddoc-_view-view
+    /** @see {@link http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view}
+     * @see {@link http://docs.couchdb.org/en/latest/api/ddoc/views.html#post--db-_design-ddoc-_view-view} */
     view<V>(
       designname: string,
       viewname: string,
       params: DocumentViewParams,
       callback?: Callback<DocumentViewResponse<V,D>>
     ): Promise<DocumentViewResponse<V,D>>;
-    // http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view
-    // http://docs.couchdb.org/en/latest/api/ddoc/views.html#post--db-_design-ddoc-_view-view
+    /** @see {@link http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view}
+     * @see {@link http://docs.couchdb.org/en/latest/api/ddoc/views.html#post--db-_design-ddoc-_view-view} */
     viewAsStream<V>(
       designname: string,
       viewname: string
     ): NodeJS.ReadStream;
-    // http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view
-    // http://docs.couchdb.org/en/latest/api/ddoc/views.html#post--db-_design-ddoc-_view-view
+    /** @see {@link http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view}
+     * @see {@link http://docs.couchdb.org/en/latest/api/ddoc/views.html#post--db-_design-ddoc-_view-view} */
     viewAsStream<V>(
       designname: string,
       viewname: string,
       params: DocumentViewParams
     ): NodeJS.ReadStream;
-    // http://docs.couchdb.org/en/latest/api/ddoc/render.html#db-design-design-doc-list-list-name-view-name
+    /** @see {@link http://docs.couchdb.org/en/latest/api/ddoc/render.html#db-design-design-doc-list-list-name-view-name} */
     viewWithList(
       designname: string,
       viewname: string,
       listname: string,
       callback?: Callback<any>
     ): Promise<any>;
-    // http://docs.couchdb.org/en/latest/api/ddoc/render.html#db-design-design-doc-list-list-name-view-name
+    /** @see {@link http://docs.couchdb.org/en/latest/api/ddoc/render.html#db-design-design-doc-list-list-name-view-name} */
     viewWithList(
       designname: string,
       viewname: string,
@@ -362,14 +371,14 @@ declare namespace nano {
       params: DocumentViewParams,
       callback?: Callback<any>
     ): Promise<any>;
-    // http://docs.couchdb.org/en/latest/api/ddoc/render.html#db-design-design-doc-list-list-name-view-name
+    /** @see {@link http://docs.couchdb.org/en/latest/api/ddoc/render.html#db-design-design-doc-list-list-name-view-name} */
     viewWithListAsStream(
         designname: string,
         viewname: string,
         listname: string,
         callback?: Callback<any>
     ): Promise<any>;
-    // http://docs.couchdb.org/en/latest/api/ddoc/render.html#db-design-design-doc-list-list-name-view-name
+    /** @see {@link http://docs.couchdb.org/en/latest/api/ddoc/render.html#db-design-design-doc-list-list-name-view-name} */
     viewWithListAsStream(
         designname: string,
         viewname: string,
@@ -377,7 +386,7 @@ declare namespace nano {
         params: DocumentViewParams,
         callback?: Callback<any>
     ): Promise<any>;
-    // http://docs.couchdb.org/en/latest/api/database/find.html#db-find
+    /** @see {@link http://docs.couchdb.org/en/latest/api/database/find.html#db-find} */
     find(query: MangoQuery, callback?: Callback<MangoResponse<D>>): Promise <MangoResponse<D>>;
     server: ServerScope;
     //https://docs.couchdb.org/en/latest/partitioned-dbs/index.html
@@ -421,9 +430,9 @@ declare namespace nano {
   }
 
   interface Multipart<D> {
-    // http://docs.couchdb.org/en/latest/api/document/common.html#creating-multiple-attachments
+    /** @see {@link http://docs.couchdb.org/en/latest/api/document/common.html#creating-multiple-attachments} */
     insert(doc: D, attachments: AttachmentData[], callback?: Callback<DocumentInsertResponse>): Promise<DocumentInsertResponse>;
-    // http://docs.couchdb.org/en/latest/api/document/common.html#creating-multiple-attachments
+    /** @see {@link http://docs.couchdb.org/en/latest/api/document/common.html#creating-multiple-attachments} */
     insert(doc: D, attachments: AttachmentData[], params: any, callback?: Callback<DocumentInsertResponse>): Promise<DocumentInsertResponse>;
     get(docname: string, callback?: Callback<any>): Promise<any>;
     get(docname: string, params: any, callback?: Callback<any>): Promise<any>;
@@ -483,7 +492,7 @@ declare namespace nano {
     multipart?: any[];
   }
 
-  // http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates
+  /** @see {@link http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates} */
   interface UpdatesParams {
     feed: "longpoll" | "continuous" | "eventsource";
     timeout: number;
@@ -546,284 +555,323 @@ declare namespace nano {
   // Database scope request and response
   // -------------------------------------
 
-  // http://docs.couchdb.org/en/latest/api/database/common.html#put--db
+  /** @see {@link http://docs.couchdb.org/en/latest/api/database/common.html#put--db} */
   interface DatabaseCreateResponse {
-    // Operation status. Available in case of success
+    /** Operation status. Available in case of success */
     ok?: boolean;
 
-    // Error type. Available if response code is 4xx
+    /** Error type. Available if response code is 4xx */
     error?: string;
 
-    // Error description. Available if response code is 4xx
+    /** Error description. Available if response code is 4xx */
     reason?: string;
   }
 
-  // http://docs.couchdb.org/en/latest/api/database/common.html#get--db
+  /** @see {@link http://docs.couchdb.org/en/latest/api/database/common.html#get--db} */
   interface DatabaseGetResponse {
-    // Set to true if the database compaction routine is operating on this database.
+    /** Set to true if the database compaction routine is operating on this database. */
     compact_running: boolean;
 
-    // The name of the database.
+    /** The name of the database. */
     db_name: string;
 
-    // The version of the physical format used for the data when it is stored on disk.
+    /** The version of the physical format used for the data when it is stored on disk. */
     disk_format_version: number;
 
-    // The number of bytes of live data inside the database file.
+    /** The number of bytes of live data inside the database file. */
     data_size: number;
 
-    // The length of the database file on disk. Views indexes are not included in the calculation.
+    /** The length of the database file on disk. Views indexes are not included in the calculation. */
     disk_size: number;
 
-    // A count of the documents in the specified database.
+    /** A count of the documents in the specified database. */
     doc_count: number;
 
-    // Number of deleted documents
+    /** Number of deleted documents */
     doc_del_count: number;
 
-    // Timestamp of when the database was opened, expressed in microseconds since the epoch.
+    /** Timestamp of when the database was opened, expressed in microseconds since the epoch. */
     instance_start_time: string;
 
-    // The number of purge operations on the database.
+    /** The number of purge operations on the database. */
     purge_seq: number;
 
     sizes: {
-      // The size of live data inside the database, in bytes.
+      /** The size of live data inside the database, in bytes. */
       active: number;
 
-      // The uncompressed size of database contents in bytes.
+      /** The uncompressed size of database contents in bytes. */
       external: number;
 
-      // The size of the database file on disk in bytes. Views indexes
+      /** The size of the database file on disk in bytes. Views indexes */
       file: number;
     };
 
-    // The current number of updates to the database.
+    /** The current number of updates to the database. */
     update_seq: number;
   }
 
-  // http://docs.couchdb.org/en/latest/api/database/common.html#delete--db
-  // http://docs.couchdb.org/en/latest/api/database/compact.html#post--db-_compact
+  /** @see {@link http://docs.couchdb.org/en/latest/api/database/common.html#delete--db}
+   * @see {@link http://docs.couchdb.org/en/latest/api/database/compact.html#post--db-_compact} */
   interface OkResponse {
-    // Operation status
+    /** Operation status */
     ok: boolean;
   }
 
-  // http://docs.couchdb.org/en/latest/api/server/common.html#post--_replicate
+  /** @see {@link http://docs.couchdb.org/en/latest/api/server/common.html#post--_replicate} */
   interface DatabaseReplicateOptions {
-    // Cancels the replication
+    /** Cancels the replication */
     cancel?: boolean;
 
-    // Configure the replication to be continuous
+    /** Configure the replication to be continuous */
     continuous?: boolean;
 
-    // Creates the target database. Required administrator’s privileges on target server.
+    /** Creates the target database. Required administrator’s privileges on target server. */
     create_target?: boolean;
 
-    // Array of document IDs to be synchronized
+    /** Array of document IDs to be synchronized */
     doc_ids?: string[];
 
-    // The name of a filter function.
+    /** The name of a filter function. */
     filter?: string;
 
-    // Address of a proxy server through which replication should occur (protocol can be “http” or “socks5”)
+    /** Address of a proxy server through which replication should occur (protocol can be “http” or “socks5”) */
     proxy?: string;
 
-    // Source database name or URL
+    /** Source database name or URL */
     source?: string;
 
-    // Target database name or URL
+    /** Target database name or URL */
     target?: string;
   }
 
-  // http://docs.couchdb.org/en/latest/api/server/common.html#post--_replicate
+  /** @see {@link http://docs.couchdb.org/en/latest/api/server/common.html#post--_replicate} */
   interface DatabaseReplicationHistoryItem {
-    // Number of document write failures
+    /** Number of document write failures */
     doc_write_failures: number;
 
-    // Number of documents read
+    /** Number of documents read */
     docs_read: number;
 
-    // Number of documents written to target
+    /** Number of documents written to target */
     docs_written: number;
 
-    // Last sequence number in changes stream
+    /** Last sequence number in changes stream */
     end_last_seq: number;
 
-    // Date/Time replication operation completed in RFC 2822 format
+    /** Date/Time replication operation completed in RFC 2822 format */
     end_time: string;
 
-    // Number of missing documents checked
+    /** Number of missing documents checked */
     missing_checked: number;
 
-    // Number of missing documents found
+    /** Number of missing documents found */
     missing_found: number;
 
-    // Last recorded sequence number
+    /** Last recorded sequence number */
     recorded_seq: number;
 
-    // Session ID for this replication operation
+    /** Session ID for this replication operation */
     session_id: string;
 
-    // First sequence number in changes stream
+    /** First sequence number in changes stream */
     start_last_seq: number;
 
-    // Date/Time replication operation started in RFC 2822 format
+    /** Date/Time replication operation started in RFC 2822 format */
     start_time: string;
   }
 
-  // http://docs.couchdb.org/en/latest/api/server/common.html#post--_replicate
+  /** @see {@link http://docs.couchdb.org/en/latest/api/server/common.html#post--_replicate} */
   interface DatabaseReplicateResponse {
-    // Replication history
+    /** Replication history */
     history: DatabaseReplicationHistoryItem[];
 
-    // Replication status
+    /** Replication status */
     ok: boolean;
 
-    // Replication protocol version
+    /** Replication protocol version */
     replication_id_version: number;
 
-    // Unique session ID
+    /** Unique session ID */
     session_id: string;
 
-    // Last sequence number read from source database
+    /** Last sequence number read from source database */
     source_last_seq: number;
   }
 
-  // http://docs.couchdb.org/en/latest/api/database/changes.html#get--db-_changes
+  /** @see {@link http://docs.couchdb.org/en/latest/api/database/changes.html#get--db-_changes} */
   interface DatabaseChangesParams {
-    // List of document IDs to filter the changes feed as valid JSON array. Used with _doc_ids filter. Since length of
-    // URL is limited, it is better to use POST /{db}/_changes instead.
+    /** List of document IDs to filter the changes feed as valid JSON array.
+     *
+     * Used with _doc_ids filter. Since length of URL is limited, it is better to use POST /{db}/_changes instead. */
     doc_ids?: string[];
 
-    // Includes conflicts information in response. Ignored if include_docs isn’t true. Default is false.
+    /** Includes conflicts information in response.
+     *
+     * Ignored if `include_docs` isn’t true.
+     *
+     * @default false */
     conflicts?: boolean;
 
-    // Return the change results in descending sequence order (most recent change first). Default is false.
+    /** Return the change results in descending sequence order (most recent change first).
+     *
+     * @default false */
     descending?: boolean;
 
-    // - normal Specifies Normal Polling Mode. All past changes are returned immediately. Default.
-    // - longpoll Specifies Long Polling Mode. Waits until at least one change has occurred, sends the change, then
-    // closes the connection. Most commonly used in conjunction with since=now, to wait for the next change.
-    // - continuous Sets Continuous Mode. Sends a line of JSON per event. Keeps the socket open until timeout.
-    // - eventsource Sets Event Source Mode. Works the same as Continuous Mode, but sends the events in EventSource
-    // format.
+    /** Polling mode.
+     *
+     * - `"normal"` Specifies Normal Polling Mode. All past changes are returned immediately. Default.
+     * - `"longpoll"` Specifies Long Polling Mode. Waits until at least one change has occurred, sends the change, then
+     *   closes the connection. Most commonly used in conjunction with since=now, to wait for the next change.
+     * - `"continuous"` Sets Continuous Mode. Sends a line of JSON per event. Keeps the socket open until timeout.
+     * - `"eventsource"` Sets Event Source Mode. Works the same as Continuous Mode, but sends the events in EventSource
+     *   format.
+     *
+     * @detault "normal" */
     feed?: "normal" | "longpoll" | "continuous" | "eventsource";
 
-    // Reference to a filter function from a design document that will filter whole stream emitting only filtered
-    // events. See the section Change Notifications in the book CouchDB The Definitive Guide for more information.
+    /** Reference to a filter function from a design document.
+     * 
+     * The filter function will filter whole stream emitting only filtered events. See the section Change Notifications
+     * in the book CouchDB The Definitive Guide for more information. */
     filter?: string;
 
-    // Period in milliseconds after which an empty line is sent in the results. Only applicable for longpoll,
-    // continuous, and eventsource feeds. Overrides any timeout to keep the feed alive indefinitely. Default is 60000.
-    // May be true to use default value.
+    /** Period in milliseconds after which an empty line is sent in the results.
+     * 
+     * Only applicable for longpoll, continuous, and eventsource feeds. Overrides any timeout to keep the feed alive
+     * indefinitely. May be true to use default value.
+     *
+     * @default 60000 */
     heartbeat?: number;
 
-    // Include the associated document with each result. If there are conflicts, only the winning revision is returned.
-    // Default is false.
+    /** Include the associated document with each result.
+     *
+     * If there are conflicts, only the winning revision is returned.
+     *
+     * @default false */
     include_docs?: boolean;
 
-    // Include the Base64-encoded content of attachments in the documents that are included if include_docs is true.
-    // Ignored if include_docs isn’t true. Default is false.
+    /** Include the Base64-encoded content of attachments in the documents that are included if include_docs is true.
+     *
+     * Ignored if include_docs isn’t true.
+     *
+     * @default false */
     attachments?: boolean;
 
-    // Include encoding information in attachment stubs if include_docs is true and the particular attachment is
-    // compressed. Ignored if include_docs isn’t true. Default is false.
+    /** Include encoding information in attachment stubs.
+     * 
+     * Only used if include_docs is true and the particular attachment is compressed. Ignored if include_docs isn’t
+     * true.
+     *
+     * @default false */
     att_encoding_info?: boolean;
 
-    // Limit number of result rows to the specified value (note that using 0 here has the same effect as 1).
+    /** Limit number of result rows to the specified value.
+     *
+     * Note that using 0 here has the same effect as 1. */
     limit?: number;
 
-    // Start the results from the change immediately after the given update sequence. Can be valid update sequence or
-    // now value. Default is 0.
+    /** Start the results from the change immediately after the given update sequence.
+     *
+     * Can be valid update sequence or now value.
+     *
+     * @default 0 */
     since?: number;
 
-    // Specifies how many revisions are returned in the changes array. The default, main_only, will only return the
-    // current “winning” revision; all_docs will return all leaf revisions (including conflicts and deleted former
-    // conflicts).
+    /** Specifies how many revisions are returned in the changes array.
+     * 
+     * The default, `"main_only"`, will only return the current “winning” revision; `"all_docs"` will return all leaf
+     * revisions (including conflicts and deleted former conflicts).
+     *
+     * @default "main_only" */
     style?: string;
 
-    // Maximum period in milliseconds to wait for a change before the response is sent, even if there are no results.
-    // Only applicable for longpoll or continuous feeds. Default value is specified by httpd/changes_timeout
-    // configuration option. Note that 60000 value is also the default maximum timeout to prevent undetected dead
-    // connections.
+    /** Maximum period in milliseconds to wait for a change before the response is sent, even if there are no results.
+     *
+     * Only applicable for longpoll or continuous feeds. Default value is specified by httpd/changes_timeout
+     * configuration option. Note that 60000 value is also the default maximum timeout to prevent undetected dead
+     * connections. */
     timeout?: number;
 
-    // Allows to use view functions as filters. Documents counted as “passed” for view filter in case if map function
-    // emits at least one record for them. See _view for more info.
+    /** Allows to use view functions as filters.
+     *
+     * Documents counted as “passed” for view filter in case if map function emits at least one record for them.
+     *
+     * @see {@link https://docs.couchdb.org/en/stable/api/database/changes.html#changes-filter-view|_view} for more info. */
     view?: string;
   }
 
-  // http://docs.couchdb.org/en/latest/api/database/changes.html#get--db-_changes
+  /** @see {@link http://docs.couchdb.org/en/latest/api/database/changes.html#get--db-_changes} */
   interface DatabaseChangesResultItem {
-    // List of document’s leaves with single field rev.
+    /** List of document’s leaves with single field rev. */
     changes: Array<{ rev: string }>;
 
-    // Document ID.
+    /** Document ID. */
     id: string;
 
-    // Update sequence.
+    /** Update sequence. */
     seq: any;
 
-    // true if the document is deleted.
+    /** true if the document is deleted. */
     deleted: boolean;
   }
 
-  // http://docs.couchdb.org/en/latest/api/database/changes.html#get--db-_changes
+  /** @see {@link http://docs.couchdb.org/en/latest/api/database/changes.html#get--db-_changes} */
   interface DatabaseChangesResponse {
-    // Last change update sequence
+    /** Last change update sequence */
     last_seq: any;
 
-    // Count of remaining items in the feed
+    /** Count of remaining items in the feed */
     pending: number;
 
-    // Changes made to a database
+    /** Changes made to a database */
     results: DatabaseChangesResultItem[];
   }
 
-  // http://docs.couchdb.org/en/latest/api/server/authn.html#cookie-authentication
+  /** @see {@link http://docs.couchdb.org/en/latest/api/server/authn.html#cookie-authentication} */
   interface DatabaseAuthResponse {
-    // Operation status
+    /** Operation status */
     ok: boolean;
 
-    // Username
+    /** Username */
     name: string;
 
-    // List of user roles
+    /** List of user roles */
     roles: string[];
   }
 
-  // http://docs.couchdb.org/en/latest/api/server/authn.html#get--_session
+  /** @see {@link http://docs.couchdb.org/en/latest/api/server/authn.html#get--_session} */
   interface DatabaseSessionResponse {
-    // Operation status
+    /** Operation status */
     ok: boolean;
 
-    // User context for the current user
+    /** User context for the current user */
     userCtx: any;
 
-    // Server authentication configuration
+    /** Server authentication configuration */
     info: any;
   }
 
-  // http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates
+  /** @see {@link http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates} */
   interface DatabaseUpdatesResultItem {
-    // Database name.
+    /** Database name. */
     db_name: string;
 
-    // A database event is one of created, updated, deleted.
+    /** A database event is one of created, updated, deleted. */
     type: string;
 
-    // Update sequence of the event.
+    /** Update sequence of the event. */
     seq: any;
   }
 
-  // http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates
+  /** @see {@link http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates} */
   interface DatabaseUpdatesResponse {
-    // An array of database events. For longpoll and continuous modes, the entire response is the contents of the
-    // results array.
+    /** An array of database events.
+     *
+     * For longpoll and continuous modes, the entire response is the contents of the results array. */
     results: DatabaseUpdatesResultItem[];
 
-    // The last sequence ID reported.
+    /** The last sequence ID reported. */
     last_seq: string;
   }
 
@@ -844,130 +892,154 @@ declare namespace nano {
     doc?: D & Document;
   }
 
-  // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_bulk_docs
+  /** @see {@link http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_bulk_docs} */
   interface DocumentBulkResponse {
-    // Document ID. Available in all cases
+    /** Document ID. Available in all cases */
     id: string;
 
-    // New document revision token. Available if document has saved without errors.
+    /** New document revision token. Available if document has saved without errors. */
     rev?: string;
 
-    // Error type. Available if response code is 4xx
+    /** Error type. Available if response code is 4xx */
     error?: string;
 
-    // Error reason. Available if response code is 4xx
+    /** Error reason. Available if response code is 4xx */
     reason?: string;
   }
 
-  // http://docs.couchdb.org/en/latest/api/database/common.html#post--db
-  // http://docs.couchdb.org/en/latest/api/document/common.html#put--db-docid
+  /** @see {@link http://docs.couchdb.org/en/latest/api/database/common.html#post--db}
+   * @see {@link http://docs.couchdb.org/en/latest/api/document/common.html#put--db-docid} */
   interface DocumentInsertParams {
-    // Document’s revision if updating an existing document. Alternative to If-Match header or document key.
+    /** Document’s revision if updating an existing document. Alternative to If-Match header or document key. */
     rev?: string;
 
-    // Stores document in batch mode.
+    /** Stores document in batch mode. */
     batch?: "ok";
 
-    // Prevents insertion of a conflicting document. Possible values: true (default) and false. If false, a
-    // well-formed _rev must be included in the document. new_edits=false is used by the replicator to insert
-    // documents into the target database even if that leads to the creation of conflicts.
+    /** Prevents insertion of a conflicting document.
+     * 
+     * If false, a well-formed `_rev` must be included in the document. `new_edits=false` is used by the replicator to
+     * insert documents into the target database even if that leads to the creation of conflicts.
+     *
+     * @default true */
     new_edits?: boolean;
   }
 
-  // http://docs.couchdb.org/en/latest/api/database/common.html#post--db
-  // http://docs.couchdb.org/en/latest/api/document/common.html#put--db-docid
+  /** @see {@link http://docs.couchdb.org/en/latest/api/database/common.html#post--db}
+   * @see {@link http://docs.couchdb.org/en/latest/api/document/common.html#put--db-docid} */
   interface DocumentInsertResponse {
-    // Document ID
+    /** Document ID */
     id: string;
 
-    // Operation status
+    /** Operation status */
     ok: boolean;
 
-    // Revision MVCC token
+    /** Revision MVCC token */
     rev: string;
   }
 
-  // http://docs.couchdb.org/en/latest/api/document/common.html#delete--db-docid
+  /** @see {@link http://docs.couchdb.org/en/latest/api/document/common.html#delete--db-docid} */
   interface DocumentDestroyResponse {
-    // Document ID
+    /** Document ID */
     id: string;
 
-    // Operation status
+    /** Operation status */
     ok: boolean;
 
-    // Revision MVCC token
+    /** Revision MVCC token */
     rev: string;
   }
 
-  // http://docs.couchdb.org/en/latest/api/document/common.html#get--db-docid
+  /** @see {@link http://docs.couchdb.org/en/latest/api/document/common.html#get--db-docid} */
   interface DocumentGetParams {
-    // Includes attachments bodies in response. Default is false.
+    /** Includes attachments bodies in response.
+     *
+     * @default false */
     attachments?: boolean;
 
-    // Includes encoding information in attachment stubs if the particular attachment is compressed. Default is
-    // false.
+    /** Includes encoding information in attachment stubs if the particular attachment is compressed.
+     *
+     * @default false */
     att_encoding_info?: boolean;
 
-    // Includes attachments only since specified revisions. Doesn’t includes attachments for specified revisions.
+    /** Includes attachments only since specified revisions.
+     *
+     * Doesn’t includes attachments for specified revisions. */
     atts_since?: any[];
 
-    // Includes information about conflicts in document. Default is false.
+    /** Includes information about conflicts in document.
+     *
+     * @default false */
     conflicts?: boolean;
 
-    // Includes information about deleted conflicted revisions. Default is false.
+    /** Includes information about deleted conflicted revisions.
+     *
+     * @default false */
     deleted_conflicts?: boolean;
 
-    // Forces retrieving latest “leaf” revision, no matter what rev was requested. Default is false.
+    /** Forces retrieving latest “leaf” revision, no matter what rev was requested.
+     *
+     * @default false */
     latest?: boolean;
 
-    // Includes last update sequence for the document. Default is false.
+    /** Includes last update sequence for the document.
+     *
+     * @default false */
     local_seq?: boolean;
 
-    // Acts same as specifying all conflicts, deleted_conflicts and revs_info query parameters. Default is false.
+    /** Acts same as specifying all conflicts, deleted_conflicts and revs_info query parameters.
+     *
+     * @default false */
     meta?: boolean;
 
-    // Retrieves documents of specified leaf revisions. Additionally, it accepts value as all to return all leaf
-    // revisions.
+    /** Retrieves documents of specified leaf revisions.
+     *
+     * Additionally, it accepts value as all to return all leaf revisions. */
     open_revs?: any[];
 
-    // Retrieves document of specified revision.
+    /** Retrieves document of specified revision. */
     rev?: string;
 
-    // Includes list of all known document revisions.
+    /** Includes list of all known document revisions. */
     revs?: boolean;
 
-    // Includes detailed information for all known document revisions. Default is false.
+    /** Includes detailed information for all known document revisions.
+     *
+     * @default false */
     revs_info?: boolean;
   }
 
-  // http://docs.couchdb.org/en/latest/api/document/common.html#get--db-docid
+  /** @see {@link http://docs.couchdb.org/en/latest/api/document/common.html#get--db-docid} */
   interface DocumentGetResponse {
-    // Document ID.
+    /** Document ID. */
     _id: string;
 
-    // Revision MVCC token.
+    /** Revision MVCC token. */
     _rev: string;
 
-    // Deletion flag. Available if document was removed.
+    /** Deletion flag. Available if document was removed. */
     _deleted?: boolean;
 
-    // Attachment’s stubs. Available if document has any attachments.
+    /** Attachment’s stubs. Available if document has any attachments. */
     _attachments?: any;
 
-    // List of conflicted revisions. Available if requested with conflicts=true query parameter.
+    /** List of conflicted revisions. Available if requested with conflicts=true query parameter. */
     _conflicts?: any[];
 
-    // List of deleted conflicted revisions. Available if requested with deleted_conflicts=true query parameter.
+    /** List of deleted conflicted revisions. Available if requested with deleted_conflicts=true query parameter. */
     _deleted_conflicts?: any[];
 
-    // Document’s update sequence in current database. Available if requested with local_seq=true query parameter.
+    /** Document’s update sequence in current database. Available if requested with local_seq=true query parameter. */
     _local_seq?: string;
 
-    // List of objects with information about local revisions and their status. Available if requested with
-    // open_revs query parameter.
+    /** List of objects with information about local revisions and their status.
+     *
+     * Available if requested with open_revs query parameter. */
     _revs_info?: any[];
 
-    // List of local revision tokens without. Available if requested with revs=true query parameter.
+    /** List of local revision tokens without.
+     *
+     * Available if requested with revs=true query parameter. */
     _revisions?: any;
   }
 
@@ -975,84 +1047,107 @@ declare namespace nano {
     overwrite?: boolean;
   }
 
-  // http://docs.couchdb.org/en/latest/api/document/common.html#copy--db-docid
+  /** @see {@link http://docs.couchdb.org/en/latest/api/document/common.html#copy--db-docid} */
   interface DocumentCopyResponse {
-    // Document ID
+    /** Document ID */
     id: string;
 
-    // Operation status
+    /** Operation status */
     ok: boolean;
 
-    // Revision MVCC token
+    /** Revision MVCC token */
     rev: string;
   }
 
-  // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#get--db-_all_docs
+  /** @see {@link http://docs.couchdb.org/en/latest/api/database/bulk-api.html#get--db-_all_docs} */
   interface DocumentListParams {
-    // Includes conflicts information in response. Ignored if include_docs isn’t true. Default is false.
+    /** Includes conflicts information in response.
+     *
+     * Ignored if include_docs isn’t true.
+     *
+     * @default false */
     conflicts?: boolean;
 
-    // Return the documents in descending by key order. Default is false.
+    /** Return the documents in descending by key order.
+     *
+     * @default false */
     descending?: boolean;
 
-    // Stop returning records when the specified key is reached.
+    /** Stop returning records when the specified key is reached. */
     endkey?: string;
 
-    // Stop returning records when the specified key is reached. end_key is an alias for endkey
+    /** Stop returning records when the specified key is reached.
+     *
+     * end_key is an alias for endkey */
     end_key?: string;
 
-    // Stop returning records when the specified document ID is reached.
+    /** Stop returning records when the specified document ID is reached. */
     end_key_doc_id?: string;
 
-    // Include the full content of the documents in the return. Default is false.
+    /** Include the full content of the documents in the return.
+     *
+     * @default false */
     include_docs?: boolean;
 
-    // Specifies whether the specified end key should be included in the result. Default is true.
+    /** Specifies whether the specified end key should be included in the result.
+     *
+     * @default true */
     inclusive_end?: boolean;
 
-    // Return only documents that match the specified key.
+    /** Return only documents that match the specified key. */
     key?: string;
 
-    // Return only documents that match the specified keys.
+    /** Return only documents that match the specified keys. */
     keys?: string | string[];
 
-    // Limit the number of the returned documents to the specified number.
+    /** Limit the number of the returned documents to the specified number. */
     limit?: number;
 
-    // Skip this number of records before starting to return the results. Default is 0.
+    /** Skip this number of records before starting to return the results.
+     *
+     * @default 0 */
     skip?: number;
 
-    // Allow the results from a stale view to be used, without triggering a rebuild of all views within the
-    // encompassing design doc. Supported values: ok and update_after.
+    /** Allow the results from a stale view to be used.
+     *
+     * Using a stale view wont trigger a rebuild of all views within the encompassing design doc.
+     *
+     * Supported values: "ok" and "update_after". */
     stale?: string;
 
-    // Return records starting with the specified key.
+    /** Return records starting with the specified key. */
     startkey?: string;
 
-    // Return records starting with the specified key. start_key is an alias for startkey
+    /** Return records starting with the specified key.
+     *
+     * start_key is an alias for startkey */
     start_key?: string;
 
-    // Return records starting with the specified document ID.
+    /** Return records starting with the specified document ID. */
     start_key_doc_id?: string;
 
-    // Response includes an update_seq value indicating which sequence id of the underlying database the view
-    // reflects. Default is false.
+    /** Response includes an update_seq value indicating which sequence id of the underlying database the view reflects.
+     *
+     * @default false */
     update_seq?: boolean;
   }
 
-  // http://docs.couchdb.org/en/latest/api/database/bulk-api.html#get--db-_all_docs
+  /** @see {@link http://docs.couchdb.org/en/latest/api/database/bulk-api.html#get--db-_all_docs} */
   interface DocumentListResponse<D> {
-    // Offset where the document list started.
+    /** Offset where the document list started. */
     offset: number;
 
-    // Array of view row objects. By default the information returned contains only the document ID and revision.
+    /** Array of view row objects.
+     *
+     * By default the information returned contains only the document ID and revision. */
     rows: Array<DocumentResponseRow<D>>;
 
-    // Number of documents in the database/view. Note that this is not the number of rows returned in the actual
-    // query.
+    /** Number of documents in the database/view.
+     *
+     * Note that this is not the number of rows returned in the actual query.  */
     total_rows: number;
 
-    // Current update sequence for the database.
+    /** Current update sequence for the database. */
     update_seq?: number;
   }
 
@@ -1092,7 +1187,7 @@ declare namespace nano {
 
   interface DocumentSearchResponse<V> {
 
-    //  Array of search results
+    /**  Array of search results */
     rows: Array<{
       id: string;
       order: number[];
@@ -1101,16 +1196,16 @@ declare namespace nano {
       doc?: V;
     }>;
 
-    // Number of documents in the search resykts
+    /** Number of documents in the search resykts */
     total_rows: number;
 
-    // token which if supplied to a subsequent search will return the next page of results.
+    /** token which if supplied to a subsequent search will return the next page of results. */
     bookmark: string;
 
-    // facet counts
+    /** facet counts */
     counts?: object;
 
-    // facet range results
+    /** facet range results */
     ranges?: object;
 
     highlights?: object;
@@ -1118,182 +1213,242 @@ declare namespace nano {
   }
 
 
-  // https://docs.couchdb.org/en/latest/partitioned-dbs/index.html
+  /** @see {@link https://docs.couchdb.org/en/latest/partitioned-dbs/index.html} */
   interface PartitionInfoResponse {
-    // Database name
+    /** Database name */
     db_name:  string;
 
-    // Partition sizes
+    /** Partition sizes */
     sizes: {
       active: number;
       external: number;
     }
 
-    // Partition name
+    /** Partition name */
     partition: string;
 
-    // Document count
+    /** Document count */
     doc_count: number;
 
-    // Deleted document count
+    /** Deleted document count */
     doc_del_count: number;
   }
 
-  // https://console.bluemix.net/docs/services/Cloudant/api/search.html#queries
+  /** @see {@link https://console.bluemix.net/docs/services/Cloudant/api/search.html#queries} */
   interface DocumentSearchParams {
-    // A bookmark that was received from a previous search. Used for pagination.
+    /** A bookmark that was received from a previous search. Used for pagination. */
     bookmark?: string;
 
-    // An array of field names for which facet counts are requested.
+    /** An array of field names for which facet counts are requested. */
     counts?: string[];
 
-    // Filters the result set using key value pairs supplied to the drilldown parameter.
+    /** Filters the result set using key value pairs supplied to the drilldown parameter. */
     drilldown?: string[];
 
-    // The name of a string field to group results by.
+    /** The name of a string field to group results by. */
     group_field?: string;
 
-    // The maximum group count when used in conjunction with group_field.
+    /** The maximum group count when used in conjunction with group_field. */
     group_limit?: number;
 
-    // Defines the order of the groups in a search when used with group_field.
+    /** Defines the order of the groups in a search when used with group_field. */
     group_sort?: string | string[];
 
-    // Which fields are to be highlighted.
+    /** Which fields are to be highlighted. */
     highlight_fields?: string[];
 
-    // String used before a highlighted word. Defaults to <em>.
+    /** String used before a highlighted word.
+     *
+     * @default <em> */
     highlight_pre_tag?: string;
 
-    // String used after a highlighted word. Defaults to </em>.
+    /** String used after a highlighted word.
+     *
+     * @default </em> */
     highlight_post_tag?: string;
 
-    // The number of gradments that are returned in highlights. Defaults to 1.
+    /** The number of gradments that are returned in highlights.
+     *
+     * @default 1 */
     highlight_number?: number;
 
-    // The number of characters in each fragment for highlight. Defaults to 100.
+    /** The number of characters in each fragment for highlight.
+     *
+     * @default 100 */
     highlight_size?: number;
 
-    // Include the full document bodies in the response. Defaults to false
+    /** Include the full document bodies in the response.
+     *
+     * @default false */
     include_docs?: boolean;
 
-    // An array of fields to include in the search results.
+    /** An array of fields to include in the search results */
     include_fields?: string[];
 
-    // The maximum number of returned documents. Positive integer up to 200.
+    /** The maximum number of returned documents.
+     *
+     * Positive integer up to 200. */
     limit?: number;
 
-    // Alias of 'query'. One of q or query must be present.
+    /** Alias of 'query'.
+     *
+     * One of q or query must be present. */
     q?: string;
 
-    // The Lucene query to perform. One of q or query must be present.
+    /** The Lucene query to perform.
+     *
+     * One of q or query must be present. */
     query?: string;
 
-    // Defines ranges for faceted numeric search fields.
+    /** Defines ranges for faceted numeric search fields. */
     ranges?: object;
 
-    // Specifies the sort order of the results.
+    /** Specifies the sort order of the results. */
     sort?: string | string[];
 
-    // Do not wait for the index to finish building to return results.
+    /** Do not wait for the index to finish building to return results. */
     stale?: boolean;
   }
 
-  // http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view
+  /** @see {@link http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view} */
   interface DocumentViewParams {
-    // Includes conflicts information in response. Ignored if include_docs isn’t true. Default is false.
+    /** Includes conflicts information in response.
+     *
+     * Ignored if include_docs isn’t true.
+     *
+     * @default false */
     conflicts?: boolean;
 
-    // Return the documents in descending by key order. Default is false.
+    /** Return the documents in descending by key order.
+     *
+     * @default false */
     descending?: boolean;
 
-    // Stop returning records when the specified key is reached.
+    /** Stop returning records when the specified key is reached. */
     endkey?: any;
 
-    // Alias for endkey param.
+    /** Alias for endkey param. */
     end_key?: any;
 
-    // Stop returning records when the specified document ID is reached. Requires endkey to be specified for this
-    // to have any effect.
+    /** Stop returning records when the specified document ID is reached.
+     *
+     * Requires endkey to be specified for this to have any effect. */
     endkey_docid?: string;
 
-    // Alias for endkey_docid param.
+    /** Alias for endkey_docid param. */
     end_key_doc_id?: string;
 
-    // Group the results using the reduce function to a group or single row. Default is false.
+    /** Group the results using the reduce function to a group or single row.
+     *
+     * @default false */
     group?: boolean;
 
-    // Specify the group level to be used.
+    /** Specify the group level to be used. */
     group_level?: number;
 
-    // Include the associated document with each row. Default is false.
+    /** Include the associated document with each row.
+     *
+     * @default false */
     include_docs?: boolean;
 
-    // Include the Base64-encoded content of attachments in the documents that are included if include_docs is
-    // true. Ignored if include_docs isn’t true. Default is false.
+    /** Include the Base64-encoded content of attachments in the documents that are included if include_docs is true.
+     *
+     * Ignored if include_docs isn’t true.
+     *
+     * @default false */
     attachments?: boolean;
 
-    // Include encoding information in attachment stubs if include_docs is true and the particular attachment is
-    // compressed. Ignored if include_docs isn’t true. Default is false.
+    /** Include encoding information in attachment stubs.
+     *
+     * Only if include_docs is true and the particular attachment is compressed.
+     *
+     * Ignored if include_docs isn’t true.
+     *
+     * @default false */
     att_encoding_info?: boolean;
 
-    // Specifies whether the specified end key should be included in the result. Default is true.
+    /** Specifies whether the specified end key should be included in the result.
+     *
+     * @default true */
     inclusive_end?: boolean;
 
-    // Return only documents that match the specified key.
+    /** Return only documents that match the specified key. */
     key?: any;
 
-    // Return only documents where the key matches one of the keys specified in the array.
+    /** Return only documents where the key matches one of the keys specified in the array. */
     keys?: any[];
 
-    // Limit the number of the returned documents to the specified number.
+    /** Limit the number of the returned documents to the specified number. */
     limit?: number;
 
-    // Use the reduction function. Default is true.
+    /** Use the reduction function.
+     *
+     * @default true */
     reduce?: boolean;
 
-    // Skip this number of records before starting to return the results. Default is 0.
+    /** Skip this number of records before starting to return the results.
+     *
+     * @default 0 */
     skip?: number;
 
-    // Sort returned rows. Setting this to false offers a performance boost. The total_rows and offset fields are
-    // not available when this is set to false. Default is true.
+    /** Sort returned rows.
+     * 
+     * Setting this to false offers a performance boost. The total_rows and offset fields are not available when this is
+     * set to false.
+     *
+     * @default true */
     sorted?: boolean;
 
-    // Whether or not the view results should be returned from a stable set of shards. Default is false.
+    /** Whether or not the view results should be returned from a stable set of shards.
+     *
+     * @default false */
     stable?: boolean;
-    // Allow the results from a stale view to be used. Supported values: ok, update_after and false. ok is
-    // equivalent to stable=true&update=false. update_after is equivalent to stable=true&update=lazy. false is
-    // equivalent to stable=false&update=true.
+
+    /** Allow the results from a stale view to be used.
+     * 
+     * Supported values: ok, update_after and false.
+     * 
+     * - ok is equivalent to stable=true&update=false.  
+     * - update_after is equivalent to stable=true&update=lazy.
+     * - false is equivalent to stable=false&update=true.
+     */
     stale?: string;
 
-    // Return records starting with the specified key.
+    /** Return records starting with the specified key. */
     startkey?: any;
 
-    // Alias for startkey param
+    /** Alias for startkey param */
     start_key?: any;
 
-    // Return records starting with the specified document ID. Requires startkey to be specified for this to have
-    // any effect.
+    /** Return records starting with the specified document ID.
+     *
+     * Requires startkey to be specified for this to have any effect. */
     startkey_docid?: string;
 
-    // Alias for startkey_docid param
+    /** Alias for startkey_docid param */
     start_key_doc_id?: string;
 
-    //  Whether or not the view in question should be updated prior to responding to the user. Supported values:
-    // true, false, lazy. Default is true.
+    /**  Whether or not the view in question should be updated prior to responding to the user.
+     *
+     * Supported values: true, false, lazy.
+     *
+     * @default true */
     update?: string;
 
-    // Response includes an update_seq value indicating which sequence id of the database the view reflects.
-    // Default is false.
+    /** Response includes an update_seq value indicating which sequence id of the database the view reflects.
+     *
+     * @default false */
     update_seq?: boolean;
   }
 
-  // http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view
+  /** @see {@link http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view} */
   interface DocumentViewResponse<V,D> {
-    // Offset where the document list started.
+    /** Offset where the document list started. */
     offset: number;
 
-    //  Array of view row objects. By default the information returned contains only the document ID and revision.
+    /** Array of view row objects.
+     *
+     * By default the information returned contains only the document ID and revision. */
     rows: Array<{
       id: string;
       key: string;
@@ -1301,14 +1456,14 @@ declare namespace nano {
       doc?: D & Document;
     }>;
 
-    // Number of documents in the database/view.
+    /** Number of documents in the database/view. */
     total_rows: number;
 
-    // Current update sequence for the database
+    /** Current update sequence for the database */
     update_seq: any;
   }
 
-  // http://docs.couchdb.org/en/latest/api/database/find.html#selector-syntax
+  /** @see {@link http://docs.couchdb.org/en/latest/api/database/find.html#selector-syntax} */
   type MangoValue = number | string | Date | boolean | object | null;
   type MangoOperator = '$lt' | '$lte' | '$eq' | '$ne' | '$gte' | '$gt' |
                     '$exists' | '$type' |
@@ -1318,117 +1473,141 @@ declare namespace nano {
     [K in MangoOperator | string]: MangoSelector| MangoSelector[] | MangoValue | MangoValue[];
   }
 
-  // http://docs.couchdb.org/en/latest/api/database/find.html#sort-syntax
+  /** @see {@link http://docs.couchdb.org/en/latest/api/database/find.html#sort-syntax} */
   type SortOrder = string | string[] | { [key: string]: 'asc' | 'desc' };
 
   interface MangoQuery {
-    // JSON object describing criteria used to select documents.
+    /** JSON object describing criteria used to select documents. */
     selector: MangoSelector;
 
-    // Maximum number of results returned. Default is 25.
+    /** Maximum number of results returned. @default 25 */
     limit?: number;
 
-    // Skip the first 'n' results, where 'n' is the value specified.
+    /** Skip the first 'n' results, where 'n' is the value specified. */
     skip?: number;
 
-    // JSON array following sort syntax.
+    /** JSON array following sort syntax. */
     sort?: SortOrder[];
 
-    // JSON array specifying which fields of each object should be returned. If it is omitted,
-    // the entire object is returned.
-    // http://docs.couchdb.org/en/latest/api/database/find.html#filtering-fields
+    /** JSON array specifying which fields of each object should be returned.
+     * 
+     * If it is omitted, the entire object is returned.
+     *
+     * @see {@link http://docs.couchdb.org/en/latest/api/database/find.html#filtering-fields} */
     fields?: string[];
 
-    // Instruct a query to use a specific index.
-    // Specified either as "<design_document>" or ["<design_document>", "<index_name>"].
+    /* Instruct a query to use a specific index.
+     *
+     * Specified either as "<design_document>" or ["<design_document>", "<index_name>"]. */
     use_index?: string | [string, string];
 
-    // Read quorum needed for the result. This defaults to 1.
+    /** Read quorum needed for the result.
+     *
+     * @default 1 */
     r?: number;
 
-    // A string that enables you to specify which page of results you require. Used for paging through result sets.
+    /** A string that enables you to specify which page of results you require.
+     *
+     * Used for paging through result sets. */
     bookmark?: string;
 
-    // Whether to update the index prior to returning the result. Default is true.
+    /** Whether to update the index prior to returning the result.
+     *
+     * @default true */
     update?: boolean;
 
-    // Whether or not the view results should be returned from a “stable” set of shards.
+    /** Whether or not the view results should be returned from a “stable” set of shards. */
     stable?: boolean;
 
-    // Combination of update = false and stable = true options.Possible options: "ok", false (default).
+    /** Combination of update = false and stable = true options.
+     *
+     * Possible options: "ok", false (default). */
     stale?: 'ok' | false;
 
-    // Include execution statistics in the query response. Optional, default: false.
+    /** Include execution statistics in the query response.
+     *
+     * Optional, default: false. */
     execution_stats?: boolean;
   }
 
   interface MangoResponse<D> {
-    // Array of documents matching the search. In each matching document, the fields specified in
-    // the fields part of the request body are listed, along with their values.
+    /** Array of documents matching the search.
+     * 
+     * In each matching document, the fields specified in the fields part of the request body are listed, along with
+     * their values. */
     docs: (D & {_id: string, _rev:string})[];
 
-    // A string that enables you to specify which page of results you require. Used for paging through result sets.
+    /** A string that enables you to specify which page of results you require.
+     *
+     * Used for paging through result sets. */
     bookmark?: string;
 
-    // Execution warnings
+    /** Execution warnings */
     warning?: string;
 
-    // Basic execution statistics for a specific request.
+    /** Basic execution statistics for a specific request. */
     execution_stats?: MangoExecutionStats;
   }
 
-  // http://docs.couchdb.org/en/latest/api/database/find.html#execution-statistics
+  /** @see {@link http://docs.couchdb.org/en/latest/api/database/find.html#execution-statistics} */
   interface MangoExecutionStats {
-    // Number of index keys examined. Currently always 0.
+    /** Number of index keys examined. Currently always 0. */
     total_keys_examined: number;
 
-    // Number of documents fetched from the database / index, equivalent to using include_docs = true in a view.
+    /** Number of documents fetched from the database / index.
+     *
+     * Equivalent to using include_docs = true in a view. */
     total_docs_examined: number;
 
-    // Number of documents fetched from the database using an out - of - band document fetch.
-    // This is only non - zero when read quorum > 1 is specified in the query parameters.
+    /** Number of documents fetched from the database using an out-of-band document fetch.
+     *
+     * This is only non-zero when read quorum > 1 is specified in the query parameters. */
     total_quorum_docs_examined: number;
 
-    // Number of results returned from the query.
+    /** Number of results returned from the query. */
     results_returned: number;
 
-    // Total execution time in milliseconds as measured by the database.
+    /** Total execution time in milliseconds as measured by the database. */
     execution_time_ms: number;
   }
 
-  // http://docs.couchdb.org/en/latest/api/database/find.html#db-index
+  /** @see {@link http://docs.couchdb.org/en/latest/api/database/find.html#db-index} */
   interface CreateIndexRequest{
-    // JSON object describing the index to create
+    /** JSON object describing the index to create */
     index: {
-      // Array of field names following the sort syntax.
+      /** Array of field names following the sort syntax. */
       fields: SortOrder[],
 
-      // A selector to apply to documents at indexing time, creating a partial index.
+      /** A selector to apply to documents at indexing time, creating a partial index. */
       partial_filter_selector?: MangoSelector
     },
 
-    // Name of the design document in which the index will be created.
+    /** Name of the design document in which the index will be created. */
     ddoc?: string
 
-    // Name of the index. If no name is provided, a name will be generated automatically.
+    /** Name of the index. If no name is provided, a name will be generated automatically. */
     name?: string,
 
-    // Can be "json" or "text". Defaults to json.
+    /** Can be "json" or "text".
+     *
+     * @default "json" */
     type?: 'json' | 'text',
 
-    // This field sets whether the created index will be a partitioned or global index.
+    /** This field sets whether the created index will be a partitioned or global index. */
     partitioned?: boolean
   }
 
-  // http://docs.couchdb.org/en/latest/api/database/find.html#db-index
+  /** @see {@link http://docs.couchdb.org/en/latest/api/database/find.html#db-index} */
   interface CreateIndexResponse {
-    // Flag to show whether the index was created or one already exists. Can be “created” or “exists”.
+    /** Flag to show whether the index was created or one already exists.
+     *
+     * Can be “created” or “exists”. */
     result: string,
 
-    // Id of the design document the index was created in.
+    /** Id of the design document the index was created in. */
     id: string,
 
-    // Name of the index created.
+    /** Name of the index created. */
     name: string
   }
 }
