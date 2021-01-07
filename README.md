@@ -355,7 +355,7 @@ nano.db.list().then((body) => {
 Lists all the CouchDB databases as a stream:
 
 ```js
-nano.db.list()
+nano.db.listAsStream()
   .on('error', (e) => console.error('error', e))
   .pipe(process.stdout);
 ```
@@ -625,7 +625,7 @@ alice.list({include_docs: true}).then((body) => {
 List all the docs in the database as a stream.
 
 ```js
-alice.list()
+alice.listAsStream()
   .on('error', (e) => console.error('error', e))
   .pipe(process.stdout)
 ```
@@ -965,7 +965,7 @@ const params = {
   endkey: 'b',
   limit: 1
 }
-db.partitionedView('canidae', 'view-ddoc', 'view-name', params)
+db.partitionedViewAsStream('canidae', 'view-ddoc', 'view-name', params)
   .on('error', (e) => console.error('error', e))
   .pipe(process.stdout)
 // { rows: [ { key: ... , value: [Object] } ] }
@@ -1116,7 +1116,7 @@ alice.view('characters', 'happy_ones', { include_docs: true }).then((body) => {
 Same as `db.view` but returns a stream:
 
 ```js
-alice.view('characters', 'happy_ones', {reduce: false})
+alice.viewAsStream('characters', 'happy_ones', {reduce: false})
   .on('error', (e) => console.error('error', e))
   .pipe(process.stdout);
 ```
