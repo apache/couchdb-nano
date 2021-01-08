@@ -355,7 +355,9 @@ nano.db.list().then((body) => {
 Lists all the CouchDB databases as a stream:
 
 ```js
-nano.db.list().pipe(process.stdout);
+nano.db.listAsStream()
+  .on('error', (e) => console.error('error', e))
+  .pipe(process.stdout);
 ```
 
 ### nano.db.compact(name, [designname], [callback])
@@ -623,7 +625,9 @@ alice.list({include_docs: true}).then((body) => {
 List all the docs in the database as a stream.
 
 ```js
-alice.list().pipe(process.stdout)
+alice.listAsStream()
+  .on('error', (e) => console.error('error', e))
+  .pipe(process.stdout)
 ```
 
 ### db.fetch(docnames, [params], [callback])
@@ -881,10 +885,14 @@ Fetch documents from a partition as a stream:
 
 ```js
 // fetch document id/revs from a partition
-nano.db.partitionedListAsStream('canidae').pipe(process.stdout)
+nano.db.partitionedListAsStream('canidae')
+  .on('error', (e) => console.error('error', e))
+  .pipe(process.stdout)
 
 // add document bodies but limit size of response
-nano.db.partitionedListAsStream('canidae', { include_docs: true, limit: 5 }).pipe(process.stdout)
+nano.db.partitionedListAsStream('canidae', { include_docs: true, limit: 5 })
+  .on('error', (e) => console.error('error', e))
+  .pipe(process.stdout)
 ```
 
 ### db.partitionedFind(partitionKey, query, [params])
@@ -902,7 +910,9 @@ Query documents from a partition by supplying a Mango selector as a stream:
 
 ```js
 // find document whose name is 'wolf' in the 'canidae' partition
-db.partitionedFindAsStream('canidae', { 'selector' : { 'name': 'Wolf' }}).pipe(process.stdout)
+db.partitionedFindAsStream('canidae', { 'selector' : { 'name': 'Wolf' }})
+  .on('error', (e) => console.error('error', e))
+  .pipe(process.stdout)
 ```
 
 ### db.partitionedSearch(partitionKey, designName, searchName, params, [callback])
@@ -925,7 +935,9 @@ Search documents from a partition by supplying a Lucene query as a stream:
 const params = {
   q: 'name:\'Wolf\''
 }
-db.partitionedSearchAsStream('canidae', 'search-ddoc', 'search-index', params).pipe(process.stdout)
+db.partitionedSearchAsStream('canidae', 'search-ddoc', 'search-index', params)
+  .on('error', (e) => console.error('error', e))
+  .pipe(process.stdout)
 // { total_rows: ... , bookmark: ..., rows: [ ...] }
 ```
 
@@ -953,7 +965,9 @@ const params = {
   endkey: 'b',
   limit: 1
 }
-db.partitionedView('canidae', 'view-ddoc', 'view-name', params).pipe(process.stdout)
+db.partitionedViewAsStream('canidae', 'view-ddoc', 'view-name', params)
+  .on('error', (e) => console.error('error', e))
+  .pipe(process.stdout)
 // { rows: [ { key: ... , value: [Object] } ] }
 ```
 
@@ -1031,7 +1045,9 @@ alice.attachment.get('rabbit', 'rabbit.png').then((body) => {
 ```js
 const fs = require('fs');
 
-alice.attachment.getAsStream('rabbit', 'rabbit.png').pipe(fs.createWriteStream('rabbit.png'));
+alice.attachment.getAsStream('rabbit', 'rabbit.png')
+  .on('error', (e) => console.error('error', e))
+  .pipe(fs.createWriteStream('rabbit.png'));
 ```
 
 ### db.attachment.destroy(docname, attname, [params], [callback])
@@ -1100,7 +1116,9 @@ alice.view('characters', 'happy_ones', { include_docs: true }).then((body) => {
 Same as `db.view` but returns a stream:
 
 ```js
-alice.view('characters', 'happy_ones', {reduce: false}).pipe(process.stdout);
+alice.viewAsStream('characters', 'happy_ones', {reduce: false})
+  .on('error', (e) => console.error('error', e))
+  .pipe(process.stdout);
 ```
 
 ### db.viewWithList(designname, viewname, listname, [params], [callback])
@@ -1227,7 +1245,9 @@ const q = {
   fields: [ "name", "age", "tags", "url" ],
   limit:50
 };
-alice.findAsStream(q).pipe(process.stdout);
+alice.findAsStream(q)
+  .on('error', (e) => console.error('error', e))
+  .pipe(process.stdout);
 ```
 
 ## using cookie authentication
@@ -1307,7 +1327,9 @@ You can pipe the return values of certain nano functions like other stream. For 
 const fs = require('fs');
 const nano = require('nano')('http://127.0.0.1:5984/');
 const alice = nano.use('alice');
-alice.attachment.getAsStream('rabbit', 'picture.png').pipe(fs.createWriteStream('/tmp/rabbit.png'));
+alice.attachment.getAsStream('rabbit', 'picture.png')
+  .on('error', (e) => console.error('error', e))
+  .pipe(fs.createWriteStream('/tmp/rabbit.png'));
 ```
 
 then open `/tmp/rabbit.png` and you will see the rabbit picture.

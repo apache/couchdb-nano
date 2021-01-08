@@ -41,3 +41,19 @@ test('should be able to get an attachment as a stream - GET /db/id/attname - db.
       })
   })
 })
+
+test('should emit an error when stream attachment does not exist - GET /db/id/attname - db.attachment.getAsStream', () => {
+  // test GET /db/id/attname
+  nock(COUCH_URL)
+    .get('/db/id/notexists.gif')
+    .reply(404, 'Object Not Found', { 'content-type': 'application/json' })
+
+  return new Promise((resolve, reject) => {
+    const db = nano.db.use('db')
+    db.attachment.getAsStream('id', 'notexist.gif')
+      .on('error', (e) => {
+        expect(e.statusCode).toStrictEqual(404)
+        resolve()
+      })
+  })
+})
