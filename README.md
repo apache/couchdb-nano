@@ -134,6 +134,19 @@ nano.db.create('alice').then((data) => {
 })
 ```
 
+or in the async/await style:
+
+```js
+try {
+  const response = await nano.db.create('alice')
+  // succeeded
+  console.log(response)
+} catch (e) {
+  // failed
+  console.error(e)
+}
+```
+
 2) Callbacks
 
 ```js
@@ -149,7 +162,7 @@ In `nano` the callback function receives always three arguments:
   JSON parsed body, binary for non JSON responses.
 * `header` - The HTTP _response header_ from CouchDB, if no error.
 
-The documentation will now follow the *Promises* style.
+The documentation will follow the *async/await* style.
 
 ------------------
 
@@ -216,13 +229,13 @@ You can also pass options to the require to specify further configuration option
 ```js
 // nano parses the URL and knows this is a database
 const opts = {
-  url: "http://localhost:5984/foo",
-  requestDefaults: { "proxy" : "http://someproxy" }
+  url: 'http://localhost:5984/foo',
+  requestDefaults: { proxy: { 'protocol': 'http', 'host': 'myproxy.net' } }
 };
 const db = require('nano')(opts);
 ```
 
-Please check [request] for more information on the defaults. They support features like cookie jar, proxies, ssl, etc.
+Please check [axios] for more information on the defaults. They support features like proxies, timeout etc.
 
 You can tell nano to not parse the URL (maybe the server is behind a proxy, is accessed through a rewrite rule or other):
 
@@ -1255,16 +1268,19 @@ alice.findAsStream(q)
 Nano supports making requests using CouchDB's [cookie authentication](http://guide.couchdb.org/editions/1/en/security.html#cookies) functionality. If you initialise *Nano* so that it is cookie-aware, you may call `nano.auth` first to get a session cookie. Nano will behave like a web browser, remembering your session cookie and refreshing it if a new one is received in a future HTTP response.
 
 ```js
-const nano = require('nano')({url: 'http://localhost:5984', requestDefaults: {jar:true}}),
-  username = 'user',
-  userpass = 'pass',
-  db = nano.db.use('mydb');
+const nano = require('nano')({
+  url: 'http://localhost:5984',
+  requestDefaults: {
+    jar: true
+  }
+})
+const username = 'user'
+const userpass = 'pass'
+const db = nano.db.use('mydb')
 
-nano.auth(username, userpass).then((() => {
-  return db.get('mydoc');
-}).then((doc) => {
-  console.log(doc);
-});
+await nano.auth(username, userpass)
+const doc = await db.get('mydoc')
+console.log(doc)
 ```
 
 The second request works because the `nano` library has remembered the `AuthSession` cookie that was invisibily returned by the `nano.auth` call.
@@ -1272,10 +1288,8 @@ The second request works because the `nano` library has remembered the `AuthSess
 When you have a session, you can see what permissions you have by calling the `nano.session` function
 
 ```js
-nano.session().then((doc) => {
-  console.log(doc)
-  // { userCtx: { roles: [ '_admin', '_reader', '_writer' ], name: 'rita' },  ok: true }
-});
+const doc = await nano.session()
+// { userCtx: { roles: [ '_admin', '_reader', '_writer' ], name: 'rita' },  ok: true }
 ```
 
 ## Advanced features
@@ -1285,9 +1299,7 @@ nano.session().then((doc) => {
 If your application needs to generate UUIDs, then CouchDB can provide some for you
 
 ```js
-nano.uuids(3).then((doc) => {
-  console.log(doc);
-});
+const response = await nano.uuids(3)
 // { uuids: [
 // '5d1b3ef2bc7eea51f660c091e3dffa23',
 // '5d1b3ef2bc7eea51f660c091e3e006ff',
@@ -1419,7 +1431,7 @@ npm run test
 [2]: http://github.com/apache/couchdb-nano/issues
 [4]: https://github.com/apache/couchdb-nano/blob/main/cfg/couch.example.js
 [8]: http://webchat.freenode.net?channels=%23couchdb-dev
-[request]:  https://github.com/request/request
+[axios]:  https://github.com/axios/axios
 
 http://freenode.org/
 
