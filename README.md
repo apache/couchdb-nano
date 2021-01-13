@@ -61,7 +61,7 @@ Note the minimum required version of Node.js is 10.
   - [db.fetch(docnames, [params], [callback])](#dbfetchdocnames-params-callback)
   - [db.fetchRevs(docnames, [params], [callback])](#dbfetchrevsdocnames-params-callback)
   - [db.createIndex(indexDef, [callback])](#dbcreateindexindexdef-callback)
-  - [db.changesReader...](#reading-changes-feed)
+  - [db.changesReader](#reading-changes-feed)
 - [Partitioned database functions](#partition-functions)
   - [db.partitionInfo(partitionKey, [callback])](#dbpartitioninfopartitionkey-callback))
   - [db.partitionedList(partitionKey, [params], [callback])](#dbpartitionedlistpartitionkey-params-callback)
@@ -108,7 +108,7 @@ To use `nano` you need to connect it to your CouchDB install, to do that:
 const nano = require('nano')('http://localhost:5984');
 ```
 
-The URL you supply may also contain authentication credentials e.g. `http://admin:mypassword@localhost:5984`.
+> Note: The URL you supply may also contain authentication credentials e.g. `http://admin:mypassword@localhost:5984`.
 
 To create a new database:
 
@@ -134,6 +134,19 @@ nano.db.create('alice').then((data) => {
 })
 ```
 
+or in the async/await style:
+
+```js
+try {
+  const response = await nano.db.create('alice')
+  // succeeded
+  console.log(response)
+} catch (e) {
+  // failed
+  console.error(e)
+}
+```
+
 2) Callbacks
 
 ```js
@@ -149,7 +162,7 @@ In `nano` the callback function receives always three arguments:
   JSON parsed body, binary for non JSON responses.
 * `header` - The HTTP _response header_ from CouchDB, if no error.
 
-The documentation will now follow the *Promises* style.
+The documentation will follow the *async/await* style.
 
 ------------------
 
@@ -167,24 +180,7 @@ async function asyncCall() {
 asyncCall()
 ```
 
-or in the raw Promises-style
-
-```js
-const nano = require('nano')('http://localhost:5984');
-let alice;
-
-nano.db.destroy('alice').then((response) => {
-  return nano.db.create('alice')
-}).then((response) =>  {
-  alice = nano.use('alice')
-  return alice.insert({ happy: true }, 'rabbit')
-}).then((response) => {
-  console.log('you have inserted a document with an _id of rabbit')
-  console.log(response);
-})
-```
-
-If you run either of these examples (after starting CouchDB) you will see:
+Running this example will produce:
 
 ```
 you have inserted a document with an _id of rabbit.
@@ -216,13 +212,13 @@ You can also pass options to the require to specify further configuration option
 ```js
 // nano parses the URL and knows this is a database
 const opts = {
-  url: "http://localhost:5984/foo",
-  requestDefaults: { "proxy" : "http://someproxy" }
+  url: 'http://localhost:5984/foo',
+  requestDefaults: { proxy: { 'protocol': 'http', 'host': 'myproxy.net' } }
 };
 const db = require('nano')(opts);
 ```
 
-Please check [request] for more information on the defaults. They support features like cookie jar, proxies, ssl, etc.
+Please check [axios] for more information on the defaults. They support features like proxies, timeout etc.
 
 You can tell nano to not parse the URL (maybe the server is behind a proxy, is accessed through a rewrite rule or other):
 
@@ -238,28 +234,21 @@ const db = couch.use('foo');
 
 ### Pool size and open sockets
 
-A very important configuration parameter if you have a high traffic website and are using `nano` is setting up the `pool.size`. By default, the Node.js HTTP global agent (client) has a certain size of active connections that can run simultaneously, while others are kept in a queue. Pooling can be disabled by setting the `agent` property in `requestDefaults` to `false`, or adjust the global pool size using:
+A very important configuration parameter if you have a high traffic website and are using `nano` is the HTTP pool size. By default, the Node.js HTTP global agent has a infinite number of active connections that can run simultaneously. This can be limited to user-defined number (`maxSockets`) of requests that are "in flight", while others are kept in a queue. Here's an example explicitly using the Node.js HTTP agent configured with [custom options](https://nodejs.org/api/http.html#http_new_agent_options):
 
 ```js
-http.globalAgent.maxSockets = 20;
-```
+const http = require('http')
+const myagent = new http.Agent({
+  keepAlive: true,
+  maxSockets: 25
+})
 
-You can also increase the size in your calling context using `requestDefaults` if this is problematic. Refer to the [request] documentation and examples for further clarification.
-
-Here's an example explicitly using the keep alive agent (installed using `npm install agentkeepalive`), especially useful to limit your open sockets when doing high-volume access to CouchDB on localhost:
-
-```js
-const agentkeepalive = require('agentkeepalive');
-const myagent = new agentkeepalive({
-  maxSockets: 50,
-  maxKeepAliveRequests: 0,
-  maxKeepAliveTime: 30000
+const db = require('nano')({ 
+  url: 'http://localhost:5984/foo',
+  requestDefaults : { 
+    agent : myagent 
+  }
 });
-
-const db = require('nano')(
-  { url: "http://localhost:5984/foo",
-    requestDefaults : { "agent" : myagent }
-  });
 ```
 
 ## TypeScript
@@ -312,9 +301,7 @@ db.insert(p).then((response) => {
 Creates a CouchDB database with the given `name`:
 
 ```js
-nano.db.create('alice').then((body) => {
-  console.log('database alice created!');
-})
+await nano.db.create('alice')
 ```
 
 ### nano.db.get(name, [callback])
@@ -322,9 +309,7 @@ nano.db.create('alice').then((body) => {
 Get information about the database `name`:
 
 ```js
-nano.db.get('alice').then((body) => {
-  console.log(body);
-})
+const info = await nano.db.get('alice')
 ```
 
 ### nano.db.destroy(name, [callback])
@@ -332,9 +317,7 @@ nano.db.get('alice').then((body) => {
 Destroys the database `name`:
 
 ```js
-nano.db.destroy('alice').then((body) => {
-  // database destroyed
-})
+await nano.db.destroy('alice')
 ```
 
 ### nano.db.list([callback])
@@ -342,12 +325,7 @@ nano.db.destroy('alice').then((body) => {
 Lists all the CouchDB databases:
 
 ```js
-nano.db.list().then((body) => {
-  // body is an array
-  body.forEach((db) => {
-    console.log(db);
-  });
-});
+const dblist = await nano.db.list()
 ```
 
 ### nano.db.listAsStream()
@@ -371,10 +349,9 @@ has to exist, add `create_target:true` to `opts` to create it prior to
 replication:
 
 ```js
-nano.db.replicate('alice', 'http://admin:password@otherhost.com:5984/alice',
-                  { create_target:true }).then((body) => {
-  console.log(body);
-});
+const response = await nano.db.replicate('alice', 
+                  'http://admin:password@otherhost.com:5984/alice',
+                  { create_target:true })
 ```
 
 ### nano.db.replication.enable(source, target, [opts], [callback])
@@ -384,10 +361,9 @@ with options `opts`. `target` has to exist, add `create_target:true` to
 `opts` to create it prior to replication. Replication will survive server restarts.
 
 ```js
-nano.db.replication.enable('alice', 'http://admin:password@otherhost.com:5984/alice',
-                  { create_target:true }).then((body) => {
-  console.log(body);
-});
+const response = await nano.db.replication.enable('alice', 
+                  'http://admin:password@otherhost.com:5984/alice',
+                  { create_target:true })
 ```
 
 ### nano.db.replication.query(id, [opts], [callback])
@@ -396,12 +372,10 @@ Queries the state of replication using the new CouchDB API. The `id` comes from 
 given by the call to `replication.enable`:
 
 ```js
-nano.db.replication.enable('alice', 'http://admin:password@otherhost.com:5984/alice',
-                   { create_target:true }).then((body) => {
-  return nano.db.replication.query(body.id);
-}).then((response) => {
-  console.log(response);
-});
+const r = await nano.db.replication.enable('alice', 
+                  'http://admin:password@otherhost.com:5984/alice',
+                   { create_target:true })
+const q = await nano.db.replication.query(r.id)
 ```
 
 ### nano.db.replication.disable(id, [opts], [callback])
@@ -410,12 +384,10 @@ Disables replication using the new CouchDB API. The `id` comes from the response
 by the call to `replication.enable`:
 
 ```js
-nano.db.replication.enable('alice', 'http://admin:password@otherhost.com:5984/alice',
-                   { create_target:true }).then((body) => {
-  return nano.db.replication.disable(body.id);
-}).then((response) => {
-  console.log(response);
-});
+const r = await nano.db.replication.enable('alice', 
+                   'http://admin:password@otherhost.com:5984/alice',
+                   { create_target:true })
+await nano.db.replication.disable(r.id);
 ```
 
 ### nano.db.changes(name, [params], [callback])
@@ -424,9 +396,7 @@ Asks for the changes feed of `name`, `params` contains additions
 to the query string.
 
 ```js
-nano.db.changes('alice').then((body) => {
-  console.log(body);
-});
+const c = await nano.db.changes('alice')
 ```
 
 ### nano.db.changesAsStream(name, [params])
@@ -442,9 +412,7 @@ nano.db.changes('alice').pipe(process.stdout);
 Gets database information:
 
 ```js
-nano.db.info().then((body) => {
-  console.log('got database info', body);
-});
+const info = await nano.db.info()
 ```
 
 ### nano.use(name)
@@ -453,10 +421,10 @@ Returns a database object that allows you to perform operations against that dat
 
 ```js
 const alice = nano.use('alice');
-alice.insert({ happy: true }, 'rabbit').then((body) => {
-  // do something
-});
+await alice.insert({ happy: true }, 'rabbit')
 ```
+
+The database object can be used to access the [Document Functions](#document-functions).
 
 ### nano.db.use(name)
 
@@ -519,27 +487,21 @@ Inserts `doc` in the database with optional `params`. If params is a string, it'
 
 ```js
 const alice = nano.use('alice');
-alice.insert({ happy: true }, 'rabbit').then((body) => {
-  console.log(body);
-});
+const response = await alice.insert({ happy: true }, 'rabbit')
 ```
 
 The `insert` function can also be used with the method signature `db.insert(doc,[callback])`, where the `doc` contains the `_id` field e.g.
 
 ```js
 const alice = nano.use('alice')
-alice.insert({ _id: 'myid', happy: true }).then((body) => {
-  console.log(body)
-})
+const response alice.insert({ _id: 'myid', happy: true })
 ```
 
 and also used to update an existing document, by including the `_rev` token in the document being saved:
 
 ```js
 const alice = nano.use('alice')
-alice.insert({ _id: 'myid', _rev: '1-23202479633c2b380f79507a776743d5', happy: false }).then((body) => {
-  console.log(body)
-})
+const response = await alice.insert({ _id: 'myid', _rev: '1-23202479633c2b380f79507a776743d5', happy: false })
 ```
 
 ### db.destroy(docname, rev, [callback])
@@ -547,9 +509,7 @@ alice.insert({ _id: 'myid', _rev: '1-23202479633c2b380f79507a776743d5', happy: f
 Removes a document from CouchDB whose `_id` is `docname` and who's revision is `_rev`:
 
 ```js
-alice.destroy('rabbit', '3-66c01cdf99e84c83a9b3fe65b88db8c0').then((body) => {
-  console.log(body);
-});
+const response = await alice.destroy('rabbit', '3-66c01cdf99e84c83a9b3fe65b88db8c0')
 ```
 
 ### db.get(docname, [params], [callback])
@@ -557,17 +517,13 @@ alice.destroy('rabbit', '3-66c01cdf99e84c83a9b3fe65b88db8c0').then((body) => {
 Gets a document from CouchDB whose `_id` is `docname`:
 
 ```js
-alice.get('rabbit').then((body) => {
-  console.log(body);
-});
+const doc = await alice.get('rabbit')
 ```
 
 or with optional query string `params`:
 
 ```js
-alice.get('rabbit', { revs_info: true }).then((body) => {
-  console.log(body);
-});
+const doc = await alice.get('rabbit', { revs_info: true })
 ```
 
 ### db.head(docname, [callback])
@@ -575,9 +531,7 @@ alice.get('rabbit', { revs_info: true }).then((body) => {
 Same as `get` but lightweight version that returns headers only:
 
 ```js
-alice.head('rabbit').then((headers) => {
-  console.log(headers);
-});
+const headers = await alice.head('rabbit')
 ```
 
 *Note:* if you call `alice.head` in the callback style, the headers are returned to you as the third argument of the callback function.
@@ -592,9 +546,7 @@ const documents = [
   { a:1, b:2 },
   { _id: 'tiger', striped: true}
 ];
-alice.bulk({docs:documents}).then((body) => {
-  console.log(body);
-});
+const response = await alice.bulk({ docs: documents })
 ```
 
 ### db.list([params], [callback])
@@ -602,22 +554,16 @@ alice.bulk({docs:documents}).then((body) => {
 List all the docs in the database .
 
 ```js
-alice.list().then((body) => {
-  body.rows.forEach((doc) => {
-    console.log(doc);
-  });
+const doclist = await alice.list().then((body)
+doclist.rows.forEach((doc) => {
+  console.log(doc);
 });
 ```
 
 or with optional query string additions `params`:
 
 ```js
-alice.list({include_docs: true}).then((body) => {
-  body.rows.forEach((doc) => {
-    // output each document's body
-    console.log(doc.doc);
-  });
-});
+const doclist = await alice.list({include_docs: true})
 ```
 
 ### db.listAsStream([params])
@@ -639,9 +585,7 @@ to `true`.
 
 ```js
 const keys = ['tiger', 'zebra', 'donkey'];
-alice.fetch({keys: keys}).then((data) => {
-  console.log(data);
-});
+const datat = await alice.fetch({keys: keys})
 ```
 
 ### db.fetchRevs(docnames, [params], [callback])
@@ -663,9 +607,7 @@ const indexDef = {
   index: { fields: ['foo'] },
   name: 'fooindex'
 };
-alice.createIndex(indexDef).then((result) => {
-  console.log(result);
-});
+const response = await alice.createIndex(indexDef)
 ```
 
 ## Reading Changes Feed
@@ -983,9 +925,7 @@ const fs = require('fs');
 
 fs.readFile('rabbit.png', (err, data) => {
   if (!err) {
-    alice.multipart.insert({ foo: 'bar' }, [{name: 'rabbit.png', data: data, content_type: 'image/png'}], 'mydoc').then((body) => {
-      console.log(body);
-    });
+    await alice.multipart.insert({ foo: 'bar' }, [{name: 'rabbit.png', data: data, content_type: 'image/png'}], 'mydoc')
   }
 });
 ```
@@ -996,9 +936,7 @@ Get `docname` together with its attachments via `multipart/related` request with
  [doc](http://wiki.apache.org/couchdb/HTTP_Document_API#Getting_Attachments_With_a_Document) for more details. The multipart response body is a `Buffer`.
 
 ```js
-alice.multipart.get('rabbit').then((buffer) => {
-  console.log(buffer.toString());
-});
+const response = await alice.multipart.get('rabbit')
 ```
 
 ## Attachments functions
@@ -1014,10 +952,11 @@ const fs = require('fs');
 
 fs.readFile('rabbit.png', (err, data) => {
   if (!err) {
-    alice.attachment.insert('rabbit', 'rabbit.png', data, 'image/png',
-      { rev: '12-150985a725ec88be471921a54ce91452' }).then((body) => {
-        console.log(body);
-    });
+    await alice.attachment.insert('rabbit', 
+      'rabbit.png', 
+      data, 
+      'image/png',
+      { rev: '12-150985a725ec88be471921a54ce91452' })
   }
 });
 ```
@@ -1035,18 +974,16 @@ Get `docname`'s attachment `attname` with optional query string additions
 ```js
 const fs = require('fs');
 
-alice.attachment.get('rabbit', 'rabbit.png').then((body) => {
-  fs.writeFile('rabbit.png', body);
-});
+const body = await alice.attachment.get('rabbit', 'rabbit.png')
+fs.writeFile('rabbit.png', body)
 ```
 
 ### db.attachment.getAsStream(docname, attname, [params])
 
 ```js
 const fs = require('fs');
-
 alice.attachment.getAsStream('rabbit', 'rabbit.png')
-  .on('error', (e) => console.error('error', e))
+  .on('error', e => console.error)
   .pipe(fs.createWriteStream('rabbit.png'));
 ```
 
@@ -1057,10 +994,7 @@ alice.attachment.getAsStream('rabbit', 'rabbit.png')
 Destroy attachment `attname` of `docname`'s revision `rev`.
 
 ```js
-alice.attachment.destroy('rabbit', 'rabbit.png',
-    {rev: '1-4701d73a08ce5c2f2983bf7c9ffd3320'}).then((body) => {
-       console.log(body);
-});
+const response = await alice.attachment.destroy('rabbit', 'rabbit.png', {rev: '1-4701d73a08ce5c2f2983bf7c9ffd3320'})
 ```
 
 ## Views and design functions
@@ -1071,44 +1005,26 @@ Calls a view of the specified `designname` with optional query string `params`. 
 `{ keys: ['key1', 'key2', 'key_n'] }`, as `params`.
 
 ```js
-alice.view('characters', 'happy_ones', {
-  'key': 'Tea Party',
-  'include_docs': true
-}).then((body) => {
-  body.rows.forEach((doc) => {
-    console.log(doc.value);
-  });
-});
+const body = await alice.view('characters', 'happy_ones', { key: 'Tea Party', include_docs: true })
+body.rows.forEach((doc) => {
+  console.log(doc.value)
+})
 ```
 
 or
 
 ```js
-alice.view('characters', 'soldiers', {
-  'keys': ['Hearts', 'Clubs']
-}).then((body) => {
-  body.rows.forEach((doc) => {
-    console.log(doc.value);
-  });
-});
+const body = await alice.view('characters', 'soldiers', { keys: ['Hearts', 'Clubs'] })
 ```
 
 When `params` is not supplied, or no keys are specified, it will simply return all documents in the view:
 
 ```js
-alice.view('characters', 'happy_ones').then((body) => {
-  body.rows.forEach((doc) => {
-    console.log(doc.value);
-  });
-});
+const body = await alice.view('characters', 'happy_ones')
 ```
 
 ```js
-alice.view('characters', 'happy_ones', { include_docs: true }).then((body) => {
-  body.rows.forEach((doc) => {
-    console.log(doc.value);
-  });
-});
+const body = alice.view('characters', 'happy_ones', { include_docs: true })
 ```
 
 ### db.viewAsStream(designname, viewname, [params])
@@ -1126,9 +1042,7 @@ alice.viewAsStream('characters', 'happy_ones', {reduce: false})
 Calls a list function fed by the given view from the specified design document.
 
 ```js
-alice.viewWithList('characters', 'happy_ones', 'my_list').then((body) => {
-  console.log(body);
-});
+const body = await alice.viewWithList('characters', 'happy_ones', 'my_list')
 ```
 
 ### db.viewWithListAsStream(designname, viewname, listname, [params], [callback])
@@ -1136,9 +1050,9 @@ alice.viewWithList('characters', 'happy_ones', 'my_list').then((body) => {
 Calls a list function fed by the given view from the specified design document as a stream.
 
 ```js
-alice.viewWithListAsStream('characters', 'happy_ones', 'my_list').then((body) => {
-  console.log(body);
-});
+alice.viewWithListAsStream('characters', 'happy_ones', 'my_list')
+  .on('error', (e) => console.error('error', e))
+  .pipe(process.stdout);
 ```
 
 ### db.show(designname, showname, doc_id, [params], [callback])
@@ -1147,9 +1061,7 @@ Calls a show function from the specified design for the document specified by do
 optional query string additions `params`.
 
 ```js
-alice.show('characters', 'format_doc', '3621898430').then((doc) => {
-  console.log(doc);
-});
+const doc = await alice.show('characters', 'format_doc', '3621898430')
 ```
 
 Take a look at the [couchdb wiki](http://wiki.apache.org/CouchDB/Formatting_with_Show_and_List#Showing_Documents)
@@ -1160,10 +1072,7 @@ for possible query paramaters and more information on show functions.
 Calls the design's update function with the specified doc in input.
 
 ```js
-db.atomic("update", "inplace", "foobar",
-{field: "foo", value: "bar"}).then((response) => {
-  console.log(response);
-});
+const response = await db.atomic('update', 'inplace', 'foobar', {field: 'foo', value: 'bar'})
 ```
 
 Note that the data is sent in the body of the request.
@@ -1172,13 +1081,12 @@ An example update handler follows:
 ```js
 "updates": {
   "in-place" : "function(doc, req) {
-      var request_body = JSON.parse(req.body);
-
-      var field = request_body.field;
-      var value = request_body.value;
-      var message = 'set ' + field + ' to ' + value;
-      doc[field] = value;
-      return [doc, message];
+      var request_body = JSON.parse(req.body)
+      var field = request_body.field
+      var value = request_body.value
+      var message = 'set ' + field + ' to ' + value
+      doc[field] = value
+      return [doc, message]
   }"
 }
 ```
@@ -1188,18 +1096,14 @@ An example update handler follows:
 Calls a view of the specified design with optional query string additions `params`.
 
 ```js
-alice.search('characters', 'happy_ones', { q: 'cat' }).then((doc) => {
-  console.log(doc);
-});
+const response = await alice.search('characters', 'happy_ones', { q: 'cat' })
 ```
 
 or
 
 ```js
 const drilldown = [['author', 'Dickens']['publisher','Penguin']]
-alice.search('inventory', 'books', { q: '*:*', drilldown: drilldown }).then((doc) => {
-  console.log(doc);
-});
+const response = await alice.search('inventory', 'books', { q: '*:*', drilldown: drilldown })
 ```
 
 Check out the tests for a fully functioning example.
@@ -1226,9 +1130,7 @@ const q = {
   fields: [ "name", "age", "tags", "url" ],
   limit:50
 };
-alice.find(q).then((doc) => {
-  console.log(doc);
-});
+const response = await alice.find(q)
 ```
 
 ### db.findAsStream(selector)
@@ -1255,16 +1157,22 @@ alice.findAsStream(q)
 Nano supports making requests using CouchDB's [cookie authentication](http://guide.couchdb.org/editions/1/en/security.html#cookies) functionality. If you initialise *Nano* so that it is cookie-aware, you may call `nano.auth` first to get a session cookie. Nano will behave like a web browser, remembering your session cookie and refreshing it if a new one is received in a future HTTP response.
 
 ```js
-const nano = require('nano')({url: 'http://localhost:5984', requestDefaults: {jar:true}}),
-  username = 'user',
-  userpass = 'pass',
-  db = nano.db.use('mydb');
+const nano = require('nano')({
+  url: 'http://localhost:5984',
+  requestDefaults: {
+    jar: true
+  }
+})
+const username = 'user'
+const userpass = 'pass'
+const db = nano.db.use('mydb')
 
-nano.auth(username, userpass).then((() => {
-  return db.get('mydoc');
-}).then((doc) => {
-  console.log(doc);
-});
+// authenticate
+await nano.auth(username, userpass)
+
+// requests from now on are authenticated
+const doc = await db.get('mydoc')
+console.log(doc)
 ```
 
 The second request works because the `nano` library has remembered the `AuthSession` cookie that was invisibily returned by the `nano.auth` call.
@@ -1272,10 +1180,8 @@ The second request works because the `nano` library has remembered the `AuthSess
 When you have a session, you can see what permissions you have by calling the `nano.session` function
 
 ```js
-nano.session().then((doc) => {
-  console.log(doc)
-  // { userCtx: { roles: [ '_admin', '_reader', '_writer' ], name: 'rita' },  ok: true }
-});
+const doc = await nano.session()
+// { userCtx: { roles: [ '_admin', '_reader', '_writer' ], name: 'rita' },  ok: true }
 ```
 
 ## Advanced features
@@ -1285,9 +1191,7 @@ nano.session().then((doc) => {
 If your application needs to generate UUIDs, then CouchDB can provide some for you
 
 ```js
-nano.uuids(3).then((doc) => {
-  console.log(doc);
-});
+const response = await nano.uuids(3)
 // { uuids: [
 // '5d1b3ef2bc7eea51f660c091e3dffa23',
 // '5d1b3ef2bc7eea51f660c091e3e006ff',
@@ -1419,7 +1323,7 @@ npm run test
 [2]: http://github.com/apache/couchdb-nano/issues
 [4]: https://github.com/apache/couchdb-nano/blob/main/cfg/couch.example.js
 [8]: http://webchat.freenode.net?channels=%23couchdb-dev
-[request]:  https://github.com/request/request
+[axios]:  https://github.com/axios/axios
 
 http://freenode.org/
 
