@@ -271,6 +271,10 @@ declare namespace nano {
     spool(opts: ChangesReaderOptions): EventEmitter;
     /** stop consuming the changes feed */
     stop(): void;
+    /** pause consuming the changes feed */
+    pause(): void;
+    /** resume consuming the changes feed */
+    resume(): void;
   }
 
   /** Documents scope */
