@@ -666,7 +666,10 @@ You may supply a number of options when you start to listen to the changes feed:
 | includeDocs | Whether to include document bodies or not | false | e.g. true |
 | wait | For `get`/`start` mode, automatically pause the changes reader after each request. When the the user calls `resume()`, the changes reader will resume.  | false | e.g. true |
 | fastChanges | Adds a seq_interval parameter to fetch changes more quickly | false           | true                             |   |
-| selector | Filters the changes feed with the supplied Mango selector | {"name":"fred}           | null                             |   |
+| selector | Filters the changes feed with the supplied Mango selector |  null          | { "name": "fred" } |   |
+| fields | Filters the changes feed with the supplied fields list | null           | [ 'id', 'seq' ]                             |   |
+| qs | Additional query string parameters | null           | { "filter": "_selector" }                            |   |
+| body | Additional body parameters | null           | { "fields": [ "id", "seq" ] }                            |   |
 | timeout | The number of milliseconds a changes feed request waits for data| 60000         | 10000     
 
 The events it emits are as follows:s
