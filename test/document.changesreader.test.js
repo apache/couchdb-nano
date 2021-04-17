@@ -41,6 +41,58 @@ test('should be able to follow changes feed - db.changesReader.start', async () 
   })
 })
 
+test('should be able to filter changes feed via fields param - db.changesReader.start', async () => {
+  const changeURL = `/${DBNAME}/_changes`
+  const fields = ['id', 'seq']
+  const changes = [
+    { seq: null, id: '1' }
+  ]
+  nock(COUCH_URL)
+    .post(changeURL, { fields })
+    .query({ filter: '_selector', feed: 'longpoll', timeout: 60000, since: 'now', limit: 100, include_docs: false })
+    .reply(200, { results: changes, last_seq: '1-0', pending: 0 })
+    .post(changeURL)
+    .delay(2000)
+    .reply(500)
+  const db = nano.db.use(DBNAME)
+  const cr = db.changesReader.start({
+    fields
+  })
+  return new Promise((resolve, reject) => {
+    cr.on('change', function (change) {
+      expect(change).toStrictEqual(changes[0])
+      db.changesReader.stop()
+      resolve()
+    })
+  })
+})
+test('should be able to filter changes feed via body and qs params - db.changesReader.start', async () => {
+  const changeURL = `/${DBNAME}/_changes`
+  const fields = ['id', 'seq']
+  const changes = [
+    { seq: null, id: '1' }
+  ]
+  nock(COUCH_URL)
+    .post(changeURL, { fields })
+    .query({ filter: '_selector', feed: 'longpoll', timeout: 60000, since: 'now', limit: 100, include_docs: false })
+    .reply(200, { results: changes, last_seq: '1-0', pending: 0 })
+    .post(changeURL)
+    .delay(2000)
+    .reply(500)
+  const db = nano.db.use(DBNAME)
+  const cr = db.changesReader.start({
+    qs: { filter: '_selector' },
+    body: { fields }
+  })
+  return new Promise((resolve, reject) => {
+    cr.on('change', function (change) {
+      expect(change).toStrictEqual(changes[0])
+      db.changesReader.stop()
+      resolve()
+    })
+  })
+})
+
 test('should respect the fastChanges flag - db.changesReader.start', async () => {
   const changeURL = `/${DBNAME}/_changes`
   nock(COUCH_URL)
