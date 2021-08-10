@@ -296,12 +296,12 @@ db.insert(p).then((response) => {
 
 ## Database functions
 
-### nano.db.create(name, [callback])
+### nano.db.create(name, [opts], [callback])
 
-Creates a CouchDB database with the given `name`:
+Creates a CouchDB database with the given `name`, with options `opts`.
 
 ```js
-await nano.db.create('alice')
+await nano.db.create('alice', { n: 3 })
 ```
 
 ### nano.db.get(name, [callback])
