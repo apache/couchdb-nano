@@ -93,3 +93,20 @@ test('should be able to insert document attachment as stream - PUT /db/docname/a
   expect(reply).toStrictEqual(response)
   expect(scope.isDone()).toBe(true)
 })
+
+test('should be able to insert document attachment as stream with circular reference - PUT /db/docname/attachment - db.attachment.insert', async () => {
+  // mocks
+  const response = { ok: true, id: 'docname', rev: '2-456' }
+  const scope = nock(COUCH_URL, { reqheaders: { 'content-type': 'image/jpg' } })
+    .put('/db/docname/logo2.jpg?rev=1-150', image2)
+    .reply(200, response)
+
+  // test PUT /db/docname/attachment
+  const rs = fs.createReadStream('./test/logo.jpg')
+  // create artificial circular reference to make sure nano doesn't trip over on it
+  rs.test = rs
+  const db = nano.db.use('db')
+  const reply = await db.attachment.insert('docname', 'logo2.jpg', rs, 'image/jpg', { rev: '1-150' })
+  expect(reply).toStrictEqual(response)
+  expect(scope.isDone()).toBe(true)
+})
