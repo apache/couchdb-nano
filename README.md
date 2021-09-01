@@ -226,6 +226,23 @@ const opts = {
 const db = require('nano')(opts);
 ```
 
+Nano works perfectly well over HTTPS as long as the SSL cert is signed by a certification authority known by your client operating system. If you have a custom or self-signed certificate, you may need to create your own HTTPS agent and pass it to Nano e.g.
+
+```js
+const httpsAgent = new https.Agent({
+  ca: '/path/to/cert',
+  rejectUnauthorized: true,
+  keepAlive: true,
+  maxSockets: 6
+})
+const nano = Nano({
+  url: process.env.COUCH_URL,
+  requestDefaults: {
+    agent: httpsAgent,
+  }
+})
+```
+
 Please check [axios] for more information on the defaults. They support features like proxies, timeout etc.
 
 You can tell nano to not parse the URL (maybe the server is behind a proxy, is accessed through a rewrite rule or other):
