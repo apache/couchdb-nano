@@ -213,7 +213,15 @@ You can also pass options to the require to specify further configuration option
 // nano parses the URL and knows this is a database
 const opts = {
   url: 'http://localhost:5984/foo',
-  requestDefaults: { proxy: { 'protocol': 'http', 'host': 'myproxy.net' } }
+  requestDefaults: { 
+    proxy: { 
+      protocol: 'http', 
+      host: 'myproxy.net'
+    },
+    headers: {
+      customheader: 'MyCustomHeader'
+    }
+  }
 };
 const db = require('nano')(opts);
 ```
