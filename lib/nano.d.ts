@@ -1663,7 +1663,7 @@ declare namespace nano {
     total_rows: number;
 
     /** Current update sequence for the database */
-    update_seq: any;
+    update_seq?: any;
   }
 
 
