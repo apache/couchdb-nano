@@ -53,7 +53,8 @@ afterEach(() => {
 test('should be able to insert a document with attachments #1 - multipart PUT /db/id - db.multipart.insert', async () => {
   // mocks
   const response = { ok: true, id: '8s8g8h8h9', rev: '1-123' }
-  const scope = nock(COUCH_URL, { reqheaders: { 'content-type': h => h.includes('multipart/related') } })
+  const scope = nock(COUCH_URL)
+    .matchHeader('content-type', h => h.includes('multipart/related'))
     .put('/db/docid')
     .reply(200, response)
 
@@ -66,7 +67,8 @@ test('should be able to insert a document with attachments #1 - multipart PUT /d
 
 test('should be able to insert a document with attachments #2 - multipart PUT /db/id - db.multipart.insert', async () => {
   const response = { ok: true, id: '8s8g8h8h9', rev: '1-123' }
-  const scope = nock(COUCH_URL, { reqheaders: { 'content-type': h => h.includes('multipart/related') } })
+  const scope = nock(COUCH_URL)
+    .matchHeader('content-type', h => h.includes('multipart/related'))
     .put('/db/docid')
     .reply(200, response)
 
@@ -83,7 +85,8 @@ test('should be able to handle 404 - db.multipart.insert', async () => {
     error: 'not_found',
     reason: 'missing'
   }
-  const scope = nock(COUCH_URL, { reqheaders: { 'content-type': h => h.includes('multipart/related') } })
+  const scope = nock(COUCH_URL)
+    .matchHeader('content-type', h => h.includes('multipart/related'))
     .put('/db/docid')
     .reply(404, response)
 
