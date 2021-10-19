@@ -1109,6 +1109,9 @@ declare namespace nano {
    * @see POST docs: {@link http://docs.couchdb.org/en/latest/api/database/common.html#post--db}
    * @see PUT docs: {@link http://docs.couchdb.org/en/latest/api/document/common.html#put--db-docid} */
   interface DocumentInsertParams {
+    /** Document ID */
+    docName?: string;
+    
     /** Document’s revision if updating an existing document. Alternative to If-Match header or document key. */
     rev?: string;
 
