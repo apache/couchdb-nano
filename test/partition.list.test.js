@@ -121,6 +121,23 @@ test('should be able to list partition docs (callback) - GET /db/_partition/_all
   })
 })
 
+test('should escape unusual characters - GET /db/_partition/a+b/_all_docs - db.partitionedList', async () => {
+  // mocks
+  const scope = nock(COUCH_URL)
+    .get('/db/_partition/a%2Bb/_all_docs')
+    .reply(200, response)
+
+  // test GET /db/_partition/_all_docs
+  return new Promise((resolve, reject) => {
+    db.partitionedList('a+b', (err, data) => {
+      expect(err).toBeNull()
+      expect(data).toStrictEqual(response)
+      expect(scope.isDone()).toBe(true)
+      resolve()
+    })
+  })
+})
+
 test('should handle missing database - GET /db/_partition/_all_docs - db.partitionedList', async () => {
   // mocks
   const scope = nock(COUCH_URL)
