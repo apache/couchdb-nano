@@ -38,7 +38,7 @@ test('check requests timeout - nano.request', async () => {
     db: 'db',
     qs: { a: 1, b: 2 }
   }
-  await expect(nano.request(req)).rejects.toThrow('error happened in your connection')
+  await expect(nano.request(req)).rejects.toThrow('error happened in your connection. Reason: timeout of 500ms exceeded')
 })
 
 test('check request timeout (callback) - nano.request', () => {
