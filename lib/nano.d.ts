@@ -257,18 +257,22 @@ declare namespace nano {
     wait?: boolean;
     /** additional query string parameters */
     qs?: object;
+    /** additional body parameters */
+    body?: object;
     /** a MangoSelector defining the slice of the changes feed to return */
     selector?: MangoSelector;
+    /** a MangoSelector defining changes feed fields to return */
+    fields?: string[];
   }
 
   /** ChangesReader functions */
   interface ChangesReaderScope {
     /** fetch changes forever */
-    start(opts: ChangesReaderOptions): EventEmitter;
+    start(opts?: ChangesReaderOptions): EventEmitter;
     /** fetch changes and stop when an empty batch is received */
-    get(opts: ChangesReaderOptions): EventEmitter;
+    get(opts?: ChangesReaderOptions): EventEmitter;
     /** spool the change in one long feed, instead of batches */
-    spool(opts: ChangesReaderOptions): EventEmitter;
+    spool(opts?: ChangesReaderOptions): EventEmitter;
     /** stop consuming the changes feed */
     stop(): void;
     /** pause consuming the changes feed */
