@@ -25,13 +25,7 @@ Everyone is welcome to contribute with patches, bug-fixes and new features.
 7. Push to your branch `git push origin my_branch`
 8. Create a pull request
 
-To run tests, make sure you run `npm test` but also run tests without mocks:
-
-``` sh
-npm run unmocked
-npm run mocked
-npm test
-```
+To run tests, make sure you run `npm test`.
 
 Please fix all issues identified in the pre-commit hooks before sending your patch. if you don't, we will close the patch and ask you to re-open it once you have:
 
