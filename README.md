@@ -122,7 +122,7 @@ and to use an existing database:
 const alice = nano.db.use('alice');
 ```
 
-Under-the-hood, calls like `nano.db.create` are making HTTP API calls to the CouchDB service. Such operations are *asynchronous*. There are two ways to recieve the asynchronous data back from the library
+Under-the-hood, calls like `nano.db.create` are making HTTP API calls to the CouchDB service. Such operations are *asynchronous*. There are two ways to receive the asynchronous data back from the library
 
 1) Promises
 
@@ -213,9 +213,9 @@ You can also pass options to the require to specify further configuration option
 // nano parses the URL and knows this is a database
 const opts = {
   url: 'http://localhost:5984/foo',
-  requestDefaults: { 
-    proxy: { 
-      protocol: 'http', 
+  requestDefaults: {
+    proxy: {
+      protocol: 'http',
       host: 'myproxy.net'
     },
     headers: {
@@ -268,10 +268,10 @@ const myagent = new http.Agent({
   maxSockets: 25
 })
 
-const db = require('nano')({ 
+const db = require('nano')({
   url: 'http://localhost:5984/foo',
-  requestDefaults : { 
-    agent : myagent 
+  requestDefaults : {
+    agent : myagent
   }
 });
 ```
@@ -374,7 +374,7 @@ has to exist, add `create_target:true` to `opts` to create it prior to
 replication:
 
 ```js
-const response = await nano.db.replicate('alice', 
+const response = await nano.db.replicate('alice',
                   'http://admin:password@otherhost.com:5984/alice',
                   { create_target:true })
 ```
@@ -386,7 +386,7 @@ with options `opts`. `target` has to exist, add `create_target:true` to
 `opts` to create it prior to replication. Replication will survive server restarts.
 
 ```js
-const response = await nano.db.replication.enable('alice', 
+const response = await nano.db.replication.enable('alice',
                   'http://admin:password@otherhost.com:5984/alice',
                   { create_target:true })
 ```
@@ -397,7 +397,7 @@ Queries the state of replication using the new CouchDB API. The `id` comes from 
 given by the call to `replication.enable`:
 
 ```js
-const r = await nano.db.replication.enable('alice', 
+const r = await nano.db.replication.enable('alice',
                   'http://admin:password@otherhost.com:5984/alice',
                    { create_target:true })
 const q = await nano.db.replication.query(r.id)
@@ -409,7 +409,7 @@ Disables replication using the new CouchDB API. The `id` comes from the response
 by the call to `replication.enable`:
 
 ```js
-const r = await nano.db.replication.enable('alice', 
+const r = await nano.db.replication.enable('alice',
                    'http://admin:password@otherhost.com:5984/alice',
                    { create_target:true })
 await nano.db.replication.disable(r.id);
@@ -671,7 +671,7 @@ If you want `changesReader` to hold off making the next `_changes` API call unti
 db.changesReader.get({wait: true})
   .on('batch', (b) => {
     console.log('a batch of', b.length, 'changes has arrived');
-    // do some asynchronous work here and call "changesReader.resume()" 
+    // do some asynchronous work here and call "changesReader.resume()"
     // when you're ready for the next API call to be dispatched.
     // In this case, wait 5s before the next changes feed request.
     setTimeout( () => {
@@ -692,7 +692,7 @@ You may supply a number of options when you start to listen to the changes feed:
 | wait | For `get`/`start` mode, automatically pause the changes reader after each request. When the the user calls `resume()`, the changes reader will resume.  | false | e.g. true |
 | fastChanges | Adds a seq_interval parameter to fetch changes more quickly | false           | true                             |   |
 | selector | Filters the changes feed with the supplied Mango selector | {"name":"fred}           | null                             |   |
-| timeout | The number of milliseconds a changes feed request waits for data| 60000         | 10000     
+| timeout | The number of milliseconds a changes feed request waits for data| 60000         | 10000    |
 
 The events it emits are as follows:s
 
@@ -734,7 +734,7 @@ The `batch` event delivers an array of change objects.
 
 ## Partition Functions
 
-Functions related to [partitioned databses](https://docs.couchdb.org/en/latest/partitioned-dbs/index.html).
+Functions related to [partitioned databases](https://docs.couchdb.org/en/latest/partitioned-dbs/index.html).
 
 Create a partitioned database by passing `{ partitioned: true }` to `db.create`:
 
@@ -771,7 +771,7 @@ const i = {
   partitioned: true,
   type: 'json'
 }
- 
+
 // instruct CouchDB to create the index
 await db.index(i)
 ```
@@ -784,7 +784,7 @@ const func = function(doc) {
   index('name', doc.name)
   index('latin', doc.latin)
 }
- 
+
 // the design document containing the search definition function
 const ddoc = {
   _id: '_design/search-ddoc',
@@ -807,7 +807,7 @@ MapReduce views can be created by writing a design document with `opts.partition
 const func = function(doc) {
   emit(doc.family, doc.weight)
 }
- 
+
 // Design Document
 const ddoc = {
   _id: '_design/view-ddoc',
@@ -821,7 +821,7 @@ const ddoc = {
     partitioned: true
   }
 }
- 
+
 // create design document
 await db.insert(ddoc)
 ```
