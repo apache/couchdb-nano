@@ -1,8 +1,8 @@
-[![Build Status](https://travis-ci.org/apache/couchdb-nano.svg?branch=main)](https://travis-ci.org/apache/couchdb-nano)![Coverage](https://img.shields.io/badge/coverage-100%-ff69b4.svg)[![dependencies Status](https://david-dm.org/apache/couchdb-nano/status.svg)](https://david-dm.org/apache/couchdb-nano)[![NPM](http://img.shields.io/npm/v/nano.svg?style=flat-square)](https://www.npmjs.com/package/nano)
+[![NPM](http://img.shields.io/npm/v/nano.svg?style=flat-square)](https://www.npmjs.com/package/nano)
 
 # Nano
 
-Offical [Apache CouchDB](http://couchdb.apache.org/) library for [Node.js](https://nodejs.org/).
+Offical [Apache CouchDB](https://couchdb.apache.org/) library for [Node.js](https://nodejs.org/).
 
 Features:
 
@@ -189,7 +189,7 @@ you have inserted a document with an _id of rabbit.
   rev: '1-6e4cb465d49c0368ac3946506d26335d' }
 ```
 
-You can also see your document in [futon](http://localhost:5984/_utils).
+You can also see your document in futon (http://localhost:5984/_utils).
 
 ## Configuration
 
@@ -564,7 +564,7 @@ const headers = await alice.head('rabbit')
 ### db.bulk(docs, [params], [callback])
 
 Bulk operations(update/delete/insert) on the database, refer to the
-[CouchDB doc](http://docs.couchdb.org/en/2.1.1/api/database/bulk-api.html#db-bulk-docs) e.g:
+[CouchDB doc](https://docs.couchdb.org/en/2.1.1/api/database/bulk-api.html#db-bulk-docs) e.g:
 
 ```js
 const documents = [
@@ -604,7 +604,7 @@ alice.listAsStream()
 ### db.fetch(docnames, [params], [callback])
 
 Bulk fetch of the database documents, `docnames` are specified as per
-[CouchDB doc](http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs).
+[CouchDB doc](https://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs).
 additional query string `params` can be specified, `include_docs` is always set
 to `true`.
 
@@ -618,14 +618,14 @@ const datat = await alice.fetch({keys: keys})
 ** changed in version 6 **
 
 Bulk fetch of the revisions of the database documents, `docnames` are specified as per
-[CouchDB doc](http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs).
+[CouchDB doc](https://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs).
 additional query string `params` can be specified, this is the same method as fetch but
  `include_docs` is not automatically set to `true`.
 
 ### db.createIndex(indexDef, [callback])
 
 Create index on database fields, as specified in
-[CouchDB doc](http://docs.couchdb.org/en/latest/api/database/find.html#db-index).
+[CouchDB doc](https://docs.couchdb.org/en/latest/api/database/find.html#db-index).
 
 ```js
 const indexDef = {
@@ -942,7 +942,7 @@ db.partitionedViewAsStream('canidae', 'view-ddoc', 'view-name', params)
 
 ### db.multipart.insert(doc, attachments, params, [callback])
 
-Inserts a `doc` together with `attachments` and `params`. If params is a string, it's assumed as the intended document `_id`. If params is an object, its passed as query string parameters and `docName` is checked for defining the `_id`. Refer to the [doc](http://wiki.apache.org/couchdb/HTTP_Document_API#Multiple_Attachments) for more details.
+Inserts a `doc` together with `attachments` and `params`. If params is a string, it's assumed as the intended document `_id`. If params is an object, its passed as query string parameters and `docName` is checked for defining the `_id`. Refer to the [doc](https://docs.couchdb.org/en/stable/api/document/common.html) for more details.
  The `attachments` parameter must be an array of objects with `name`, `data` and `content_type` properties.
 
 ```js
@@ -957,8 +957,7 @@ fs.readFile('rabbit.png', (err, data) => {
 
 ### db.multipart.get(docname, [params], [callback])
 
-Get `docname` together with its attachments via `multipart/related` request with optional query string additions `params`. Refer to the
- [doc](http://wiki.apache.org/couchdb/HTTP_Document_API#Getting_Attachments_With_a_Document) for more details. The multipart response body is a `Buffer`.
+Get `docname` together with its attachments via `multipart/related` request with optional query string additions `params`. The multipart response body is a `Buffer`.
 
 ```js
 const response = await alice.multipart.get('rabbit')
@@ -970,7 +969,7 @@ const response = await alice.multipart.get('rabbit')
 
 Inserts an attachment `attname` to `docname`, in most cases
  `params.rev` is required. Refer to the
- [CouchDB doc](http://docs.couchdb.org/en/latest/api/document/attachments.html#db-doc-attachment) for more details.
+ [CouchDB doc](https://docs.couchdb.org/en/latest/api/document/attachments.html#db-doc-attachment) for more details.
 
 ```js
 const fs = require('fs');
@@ -1089,7 +1088,7 @@ optional query string additions `params`.
 const doc = await alice.show('characters', 'format_doc', '3621898430')
 ```
 
-Take a look at the [couchdb wiki](http://wiki.apache.org/CouchDB/Formatting_with_Show_and_List#Showing_Documents)
+Take a look at the [CouchDB wiki](https://guide.couchdb.org/draft/show.html)
 for possible query paramaters and more information on show functions.
 
 ### db.atomic(designname, updatename, docname, [body], [callback])
@@ -1143,7 +1142,7 @@ alice.search('characters', 'happy_ones', { q: 'cat' }).pipe(process.stdout);
 
 ### db.find(selector, [callback])
 
-Perform a ["Mango" query](http://docs.couchdb.org/en/2.1.1/api/database/find.html) by supplying a JavaScript object containing a selector:
+Perform a ["Mango" query](https://docs.couchdb.org/en/2.1.1/api/database/find.html) by supplying a JavaScript object containing a selector:
 
 ```js
 // find documents where the name = "Brian" and age > 25.
@@ -1311,14 +1310,11 @@ const nano = Nano({ url: process.env.COUCH_URL, log: logger })
 
 ## Tutorials, examples in the wild & screencasts
 
-* article: [nano - a minimalistic CouchDB client for nodejs](http://writings.nunojob.com/2011/08/nano-minimalistic-couchdb-client-for-nodejs.html)
-* article: [getting started with Node.js and CouchDB](http://writings.nunojob.com/2011/09/getting-started-with-nodejs-and-couchdb.html)
-* article: [document update handler support](http://jackhq.tumblr.com/post/16035106690/nano-v1-2-x-document-update-handler-support-v1-2-x)
-* article: [nano 3](http://writings.nunojob.com/2012/05/Nano-3.html)
-* article: [securing a site with CouchDB cookie authentication using Node.js and nano](http://codetwizzle.com/articles/couchdb-cookie-authentication-nodejs-nano/)
-* article: [adding copy to nano](http://blog.jlank.com/2012/07/04/adding-copy-to-nano/)
-* article: [how to update a document with nano](http://writings.nunojob.com/2012/07/How-To-Update-A-Document-With-Nano-The-CouchDB-Client-for-Node.js.html)
-* article: [thoughts on development using CouchDB with Node.js](http://tbranyen.com/post/thoughts-on-development-using-couchdb-with-nodejs)
+* article: [nano - a minimalistic CouchDB client for nodejs](https://writings.nunojob.com/2011/08/nano-minimalistic-couchdb-client-for-nodejs.html)
+* article: [getting started with Node.js and CouchDB](https://writings.nunojob.com/2011/09/getting-started-with-nodejs-and-couchdb.html)
+* article: [nano 3](https://writings.nunojob.com/2012/05/Nano-3.html)
+* article: [how to update a document with nano](https://writings.nunojob.com/2012/07/How-To-Update-A-Document-With-Nano-The-CouchDB-Client-for-Node.js.html)
+* article: [thoughts on development using CouchDB with Node.js](https://tbranyen.com/post/thoughts-on-development-using-couchdb-with-nodejs)
 * example in the wild: [nanoblog](https://github.com/grabbeh/nanoblog)
 
 ## Roadmap
@@ -1338,19 +1334,17 @@ npm run test
 ## Meta
 
 * code: `git clone git://github.com/apache/couchdb-nano.git`
-* home: <http://github.com/apache/couchdb-nano>
-* bugs: <http://github.com/apache/couchdb-nano/issues>
-* build: [![Build Status](https://travis-ci.org/apache/couchdb-nano.svg?branch=main)](https://travis-ci.org/apache/couchdb-nano)
-* deps: [![dependencies Status](https://david-dm.org/apache/couchdb-nano/status.svg)](https://david-dm.org/apache/couchdb-nano)
+* home: <https://github.com/apache/couchdb-nano>
+* bugs: <https://github.com/apache/couchdb-nano/issues>
 * chat: [Freenode IRC @ #couchdb-dev][8]
 
-[1]: http://npmjs.org
-[2]: http://github.com/apache/couchdb-nano/issues
+[1]: https://npmjs.org
+[2]: https://github.com/apache/couchdb-nano/issues
 [4]: https://github.com/apache/couchdb-nano/blob/main/cfg/couch.example.js
-[8]: http://webchat.freenode.net?channels=%23couchdb-dev
+[8]: https://webchat.freenode.net?channels=%23couchdb-dev
 [axios]:  https://github.com/axios/axios
 
-http://freenode.org/
+https://freenode.org/
 
 ## Release
 
