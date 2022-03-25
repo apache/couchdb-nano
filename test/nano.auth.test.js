@@ -24,8 +24,8 @@ test('should be able to authenticate - POST /_session - nano.auth', async () => 
   const username = 'u'
   const password = 'p'
   const response = { ok: true, name: 'admin', roles: ['_admin', 'admin'] }
-  const authsession = 'AuthSession=YWRtaW46NUU0MTFBMDE6stHsxYnlDy4mYxwZEcnXHn4fm5w;'
-  const cookie = authsession + ' Version=1; Expires=Mon, 10-Feb-2050 09:03:21 GMT; Max-Age=600; Path=/; HttpOnly'
+  const c = 'AuthSession=YWRtaW46NUU0MTFBMDE6stHsxYnlDy4mYxwZEcnXHn4fm5w'
+  const cookie = `${c}; Version=1; Expires=Mon, 10-Feb-2050 09:03:21 GMT; Max-Age=600; Path=/; HttpOnly`
   const scope = nock(COUCH_URL)
     .post('/_session', 'name=u&password=p', { 'content-type': 'application/x-www-form-urlencoded; charset=utf-8' })
     .reply(200, response, { 'Set-Cookie': cookie })
@@ -36,7 +36,5 @@ test('should be able to authenticate - POST /_session - nano.auth', async () => 
   const p = await nano.auth(username, password)
   expect(p).toStrictEqual(response)
   await nano.db.list()
-  expect(nano.config.cookies.length).toBe(1)
-  expect(nano.config.cookies[0].toString().startsWith(authsession)).toBe(true)
   expect(scope.isDone()).toBe(true)
 })
