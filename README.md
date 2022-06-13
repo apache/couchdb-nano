@@ -545,11 +545,19 @@ Gets a document from CouchDB whose `_id` is `docname`:
 const doc = await alice.get('rabbit')
 ```
 
-or with optional query string `params`:
+or with optional [query string `params`](https://docs.couchdb.org/en/stable/api/document/common.html#get--db-docid):
 
 ```js
 const doc = await alice.get('rabbit', { revs_info: true })
 ```
+
+If you pass `attachments=true`, the `doc._attachments.attachmentNameN.data` fields will contain the 
+[base-64 encoded attachments](https://docs.couchdb.org/en/stable/json-structure.html#document-with-attachments).
+Or, you can use [`db.multipart.get`](https://github.com/DougReeder/couchdb-nano#dbmultipartgetdocname-params-callback)
+and parse the returned buffer to get the document and attachments.
+
+See the [attachments methods](https://github.com/apache/couchdb-nano#attachments-functions) to retrieve
+*just* an attachment.
 
 ### db.head(docname, [callback])
 
@@ -957,7 +965,7 @@ fs.readFile('rabbit.png', (err, data) => {
 
 ### db.multipart.get(docname, [params], [callback])
 
-Get `docname` together with its attachments via `multipart/related` request with optional query string additions `params`. The multipart response body is a `Buffer`.
+Get `docname` together with its attachments via `multipart/related` request with optional [query string additions](https://docs.couchdb.org/en/stable/api/document/common.html#get--db-docid). The multipart response body is a `Buffer`.
 
 ```js
 const response = await alice.multipart.get('rabbit')
