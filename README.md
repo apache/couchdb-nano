@@ -519,7 +519,7 @@ The `insert` function can also be used with the method signature `db.insert(doc,
 
 ```js
 const alice = nano.use('alice')
-const response alice.insert({ _id: 'myid', happy: true })
+const response = await alice.insert({ _id: 'myid', happy: true })
 ```
 
 and also used to update an existing document, by including the `_rev` token in the document being saved:
