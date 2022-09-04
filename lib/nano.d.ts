@@ -338,7 +338,7 @@ declare namespace nano {
     get(docname: string, params?: DocumentGetParams, callback?: Callback<DocumentGetResponse & D>): Promise<DocumentGetResponse & D>;
     /** Fetch document meta data, useful for fetching a document's current revision.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/document/common.html#head--db-docid} */
-    head(docname: string, callback?: Callback<any>): Promise<any>;
+    head(docname: string, callback?: Callback<DocumentHeadResponseHeaders>): Promise<DocumentHeadResponseHeaders>;
     /** Delete a document from this database.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/document/common.html#delete--db-docid} */
     destroy(docname: string, rev: string, callback?: Callback<DocumentDestroyResponse>): Promise<DocumentDestroyResponse>;
@@ -1247,6 +1247,13 @@ declare namespace nano {
      *
      * Available if requested with revs=true query parameter. */
     _revisions?: any;
+  }
+
+  /** Document head response headers:
+   * @see docs: {@link https://docs.couchdb.org/en/latest/api/document/common.html#head--db-docid} */
+  interface DocumentHeadResponseHeaders {
+    /** Double quoted document’s revision token. */
+    etag: string;
   }
 
   /** _all_docs parameters
