@@ -248,7 +248,7 @@ declare namespace nano {
     /** whether to get a faster changes feed by supplying 'seq_interval'   */
     fastChanges?: boolean;
     /** where to begin the changes feed: 0, now or a sequence token */
-    since?: string;
+    since?: string | number;
     /** whether to return document bodies too */
     includeDocs?: boolean;
     /** number of milliseconds when the longpoll request will timeout */
@@ -965,7 +965,7 @@ declare namespace nano {
      * Can be valid update sequence or now value.
      *
      * @default 0 */
-    since?: number;
+    since?: string | number;
 
     /** Specifies how many revisions are returned in the changes array.
      * 
