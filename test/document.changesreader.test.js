@@ -505,3 +505,29 @@ test('should survive malformed JSON - db.changesReader.start', async () => {
     })
   })
 }, 10000)
+
+test('should cancel HTTP connection as soon as stop is called', async () => {
+  const changeURL = `/${DBNAME}/_changes`
+  nock(COUCH_URL)
+    .post(changeURL)
+    .query({ feed: 'longpoll', timeout: 60000, since: 'now', limit: 100, include_docs: false })
+    .reply(200, { results: [], last_seq: '1-0', pending: 0 })
+    .post(changeURL)
+    .query({ feed: 'longpoll', timeout: 60000, since: '1-0', limit: 100, include_docs: false })
+    .delay(60000)
+    .reply(500)
+  const db = nano.db.use(DBNAME)
+  const cr = db.changesReader.start()
+  await new Promise((resolve, reject) => {
+    cr.on('seq', function (seq) {
+      setTimeout(function () {
+        // give the next http connection a chance to be established
+        db.changesReader.stop()
+      }, 200)
+    })
+
+    cr.on('end', function () {
+      resolve()
+    })
+  })
+})

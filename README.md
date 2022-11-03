@@ -650,7 +650,7 @@ reliable, resumable changes feed follower, then you need the `changesReader`.
 
 There are three ways to start listening to the changes feed:
 
-1. `changesReader.start()` - to listen to changes indefinitely by repeated "long poll" requests. This mode continues to poll for changes forever.
+1. `changesReader.start()` - to listen to changes indefinitely by repeated "long poll" requests. This mode continues to poll for changes until `changesReader.stop()` is called, at which point any active long poll will be canceled.
 2. `changesReader.get()` - to listen to changes until the end of the changes feed is reached, by repeated "long poll" requests. Once a response with zero changes is received, the 'end' event will indicate the end of the changes and polling will stop.
 3. `changesReader.spool()` - listen to changes in one long HTTP request. (as opposed to repeated round trips) - spool is faster but less reliable.
 
