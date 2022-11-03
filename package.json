@@ -17,9 +17,9 @@
     "database"
   ],
   "dependencies": {
+    "http-cookie-agent": "^1.0.5",
     "@types/tough-cookie": "^4.0.0",
     "axios": "^0.26.1",
-    "axios-cookiejar-support": "^1.0.1",
     "qs": "^6.10.3",
     "tough-cookie": "^4.0.0"
   },
