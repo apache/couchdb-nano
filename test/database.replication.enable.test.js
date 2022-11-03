@@ -37,7 +37,7 @@ test('should be able to send replication request with URLs - POST /_replicator -
   const source = 'http://mydomain1.com/source'
   const target = 'https://mydomain2.com/target'
   const scope = nock(COUCH_URL)
-    .post('/_replicator', { source: source, target: target })
+    .post('/_replicator', { source, target })
     .reply(200, response)
 
   // test POST /_replicator
@@ -66,7 +66,7 @@ test('should be able to supply additional parameters - POST /_replicator - nano.
   const target = 'https://mydomain2.com/target'
   const opts = { filter: 'ddoc/func', continuous: true }
   const scope = nock(COUCH_URL)
-    .post('/_replicator', Object.assign(opts, { source: source, target: target }))
+    .post('/_replicator', Object.assign(opts, { source, target }))
     .reply(200, response)
 
   // test POST /_replicator

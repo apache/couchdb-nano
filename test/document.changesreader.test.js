@@ -239,7 +239,7 @@ test('should handle the batchSize parameter - db.changesReader.start', async () 
   const limit = 44
   nock(COUCH_URL)
     .post(changeURL)
-    .query({ feed: 'longpoll', timeout: 60000, since: 'now', limit: limit, include_docs: false })
+    .query({ feed: 'longpoll', timeout: 60000, since: 'now', limit, include_docs: false })
     .reply(200, { results: [], last_seq: '1-0', pending: 0 })
     .post(changeURL)
     .delay(2000)
@@ -263,13 +263,13 @@ test('should respect the since parameter db.changesReader.start', async () => {
   const since = 'thedawnoftime'
   nock(COUCH_URL)
     .post(changeURL)
-    .query({ feed: 'longpoll', timeout: 60000, since: since, limit: limit, include_docs: false })
+    .query({ feed: 'longpoll', timeout: 60000, since, limit, include_docs: false })
     .reply(200, { results: [], last_seq: '1-0', pending: 0 })
     .post(changeURL)
     .delay(2000)
     .reply(500)
   const db = nano.db.use(DBNAME)
-  const cr = db.changesReader.start({ batchSize: limit, since: since })
+  const cr = db.changesReader.start({ batchSize: limit, since })
   return new Promise((resolve, reject) => {
     cr.on('seq', function (seq) {
       // after our initial call with since=thedawnoftime, we should get a reply with last_seq=0-1
@@ -286,13 +286,13 @@ test('should stop on no changes - db.changesReader.get', async () => {
   const batchSize = 45
   nock(COUCH_URL)
     .post(changeURL)
-    .query({ feed: 'longpoll', timeout: 60000, since: since, limit: batchSize, include_docs: false })
+    .query({ feed: 'longpoll', timeout: 60000, since, limit: batchSize, include_docs: false })
     .reply(200, { results: [], last_seq: '1-0', pending: 0 })
     .post(changeURL)
     .delay(2000)
     .reply(500)
   const db = nano.db.use(DBNAME)
-  const cr = db.changesReader.get({ batchSize: batchSize, since: since })
+  const cr = db.changesReader.get({ batchSize, since })
   return new Promise((resolve, reject) => {
     cr.on('seq', function (seq) {
       // after our initial call with since=now, we should get a reply with last_seq=0-1
@@ -317,7 +317,7 @@ test('stop after multiple batches - small batch stop - db.changesReader.get', as
   }
   nock(COUCH_URL)
     .post(changeURL)
-    .query({ feed: 'longpoll', timeout: 60000, since: since, limit: batchSize, include_docs: false })
+    .query({ feed: 'longpoll', timeout: 60000, since, limit: batchSize, include_docs: false })
     .reply(200, { results: batch1, last_seq: '45-0', pending: 2 })
     .post(changeURL)
     .query({ feed: 'longpoll', timeout: 60000, since: '45-0', limit: batchSize, include_docs: false })
@@ -327,7 +327,7 @@ test('stop after multiple batches - small batch stop - db.changesReader.get', as
     .reply(200, { results: [], last_seq: '50-0', pending: 0 })
 
   const db = nano.db.use(DBNAME)
-  const cr = db.changesReader.get({ batchSize: batchSize, since: since })
+  const cr = db.changesReader.get({ batchSize, since })
   let batchCount = 0
   return new Promise((resolve, reject) => {
     cr.on('seq', function (seq) {
@@ -358,7 +358,7 @@ test('stop after multiple batches - zero stop - db.changesReader.get', async () 
   }
   nock(COUCH_URL)
     .post(changeURL)
-    .query({ feed: 'longpoll', timeout: 60000, since: since, limit: batchSize, include_docs: false })
+    .query({ feed: 'longpoll', timeout: 60000, since, limit: batchSize, include_docs: false })
     .reply(200, { results: batch1, last_seq: '45-0', pending: 2 })
     .post(changeURL)
     .query({ feed: 'longpoll', timeout: 60000, since: '45-0', limit: batchSize, include_docs: false })
@@ -368,7 +368,7 @@ test('stop after multiple batches - zero stop - db.changesReader.get', async () 
     .reply(200, { results: [], last_seq: '90-0', pending: 0 })
 
   const db = nano.db.use(DBNAME)
-  const cr = db.changesReader.get({ batchSize: batchSize, since: since })
+  const cr = db.changesReader.get({ batchSize, since })
   let batchCount = 0
   return new Promise((resolve, reject) => {
     cr.on('seq', function (seq) {
