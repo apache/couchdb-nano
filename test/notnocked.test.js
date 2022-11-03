@@ -43,7 +43,7 @@ if (process.env.TRAVIS) {
       { _id: 'catinthehat', name: 'The Cat in the Hat', description: 'Tall cat with red and white striped hat and bow tie', year: 1957 },
       { _id: 'dummy', name: 'to be deleted' }
     ]
-    await db.bulk({ docs: docs })
+    await db.bulk({ docs })
   })
 
   test('should be able to get database info - nano.db.bulk', async () => {

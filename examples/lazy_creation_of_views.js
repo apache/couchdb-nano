@@ -45,7 +45,7 @@ module.exports = function () {
     if (!retries) {
       retries = 0
     }
-    users.insert({ emailAddress: emailAddress, secret: secret, name: name }, secret,
+    users.insert({ emailAddress, secret, name }, secret,
       function (e, b, h) {
         if (e && e.message === 'no_db_file' && retries < 1) {
           return createUsersDatabase(emailAddress, secret, name, retries)

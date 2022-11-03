@@ -50,12 +50,12 @@ test('should be able to fetch a list of document revisions - POST /db/_all_docs 
     ]
   }
   const scope = nock(COUCH_URL)
-    .post('/db/_all_docs', { keys: keys })
+    .post('/db/_all_docs', { keys })
     .reply(200, response)
 
   // test POST /db/_all_docs
   const db = nano.db.use('db')
-  const p = await db.fetchRevs({ keys: keys })
+  const p = await db.fetchRevs({ keys })
   expect(p).toStrictEqual(response)
   expect(scope.isDone()).toBe(true)
 })
@@ -91,12 +91,12 @@ test('should be able to fetch a list of document revisions  with opts - POST /db
     ]
   }
   const scope = nock(COUCH_URL)
-    .post('/db/_all_docs?descending=true', { keys: keys })
+    .post('/db/_all_docs?descending=true', { keys })
     .reply(200, response)
 
   // test POST /db/_all_docs
   const db = nano.db.use('db')
-  const p = await db.fetchRevs({ keys: keys }, { descending: true })
+  const p = await db.fetchRevs({ keys }, { descending: true })
   expect(p).toStrictEqual(response)
   expect(scope.isDone()).toBe(true)
 })
@@ -109,12 +109,12 @@ test('should be able to handle 404 - POST /db/_all_docs - db.fetchRevs', async (
     reason: 'missing'
   }
   const scope = nock(COUCH_URL)
-    .post('/db/_all_docs', { keys: keys })
+    .post('/db/_all_docs', { keys })
     .reply(404, response)
 
   // test POST /db/_all_docs
   const db = nano.db.use('db')
-  await expect(db.fetchRevs({ keys: keys })).rejects.toThrow('missing')
+  await expect(db.fetchRevs({ keys })).rejects.toThrow('missing')
   expect(scope.isDone()).toBe(true)
 })
 

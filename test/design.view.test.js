@@ -78,12 +78,12 @@ test('should be able to access a MapReduce view with keys - POST /db/_design/ddo
     ]
   }
   const scope = nock(COUCH_URL)
-    .post('/db/_design/ddoc/_view/viewname', { keys: keys })
+    .post('/db/_design/ddoc/_view/viewname', { keys })
     .reply(200, response)
 
   // test POST /db/_design/ddoc/_view/viewname
   const db = nano.db.use('db')
-  const p = await db.view('ddoc', 'viewname', { keys: keys })
+  const p = await db.view('ddoc', 'viewname', { keys })
   expect(p).toStrictEqual(response)
   expect(scope.isDone()).toBe(true)
 })

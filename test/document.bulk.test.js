@@ -28,12 +28,12 @@ test('should be able to insert documents in bulk - POST /db/_bulk_docs - db.bulk
     { ok: true, id: 'z', rev: '1-789' }
   ]
   const scope = nock(COUCH_URL)
-    .post('/db/_bulk_docs', { docs: docs })
+    .post('/db/_bulk_docs', { docs })
     .reply(200, response)
 
   // test POST /db/_bulk_docs
   const db = nano.db.use('db')
-  const p = await db.bulk({ docs: docs })
+  const p = await db.bulk({ docs })
   expect(p).toStrictEqual(response)
   expect(scope.isDone()).toBe(true)
 })
@@ -46,11 +46,11 @@ test('should be able to handle missing database - POST /db/_bulk_docs - db.bulk'
     reason: 'Database does not exist.'
   }
   const scope = nock(COUCH_URL)
-    .post('/db/_bulk_docs', { docs: docs })
+    .post('/db/_bulk_docs', { docs })
     .reply(404, response)
 
   // test POST /db/_bulk_docs
   const db = nano.db.use('db')
-  await expect(db.bulk({ docs: docs })).rejects.toThrow('Database does not exist.')
+  await expect(db.bulk({ docs })).rejects.toThrow('Database does not exist.')
   expect(scope.isDone()).toBe(true)
 })

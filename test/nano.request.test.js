@@ -420,7 +420,7 @@ test('check request handles cookies - nano.request', async () => {
     path: '_session',
     form: {
       name: username,
-      password: password
+      password
     },
     jar: true
   }
