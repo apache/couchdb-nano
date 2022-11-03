@@ -17,11 +17,11 @@
     "database"
   ],
   "dependencies": {
-    "http-cookie-agent": "^1.0.5",
-    "@types/tough-cookie": "^4.0.0",
+    "http-cookie-agent": "^4.0.2",
+    "@types/tough-cookie": "^4.0.2",
     "axios": "^1.1.3",
     "qs": "^6.11.0",
-    "tough-cookie": "^4.0.0"
+    "tough-cookie": "^4.1.2"
   },
   "devDependencies": {
     "@types/node": "^18.11.9",
@@ -33,7 +33,7 @@
   "scripts": {
     "standard": "standard --fix",
     "test": "standard && tsc lib/nano.d.ts && npm run jest",
-    "jest": "jest test/* --coverage --env node --bail 1"
+    "jest": "jest test/* --coverage --env node"
   },
   "main": "./lib/nano.js",
   "types": "./lib/nano.d.ts",
