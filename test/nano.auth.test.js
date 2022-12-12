@@ -54,3 +54,60 @@ test('should be able to authenticate - POST /_session - nano.auth', async () => 
   assert.deepEqual(q, ['a'])
   mockAgent.assertNoPendingInterceptors()
 })
+
+test('should be able to handle cookie refresh - POST /_session - nano.auth', async () => {
+  // mocks
+  const username = 'u'
+  const password = 'p'
+  const response = { ok: true, name: 'admin', roles: ['_admin', 'admin'] }
+  const c1 = 'AuthSession=YWRtaW46NUU0MTFBMDE6stHsxYnlDy4mYxwZEcnXHn4fm5w'
+  const cookie1 = `${c1}; Version=1; Expires=Mon, 10-Feb-2050 09:03:21 GMT; Max-Age=600; Path=/; HttpOnly`
+  const c2 = 'AuthSession=DE6stHsxYnlDy4YWRtaW46NUU0MTFBMmYxwZEcnXHn4fm5w'
+  const cookie2 = `${c2}; Version=1; Expires=Mon, 10-Feb-2050 09:05:21 GMT; Max-Age=600; Path=/; HttpOnly`
+  mockPool
+    .intercept({
+      method: 'post',
+      path: '/_session',
+      body: 'name=u&password=p',
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded; charset=utf-8'
+      }
+    })
+    .reply(200, response, {
+      headers: {
+        'content-type': 'application/json',
+        'Set-Cookie': cookie1
+      }
+    })
+  mockPool
+    .intercept({
+      path: '/_all_dbs',
+      headers: {
+        cookie: c1
+      }
+    })
+    .reply(200, ['a'], {
+      headers: {
+        'content-type': 'application/json',
+        'Set-Cookie': cookie2
+      }
+    })
+  mockPool
+    .intercept({
+      path: '/_all_dbs',
+      headers: {
+        cookie: c2
+      }
+    })
+    .reply(200, ['a'], JSON_HEADERS)
+
+  // test POST /_session
+  const p1 = await nano.auth(username, password)
+  assert.deepEqual(p1, response)
+  const p2 = await nano.db.list()
+  assert.deepEqual(p2, ['a'])
+  const p3 = await nano.db.list()
+  assert.deepEqual(p3, ['a'])
+  mockAgent.assertNoPendingInterceptors()
+})
+
