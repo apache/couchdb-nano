@@ -10,10 +10,12 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+const test = require('node:test')
+const assert = require('node:assert/strict')
+const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
 const Nano = require('..')
-const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
-const nock = require('nock')
+
 const response = {
   results: [
     {
@@ -39,41 +41,37 @@ const errResponse = {
   reason: 'Database does not exist.'
 }
 
-afterEach(() => {
-  nock.cleanAll()
-})
-
 test('should be able to fetch db updates - GET /_db_updates - nano.updates', async () => {
   // mocks
-  const scope = nock(COUCH_URL)
-    .get('/_db_updates')
-    .reply(200, response)
+  mockPool
+    .intercept({ path: '/_db_updates' })
+    .reply(200, response, JSON_HEADERS)
 
   // test GET /_db_updates
   const p = await nano.updates()
-  expect(p).toStrictEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should be able to fetch db updates with options - GET /_db_updates - nano.updates', async () => {
   // mocks
-  const scope = nock(COUCH_URL)
-    .get('/_db_updates?timeout=10000')
-    .reply(200, response)
+  mockPool
+    .intercept({ path: '/_db_updates?timeout=10000' })
+    .reply(200, response, JSON_HEADERS)
 
   // test GET /_db_updates
   const p = await nano.updates({ timeout: 10000 })
-  expect(p).toStrictEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should handle 404 - GET /_db_updates - nano.updates', async () => {
   // mocks
-  const scope = nock(COUCH_URL)
-    .get('/_db_updates')
-    .reply(404, errResponse)
+  mockPool
+    .intercept({ path: '/_db_updates' })
+    .reply(404, errResponse, JSON_HEADERS)
 
   // test GET /_db_updates
-  await expect(nano.db.updates()).rejects.toThrow('Database does not exist.')
-  expect(scope.isDone()).toBe(true)
+  await assert.rejects(nano.db.updates(), { message: 'Database does not exist.' })
+  mockAgent.assertNoPendingInterceptors()
 })

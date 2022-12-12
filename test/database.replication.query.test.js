@@ -10,15 +10,16 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+const test = require('node:test')
+const assert = require('node:assert/strict')
+const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
 const Nano = require('..')
-const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
-const nock = require('nock')
 const response = {
   _id: 'rep1',
   _rev: '2-05a9e090e2bb0977c06b870c870153c5',
-  source: 'http://localhost:5984/cities',
-  target: 'http://localhost:5984/cities2',
+  source: 'http://127.0.0.1:5984/cities',
+  target: 'http://127.0.0.1:5984/cities2',
   create_target: true,
   continuous: false,
   owner: 'admin',
@@ -40,56 +41,51 @@ const errResponse = {
   reason: 'missing'
 }
 
-afterEach(() => {
-  nock.cleanAll()
-})
-
 test('should be able to query a replication - GET /_replicator/id - nano.db.replication.query', async () => {
   // mocks
-  const scope = nock(COUCH_URL)
-    .get('/_replicator/rep1')
-    .reply(200, response)
+  mockPool
+    .intercept({ path: '/_replicator/rep1' })
+    .reply(200, response, JSON_HEADERS)
 
   // test GET /_replicator/id
   const p = await nano.db.replication.query('rep1')
-  expect(p).toEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should be able to query a replication with opts - GET /_replicator/id?confilicts=true - nano.db.replication.query', async () => {
   // mocks
   const opts = { conflicts: true }
-  const scope = nock(COUCH_URL)
-    .get('/_replicator/rep1')
-    .query(opts)
-    .reply(200, response)
+  mockPool.intercept({
+    path: '/_replicator/rep1?conflicts=true'
+  }).reply(200, response, JSON_HEADERS)
 
   // test GET /_replicator/id
   const p = await nano.db.replication.query('rep1', opts)
-  expect(p).toEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should be able to query a replication and handle 404 - GET /_replicator/id - nano.db.replication.query', async () => {
   // mocks
-  const scope = nock(COUCH_URL)
-    .get('/_replicator/rep1')
-    .reply(404, errResponse)
+  mockPool.intercept({
+    path: '/_replicator/rep1'
+  }).reply(404, errResponse, JSON_HEADERS)
 
   // test GET /_replicator/id
-  await expect(nano.db.replication.query('rep1')).rejects.toThrow('missing')
-  expect(scope.isDone()).toBe(true)
+  await assert.rejects(nano.db.replication.query('rep1'), { message: 'missing' })
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should not attempt info fetch with invalid parameters - nano.db.replication.query', async () => {
-  await expect(nano.db.replication.query('')).rejects.toThrowError('Invalid parameters')
-  await expect(nano.db.replication.query()).rejects.toThrowError('Invalid parameters')
+  await assert.rejects(nano.db.replication.query(''), { message: 'Invalid parameters' })
+  await assert.rejects(nano.db.replication.query(), { message: 'Invalid parameters' })
 })
 
 test('should detect missing parameters (callback) - nano.db.replication.query', () => {
   return new Promise((resolve, reject) => {
     nano.db.replication.query(undefined, undefined, (err, data) => {
-      expect(err).not.toBeNull()
+      assert.notEqual(err, null)
       resolve()
     })
   })
@@ -97,13 +93,13 @@ test('should detect missing parameters (callback) - nano.db.replication.query', 
 
 test('should be able to query a replication from db.replication.quey - GET /_replicator/id - db.replication.query', async () => {
   // mocks
-  const scope = nock(COUCH_URL)
-    .get('/_replicator/rep1')
-    .reply(200, response)
+  mockPool.intercept({
+    path: '/_replicator/rep1'
+  }).reply(200, response, JSON_HEADERS)
 
   // test GET /_replicator/id
   const db = nano.db.use('db')
   const p = await db.replication.query('rep1')
-  expect(p).toEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })

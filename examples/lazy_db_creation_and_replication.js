@@ -13,8 +13,8 @@
 const nano = require('nano')
 const couch =
     {
-      master: 'http://localhost:5984/landing_m',
-      replica: 'http://localhost:5984/landing_r'
+      master: 'http://127.0.0.1:5984/landing_m',
+      replica: 'http://127.0.0.1:5984/landing_r'
     }
 
 function insertWithRetry (db, email, retries, callback) {

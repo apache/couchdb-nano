@@ -26,19 +26,24 @@ declare function nano(
 ): nano.ServerScope;
 
 declare namespace nano {
-  /** RequestDefaults.auth options */
-  interface RequestDefaultOptionsAuth {
-    username: string,
-    password: string
+  /** AgentOptionsConnect options */
+  interface AgentOptionsConnect {
+    timeout?: number
   }
-  
-  /** RequestDefaults options */
-  interface RequestDefaultsOptions {
-    timeout?: number;
-    agent?: any;
-    headers?: object;
-    auth?: RequestDefaultOptionsAuth;
-    jar?: boolean;
+  /** AgentOptions options */
+  interface AgentOptions {
+    bodyTimeout?: number,
+    headersTimeout?: number,
+    keepAliveMaxTimeout?: number,
+    keepAliveTimeout?: number,
+    keepAliveTimeoutThreshold?: number,
+    maxHeaderSize?: number,
+    maxResponseSize?: number,
+    pipelining?: number,
+    connect?: AgentOptionsConnect,
+    strictContentLength?: boolean,
+    connections: null,
+    maxRedirections?: null
   }
 
   /** Nano configuration */
@@ -49,10 +54,10 @@ declare namespace nano {
     url: string;
     /** For cookie authentication */
     cookie?: string;
-    /** HTTP request options
+    /** HTTP Agent options
      * @see README: {@link https://www.npmjs.com/package/nano#pool-size-and-open-sockets}
      */
-    requestDefaults?: RequestDefaultsOptions;
+    agent?: AgentOptions;
     /** Logging function 
      * @see README: {@link https://www.npmjs.com/package/nano#logging}
      */

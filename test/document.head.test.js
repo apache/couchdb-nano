@@ -10,43 +10,54 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+const test = require('node:test')
+const assert = require('node:assert/strict')
+const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
 const Nano = require('..')
-const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
-const nock = require('nock')
-
-afterEach(() => {
-  nock.cleanAll()
-})
 
 test('should be able to head a document - HEAD /db/id - db.head', async () => {
   // mocks
-  const scope = nock(COUCH_URL)
-    .head('/db/id')
-    .reply(200, '', { ETag: '1-123' })
+  const headers = {
+    'content-type': 'application/json',
+    etag: '1-123'
+  }
+  mockPool
+    .intercept({
+      method: 'head',
+      path: '/db/id'
+    })
+    .reply(200, '', { headers })
 
   // test HEAD /db
   const db = nano.db.use('db')
   const p = await db.head('id')
   // headers get lowercased
-  expect(p.etag).toBe('1-123')
-  expect(scope.isDone()).toBe(true)
+  assert.equal(p.etag, '1-123')
+  mockAgent.assertNoPendingInterceptors()
 })
 
-test('should be able to head a document with callback - HEAD /db/id - db.head', () => {
+test('should be able to head a document with callback - HEAD /db/id - db.head', async () => {
   // mocks
-  const scope = nock(COUCH_URL)
-    .head('/db/id')
-    .reply(200, '', { ETag: '1-123' })
+  const headers = {
+    'content-type': 'application/json',
+    etag: '1-123'
+  }
+  mockPool
+    .intercept({
+      method: 'head',
+      path: '/db/id'
+    })
+    .reply(200, '', { headers })
 
   // test HEAD /db
-  return new Promise((resolve, reject) => {
+  await new Promise((resolve, reject) => {
     const db = nano.db.use('db')
     db.head('id', (err, data, headers) => {
       // headers get lowercased
-      expect(err).toBeNull()
-      expect(headers.etag).toBe('1-123')
-      expect(scope.isDone()).toBe(true)
+      assert.equal(err, null)
+      assert.equal(headers.etag, '1-123')
+      mockAgent.assertNoPendingInterceptors()
       resolve()
     })
   })
@@ -54,26 +65,29 @@ test('should be able to head a document with callback - HEAD /db/id - db.head', 
 
 test('should be able to head a missing document - HEAD /db/id - db.head', async () => {
   // mocks
-  const scope = nock(COUCH_URL)
-    .head('/db/id')
-    .reply(404, '')
+  mockPool
+    .intercept({
+      method: 'head',
+      path: '/db/id'
+    })
+    .reply(404, '', JSON_HEADERS)
 
   // test HEAD /db
   const db = nano.db.use('db')
-  await expect(db.head('id')).rejects.toThrow('couch returned 404')
-  expect(scope.isDone()).toBe(true)
+  await assert.rejects(db.head('id'), { message: 'couch returned 404' })
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should detect missing parameters - db.head', async () => {
   const db = nano.db.use('db')
-  await expect(db.head()).rejects.toThrow('Invalid parameters')
+  await assert.rejects(db.head(), { message: 'Invalid parameters' })
 })
 
-test('should detect missing parameters (callback) - db.head', () => {
-  return new Promise((resolve, reject) => {
+test('should detect missing parameters (callback) - db.head', async () => {
+  await new Promise((resolve, reject) => {
     const db = nano.db.use('db')
     db.head(undefined, (err, data) => {
-      expect(err).not.toBeNull()
+      assert.notEqual(err, null)
       resolve()
     })
   })

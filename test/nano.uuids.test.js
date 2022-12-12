@@ -10,14 +10,11 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+const test = require('node:test')
+const assert = require('node:assert/strict')
+const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
 const Nano = require('..')
-const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
-const nock = require('nock')
-
-afterEach(() => {
-  nock.cleanAll()
-})
 
 test('should be able to fetch uuids - GET /_uuids - nano.uuids', async () => {
   // mocks
@@ -26,14 +23,14 @@ test('should be able to fetch uuids - GET /_uuids - nano.uuids', async () => {
       'c42ddf1272c7d05b2dc45b696200145f'
     ]
   }
-  const scope = nock(COUCH_URL)
-    .get('/_uuids?count=1')
-    .reply(200, response)
+  mockPool
+    .intercept({ path: '/_uuids?count=1' })
+    .reply(200, response, JSON_HEADERS)
 
   // test GET /_uuids
   const p = await nano.uuids()
-  expect(p).toStrictEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should be able to fetch more uuids - GET /_uuids?count=3 - nano.uuids', async () => {
@@ -45,33 +42,33 @@ test('should be able to fetch more uuids - GET /_uuids?count=3 - nano.uuids', as
       'c42ddf1272c7d05b2dc45b69620028cf'
     ]
   }
-  const scope = nock(COUCH_URL)
-    .get('/_uuids?count=3')
-    .reply(200, response)
+  mockPool
+    .intercept({ path: '/_uuids?count=3' })
+    .reply(200, response, JSON_HEADERS)
 
   // test GET /_uuids
   const p = await nano.uuids(3)
-  expect(p).toStrictEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })
 
-test('should be able to fetch uuids callback - GET /_uuids - nano.uuids', () => {
+test('should be able to fetch uuids callback - GET /_uuids - nano.uuids', async () => {
   // mocks
   const response = {
     uuids: [
       'c42ddf1272c7d05b2dc45b696200145f'
     ]
   }
-  const scope = nock(COUCH_URL)
-    .get('/_uuids?count=1')
-    .reply(200, response)
+  mockPool
+    .intercept({ path: '/_uuids?count=1' })
+    .reply(200, response, JSON_HEADERS)
 
   // test GET /_uuids
-  return new Promise((resolve, reject) => {
+  await new Promise((resolve, reject) => {
     nano.uuids((err, data) => {
-      expect(err).toBe(null)
-      expect(data).toStrictEqual(response)
-      expect(scope.isDone()).toBe(true)
+      assert.equal(err, null)
+      assert.deepEqual(data, response)
+      mockAgent.assertNoPendingInterceptors()
       resolve()
     })
   })

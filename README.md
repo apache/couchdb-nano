@@ -105,10 +105,10 @@ Note the minimum required version of Node.js is 10.
 To use `nano` you need to connect it to your CouchDB install, to do that:
 
 ```js
-const nano = require('nano')('http://localhost:5984');
+const nano = require('nano')('http://127.0.0.1:5984');
 ```
 
-> Note: The URL you supply may also contain authentication credentials e.g. `http://admin:mypassword@localhost:5984`.
+> Note: The URL you supply may also contain authentication credentials e.g. `http://admin:mypassword@127.0.0.1:5984`.
 
 To create a new database:
 
@@ -189,14 +189,14 @@ you have inserted a document with an _id of rabbit.
   rev: '1-6e4cb465d49c0368ac3946506d26335d' }
 ```
 
-You can also see your document in futon (http://localhost:5984/_utils).
+You can also see your document in futon (http://127.0.0.1:5984/_utils).
 
 ## Configuration
 
 Configuring nano to use your database server is as simple as:
 
 ```js
-const nano = require('nano')('http://localhost:5984')
+const nano = require('nano')('http://127.0.0.1:5984')
 const db = nano.use('foo');
 ```
 
@@ -204,54 +204,17 @@ If you don't need to instrument database objects you can simply:
 
 ```js
 // nano parses the URL and knows this is a database
-const db = require('nano')('http://localhost:5984/foo');
+const db = require('nano')('http://127.0.0.1:5984/foo');
 ```
-
-You can also pass options to the require to specify further configuration options you can pass an object literal instead:
-
-```js
-// nano parses the URL and knows this is a database
-const opts = {
-  url: 'http://localhost:5984/foo',
-  requestDefaults: {
-    proxy: {
-      protocol: 'http',
-      host: 'myproxy.net'
-    },
-    headers: {
-      customheader: 'MyCustomHeader'
-    }
-  }
-};
-const db = require('nano')(opts);
-```
-
-Nano works perfectly well over HTTPS as long as the SSL cert is signed by a certification authority known by your client operating system. If you have a custom or self-signed certificate, you may need to create your own HTTPS agent and pass it to Nano e.g.
-
-```js
-const httpsAgent = new https.Agent({
-  ca: '/path/to/cert',
-  rejectUnauthorized: true,
-  keepAlive: true,
-  maxSockets: 6
-})
-const nano = Nano({
-  url: process.env.COUCH_URL,
-  requestDefaults: {
-    agent: httpsAgent,
-  }
-})
-```
-
-Please check [axios] for more information on the defaults. They support features like proxies, timeout etc.
 
 You can tell nano to not parse the URL (maybe the server is behind a proxy, is accessed through a rewrite rule or other):
 
 ```js
 // nano does not parse the URL and return the server api
-// "http://localhost:5984/prefix" is the CouchDB server root
+// "http://127.0.0.1:5984/prefix" is the CouchDB server root
 const couch = require('nano')(
-  { url : "http://localhost:5984/prefix"
+  { 
+    url : "http://127.0.0.1:5984/prefix"
     parseUrl : false
   });
 const db = couch.use('foo');
@@ -259,21 +222,45 @@ const db = couch.use('foo');
 
 ### Pool size and open sockets
 
-A very important configuration parameter if you have a high traffic website and are using `nano` is the HTTP pool size. By default, the Node.js HTTP global agent has a infinite number of active connections that can run simultaneously. This can be limited to user-defined number (`maxSockets`) of requests that are "in flight", while others are kept in a queue. Here's an example explicitly using the Node.js HTTP agent configured with [custom options](https://nodejs.org/api/http.html#http_new_agent_options):
+To specify the number of connections, timeouts and pool size, supply an `agentOptions` object when starting up Nano. 
 
 ```js
-const http = require('http')
-const myagent = new http.Agent({
-  keepAlive: true,
-  maxSockets: 25
-})
+const agentOptions = {
+  bodyTimeout: 30000,
+  headersTimeout: 30000,
+  keepAliveMaxTimeout: 600000,
+  keepAliveTimeout: 30000,
+  keepAliveTimeoutThreshold: 1000,
+  maxHeaderSize: 16384,
+  maxResponseSize: -1,
+  pipelining: 6,
+  connect: { 
+    timeout: 10000
+  },
+  strictContentLength: true,
+  connections: null,
+  maxRedirections: 0
+}
+const nano = Nano({ url: 'http://127.0.0.1:5984', agentOptions })
+```
 
-const db = require('nano')({
-  url: 'http://localhost:5984/foo',
-  requestDefaults : {
-    agent : myagent
-  }
-});
+The meanings of the agentOptions attributes is described [here](https://undici.nodejs.org/#/docs/api/Agent?id=new-undiciagentoptions), [here](https://undici.nodejs.org/#/docs/api/Pool?id=parameter-pooloptions) and [here](https://undici.nodejs.org/#/docs/api/Client?id=parameter-clientoptions)
+
+> Note `requestDefaults` is no longer supported.
+
+## Custom headers
+
+To supply customer headers with each request, supply a headers object when starting up Nano:
+
+
+```js
+const couch = require('nano')(
+  { 
+    url : "http://127.0.0.1:5984/prefix"
+    headers: {
+      mycustomheader: '42'
+    }
+  });
 ```
 
 ## TypeScript
@@ -283,7 +270,7 @@ There is a full TypeScript definition included in the the *nano* package. Your T
 ```ts
 import * as Nano  from 'nano'
 
-let n = Nano('http://USERNAME:PASSWORD@localhost:5984')
+let n = Nano('http://USERNAME:PASSWORD@127.0.0.1:5984')
 let db = n.db.use('people')
 
 interface iPerson extends Nano.MaybeDocument {
@@ -1190,10 +1177,7 @@ Nano supports making requests using CouchDB's [cookie authentication](http://gui
 
 ```js
 const nano = require('nano')({
-  url: 'http://localhost:5984',
-  requestDefaults: {
-    jar: true
-  }
+  url: 'http://127.0.0.1:5984'
 })
 const username = 'user'
 const userpass = 'pass'

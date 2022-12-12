@@ -10,13 +10,10 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-const nock = require('nock')
+const test = require('node:test')
+const assert = require('node:assert/strict')
+const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
 const Nano = require('..')
-const COUCH_URL = 'http://localhost:5984'
-
-afterEach(() => {
-  nock.cleanAll()
-})
 
 test('should be able to log output with user-defined function', async () => {
   // setup Nano with custom logger
@@ -30,14 +27,14 @@ test('should be able to log output with user-defined function', async () => {
 
   // mocks
   const response = { _id: 'id', rev: '1-123', a: 1, b: 'two', c: true }
-  const scope = nock(COUCH_URL)
-    .get('/db/id')
-    .reply(200, response)
+  mockPool
+    .intercept({ path: '/db/id' })
+    .reply(200, response, JSON_HEADERS)
 
   // test GET /db/id
   const db = nano.db.use('db')
   const p = await db.get('id')
-  expect(p).toStrictEqual(response)
-  expect(logs.length).toBe(2)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  assert.equal(logs.length, 2)
+  mockAgent.assertNoPendingInterceptors()
 })

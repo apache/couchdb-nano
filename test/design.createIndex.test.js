@@ -10,14 +10,11 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+const test = require('node:test')
+const assert = require('node:assert/strict')
+const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
 const Nano = require('..')
-const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
-const nock = require('nock')
-
-afterEach(() => {
-  nock.cleanAll()
-})
 
 test('should be able to create an index - POST /db/_index - db.createIndex', async () => {
   // mocks
@@ -34,15 +31,19 @@ test('should be able to create an index - POST /db/_index - db.createIndex', asy
     id: '_design/a5f4711fc9448864a13c81dc71e660b524d7410c',
     name: 'foo-index'
   }
-  const scope = nock(COUCH_URL)
-    .post('/db/_index', indexDef)
-    .reply(200, response)
+  mockPool
+    .intercept({
+      method: 'post',
+      path: '/db/_index',
+      body: JSON.stringify(indexDef)
+    })
+    .reply(200, response, JSON_HEADERS)
 
   // test POST /db/_index
   const db = nano.db.use('db')
   const p = await db.createIndex(indexDef)
-  expect(p).toStrictEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should handle 404 - POST /db/_index - db.createIndex', async () => {
@@ -59,27 +60,31 @@ test('should handle 404 - POST /db/_index - db.createIndex', async () => {
     error: 'not_found',
     reason: 'missing'
   }
-  const scope = nock(COUCH_URL)
-    .post('/db/_index', indexDef)
-    .reply(404, response)
+  mockPool
+    .intercept({
+      method: 'post',
+      path: '/db/_index',
+      body: JSON.stringify(indexDef)
+    })
+    .reply(404, response, JSON_HEADERS)
 
   // test POST /db/_index
   const db = nano.db.use('db')
-  await expect(db.createIndex(indexDef)).rejects.toThrow('missing')
-  expect(scope.isDone()).toBe(true)
+  await assert.rejects(db.createIndex(indexDef), { message: 'missing' })
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should detect missing index - db.createIndex', async () => {
   const db = nano.db.use('db')
-  await expect(db.createIndex()).rejects.toThrow('Invalid parameters')
-  await expect(db.createIndex('myindex')).rejects.toThrow('Invalid parameters')
+  await assert.rejects(db.createIndex(), { message: 'Invalid parameters' })
+  await assert.rejects(db.createIndex('myindex'), { message: 'Invalid parameters' })
 })
 
 test('should detect missing index (callback) - db.createIndex', () => {
   const db = nano.db.use('db')
   return new Promise((resolve, reject) => {
     db.createIndex('', (err, data) => {
-      expect(err).not.toBeNull()
+      assert.notEqual(err, null)
       resolve()
     })
   })

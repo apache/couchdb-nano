@@ -10,10 +10,12 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+const test = require('node:test')
+const assert = require('node:assert/strict')
+const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
 const Nano = require('..')
-const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
-const nock = require('nock')
+
 const multipartResponse = ''.concat(
   '--e89b3e29388aef23453450d10e5aaed0',
   'Content-Type: application/json',
@@ -32,34 +34,40 @@ const multipartResponse = ''.concat(
   '',
   '--e89b3e29388aef23453450d10e5aaed0--')
 
-afterEach(() => {
-  nock.cleanAll()
-})
-
 test('should be able to fetch a document with attachments - multipart GET /db - db.multipart.get', async () => {
   // mocks
-  const scope = nock(COUCH_URL, { reqheaders: { accept: 'multipart/related' } })
-    .get('/db/docid?attachments=true')
-    .reply(200, multipartResponse, { 'content-type': 'multipart/related; boundary="e89b3e29388aef23453450d10e5aaed0"' })
+  mockPool
+    .intercept({
+      path: '/db/docid?attachments=true',
+      headers: {
+        accept: 'multipart/related'
+      }
+    })
+    .reply(200, multipartResponse, { headers: { 'content-type': 'multipart/related; boundary="e89b3e29388aef23453450d10e5aaed0"' } })
 
   // test GET /db/id?attachments=true
   const db = nano.db.use('db')
   const p = await db.multipart.get('docid')
-  expect(p.toString()).toStrictEqual(multipartResponse)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, multipartResponse)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should be able to fetch a document with attachments with opts - multipart GET /db - db.multipart.get', async () => {
   // mocks
-  const scope = nock(COUCH_URL, { reqheaders: { accept: 'multipart/related' } })
-    .get('/db/docid?attachments=true&conflicts=true')
-    .reply(200, multipartResponse, { 'content-type': 'multipart/related; boundary="e89b3e29388aef23453450d10e5aaed0"' })
+  mockPool
+    .intercept({
+      path: '/db/docid?attachments=true&conflicts=true',
+      headers: {
+        accept: 'multipart/related'
+      }
+    })
+    .reply(200, multipartResponse, { headers: { 'content-type': 'multipart/related; boundary="e89b3e29388aef23453450d10e5aaed0"' } })
 
   // test GET /db/id?attachments=true&x=y
   const db = nano.db.use('db')
   const p = await db.multipart.get('docid', { conflicts: true })
-  expect(p.toString()).toStrictEqual(multipartResponse)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, multipartResponse)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should be able to handle 404 - db.multipart.get', async () => {
@@ -68,28 +76,33 @@ test('should be able to handle 404 - db.multipart.get', async () => {
     error: 'not_found',
     reason: 'missing'
   }
-  const scope = nock(COUCH_URL, { reqheaders: { accept: 'multipart/related' } })
-    .get('/db/docid?attachments=true')
-    .reply(404, response)
+  mockPool
+    .intercept({
+      path: '/db/docid?attachments=true',
+      headers: {
+        accept: 'multipart/related'
+      }
+    })
+    .reply(404, response, JSON_HEADERS)
 
   // test GET /db
   const db = nano.db.use('db')
-  await expect(db.multipart.get('docid')).rejects.toThrow('missing')
-  expect(scope.isDone()).toBe(true)
+  await assert.rejects(db.multipart.get('docid'), { message: 'missing' })
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should detect missing docName - db.multipart.get', async () => {
   const db = nano.db.use('db')
-  await expect(db.multipart.get()).rejects.toThrow('Invalid parameters')
-  await expect(db.multipart.get('')).rejects.toThrow('Invalid parameters')
-  await expect(db.multipart.get(undefined, { conflicts: true })).rejects.toThrow('Invalid parameters')
+  await assert.rejects(db.multipart.get(), { message: 'Invalid parameters' })
+  await assert.rejects(db.multipart.get(''), { message: 'Invalid parameters' })
+  await assert.rejects(db.multipart.get(undefined, { conflicts: true }), { message: 'Invalid parameters' })
 })
 
-test('should detect missing parameters (callback) - db.multipart.get', () => {
+test('should detect missing parameters (callback) - db.multipart.get', async () => {
   const db = nano.db.use('db')
   return new Promise((resolve, reject) => {
     db.multipart.get(undefined, undefined, (err, data) => {
-      expect(err).not.toBeNull()
+      assert.notEqual(err, null)
       resolve()
     })
   })

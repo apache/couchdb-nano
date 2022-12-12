@@ -10,16 +10,13 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+const test = require('node:test')
+const assert = require('node:assert/strict')
+const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
 const Nano = require('..')
-const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
-const nock = require('nock')
 
-afterEach(() => {
-  nock.cleanAll()
-})
-
-test('should be able to query an index as a stream- POST /db/_find - db.findAsStream', () => {
+test('should be able to query an index as a stream- POST /db/_find - db.findAsStream', async () => {
   // mocks
   const query = {
     selector: {
@@ -38,22 +35,26 @@ test('should be able to query an index as a stream- POST /db/_find - db.findAsSt
       { name: 'Susan', date: '2019-01-03', orderid: '8523' }
     ]
   }
-  const scope = nock(COUCH_URL)
-    .post('/db/_find', query)
-    .reply(200, response)
+  mockPool
+    .intercept({
+      method: 'post',
+      path: '/db/_find',
+      body: JSON.stringify(query)
+    })
+    .reply(200, response, JSON_HEADERS)
 
-  return new Promise((resolve, reject) => {
+  await new Promise((resolve, reject) => {
     // test POST /db/_find
     const db = nano.db.use('db')
     const s = db.findAsStream(query)
-    expect(typeof s).toBe('object')
+    assert.equal(typeof s, 'object')
     let buffer = ''
     s.on('data', (chunk) => {
       buffer += chunk.toString()
     })
     s.on('end', () => {
-      expect(buffer).toBe(JSON.stringify(response))
-      expect(scope.isDone()).toBe(true)
+      assert.equal(buffer, JSON.stringify(response))
+      mockAgent.assertNoPendingInterceptors()
       resolve()
     })
   })

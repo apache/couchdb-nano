@@ -10,54 +10,58 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-const Nano = require('..')
-const COUCH_URL = 'http://localhost:5984'
-const nano = Nano(COUCH_URL)
-const nock = require('nock')
-const response = { ok: true, id: 'abc', rev: '1-123' }
+const test = require('node:test')
+const assert = require('node:assert/strict')
+const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
 
-afterEach(() => {
-  nock.cleanAll()
-})
+const Nano = require('..')
+const nano = Nano(COUCH_URL)
+const response = { ok: true, id: 'abc', rev: '1-123' }
 
 test('should be able to send replication request with local database names - POST /_replicator - nano.db.replication.enable', async () => {
   // mocks
-  const scope = nock(COUCH_URL)
-    .post('/_replicator', { source: COUCH_URL + '/source', target: COUCH_URL + '/target' })
-    .reply(200, response)
+  mockPool.intercept({
+    method: 'post',
+    path: '/_replicator',
+    body: JSON.stringify({ source: COUCH_URL + '/source', target: COUCH_URL + '/target' })
+  }).reply(200, response, JSON_HEADERS)
 
   // test POST /_replicator
   const p = await nano.db.replication.enable('source', 'target')
-  expect(p).toEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should be able to send replication request with URLs - POST /_replicator - nano.db.replication.enable', async () => {
   // mocks
   const source = 'http://mydomain1.com/source'
   const target = 'https://mydomain2.com/target'
-  const scope = nock(COUCH_URL)
-    .post('/_replicator', { source, target })
-    .reply(200, response)
+  mockPool.intercept({
+    method: 'post',
+    path: '/_replicator',
+    body: JSON.stringify({ source, target })
+  }).reply(200, response, JSON_HEADERS)
 
   // test POST /_replicator
   const p = await nano.db.replication.enable(source, target)
-  expect(p).toEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should be able to send replication request with objects - POST /_replicator - nano.db.replication.enable', async () => {
   // mocks
   const source = { config: { url: 'http://mydomain1.com', db: 'source' } }
   const target = { config: { url: 'https://mydomain2.com', db: 'target' } }
-  const scope = nock(COUCH_URL)
-    .post('/_replicator', { source: 'http://mydomain1.com/source', target: 'https://mydomain2.com/target' })
-    .reply(200, response)
+  mockPool.intercept({
+    method: 'post',
+    path: '/_replicator',
+    body: JSON.stringify({ source: 'http://mydomain1.com/source', target: 'https://mydomain2.com/target' })
+  }).reply(200, response, JSON_HEADERS)
 
   // test POST /_replicator
   const p = await nano.db.replication.enable(source, target)
-  expect(p).toEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should be able to supply additional parameters - POST /_replicator - nano.db.replication.enable', async () => {
@@ -65,27 +69,29 @@ test('should be able to supply additional parameters - POST /_replicator - nano.
   const source = 'http://mydomain1.com/source'
   const target = 'https://mydomain2.com/target'
   const opts = { filter: 'ddoc/func', continuous: true }
-  const scope = nock(COUCH_URL)
-    .post('/_replicator', Object.assign(opts, { source, target }))
-    .reply(200, response)
+  mockPool.intercept({
+    method: 'post',
+    path: '/_replicator',
+    body: JSON.stringify(Object.assign(opts, { source, target }))
+  }).reply(200, response, JSON_HEADERS)
 
   // test POST /_replicator
   const p = await nano.db.replication.enable(source, target, opts)
-  expect(p).toEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should not attempt compact with invalid parameters - nano.db.replication.enable', async () => {
-  await expect(nano.db.replication.enable(undefined, 'target')).rejects.toThrowError('Invalid parameters')
-  await expect(nano.db.replication.enable()).rejects.toThrowError('Invalid parameters')
-  await expect(nano.db.replication.enable('source')).rejects.toThrowError('Invalid parameters')
-  await expect(nano.db.replication.enable('source', '')).rejects.toThrowError('Invalid parameters')
+  await assert.rejects(nano.db.replication.enable(undefined, 'target'), { message: 'Invalid parameters' })
+  await assert.rejects(nano.db.replication.enable(), { message: 'Invalid parameters' })
+  await assert.rejects(nano.db.replication.enable('source'), { message: 'Invalid parameters' })
+  await assert.rejects(nano.db.replication.enable('source', ''), { message: 'Invalid parameters' })
 })
 
 test('should detect missing parameters (callback) - nano.db.replication.enable', () => {
   return new Promise((resolve, reject) => {
     nano.db.replication.enable(undefined, undefined, undefined, (err, data) => {
-      expect(err).not.toBeNull()
+      assert.notEqual(err, null)
       resolve()
     })
   })
@@ -93,13 +99,15 @@ test('should detect missing parameters (callback) - nano.db.replication.enable',
 
 test('should be able to send replication request db.replication.enable - POST /_replicator - db.replication.enable', async () => {
   // mocks
-  const scope = nock(COUCH_URL)
-    .post('/_replicator', { source: COUCH_URL + '/source', target: COUCH_URL + '/target' })
-    .reply(200, response)
+  mockPool.intercept({
+    method: 'post',
+    path: '/_replicator',
+    body: JSON.stringify({ source: COUCH_URL + '/source', target: COUCH_URL + '/target' })
+  }).reply(200, response, JSON_HEADERS)
 
   // test POST /_replicator
   const db = nano.db.use('source')
   const p = await db.replication.enable('target')
-  expect(p).toEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })

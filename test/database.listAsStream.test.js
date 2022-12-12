@@ -10,33 +10,30 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+const test = require('node:test')
+const assert = require('node:assert/strict')
+const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
 const Nano = require('..')
-const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
-const nock = require('nock')
 const response = ['rita', 'sue', 'bob']
 
-afterEach(() => {
-  nock.cleanAll()
-})
-
-test('should get a streamed list of databases - GET /_all_dbs - nano.db.listAsStream', () => {
+test('should get a streamed list of databases - GET /_all_dbs - nano.db.listAsStream', async () => {
   // mocks
-  const scope = nock(COUCH_URL)
-    .get('/_all_dbs')
-    .reply(200, response)
+  mockPool
+    .intercept({ path: '/_all_dbs' })
+    .reply(200, response, JSON_HEADERS)
 
-  return new Promise((resolve, reject) => {
+  await new Promise((resolve, reject) => {
     // test GET /_all_dbs
     const s = nano.db.listAsStream()
-    expect(typeof s).toBe('object')
+    assert.equal(typeof s, 'object')
     let buffer = ''
     s.on('data', (chunk) => {
       buffer += chunk.toString()
     })
     s.on('end', () => {
-      expect(buffer).toBe(JSON.stringify(response))
-      expect(scope.isDone()).toBe(true)
+      assert.equal(buffer, JSON.stringify(response))
+      mockAgent.assertNoPendingInterceptors()
       resolve()
     })
   })
