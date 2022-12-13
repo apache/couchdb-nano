@@ -18,7 +18,7 @@
   ],
   "dependencies": {
     "tough-cookie": "^4.1.2",
-    "undici": "^5.13.0"
+    "undici": "^5.14.0"
   },
   "devDependencies": {
   },

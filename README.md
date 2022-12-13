@@ -1334,7 +1334,6 @@ npm run test
 [2]: https://github.com/apache/couchdb-nano/issues
 [4]: https://github.com/apache/couchdb-nano/blob/main/cfg/couch.example.js
 [8]: https://webchat.freenode.net?channels=%23couchdb-dev
-[axios]:  https://github.com/axios/axios
 
 https://freenode.org/
 
