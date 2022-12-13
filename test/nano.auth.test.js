@@ -110,4 +110,3 @@ test('should be able to handle cookie refresh - POST /_session - nano.auth', asy
   assert.deepEqual(p3, ['a'])
   mockAgent.assertNoPendingInterceptors()
 })
-
