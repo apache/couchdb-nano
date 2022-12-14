@@ -362,7 +362,7 @@ test('should send cookies to authorised subdomains', () => {
   assert.equal(cs, '')
 })
 
-test('should not send http-only cookies to https', () => {
+test('should not send http-only cookies to different protocol', () => {
   const cj = new CookieJar()
   const expiry = new Date().getTime() + 1000 * 60
   const expiryStr = new Date(expiry).toGMTString()
@@ -392,8 +392,12 @@ test('should not send http-only cookies to https', () => {
   let cs = cj.getCookieString('http://test.mydomain.com/my/path/extra')
   assert.equal(cs, `${cookie.value}`)
 
-  // but not https
+  // check we get a cookie for the same domain (https)
   cs = cj.getCookieString('https://test.mydomain.com/my/path/extra')
+  assert.equal(cs, `${cookie.value}`)
+
+  // but not some other protocol
+  cs = cj.getCookieString('ws://test.mydomain.com/my/path/extra')
   assert.equal(cs, '')
 })
 
