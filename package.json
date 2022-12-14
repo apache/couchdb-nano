@@ -20,14 +20,16 @@
     "undici": "^5.14.0"
   },
   "devDependencies": {
+    "@types/node": "^18.11.15",
+    "typescript": "^4.9.4"
   },
   "scripts": {
-    "test": "node --test ./test/*.test.js"
+    "test": "tsc lib/nano.d.ts && node --test ./test/*.test.js"
   },
   "main": "./lib/nano.js",
   "types": "./lib/nano.d.ts",
   "engines": {
-    "node": ">=18"
+    "node": ">=12.18"
   },
   "pre-commit": [
     "test"
