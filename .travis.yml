@@ -1,6 +1,7 @@
 dist: focal
 language: "node_js"
 node_js:
+  - "16.8.1"
   - "18"
   - "19"
 services:
