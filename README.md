@@ -246,6 +246,13 @@ const nano = Nano({ url: 'http://127.0.0.1:5984', agentOptions })
 
 The meanings of the agentOptions attributes is described [here](https://undici.nodejs.org/#/docs/api/Agent?id=new-undiciagentoptions), [here](https://undici.nodejs.org/#/docs/api/Pool?id=parameter-pooloptions) and [here](https://undici.nodejs.org/#/docs/api/Client?id=parameter-clientoptions)
 
+You may also supply a pre-existing `undici.Agent` e.g.
+
+```js
+const agent = new undici.Agent({bodyTimeout: 30000 })
+const nano = Nano({ url: 'http://127.0.0.1:5984', agentOptions: agent })
+``
+
 > Note `requestDefaults` is no longer supported.
 
 ## Custom headers
