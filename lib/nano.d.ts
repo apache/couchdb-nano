@@ -19,6 +19,8 @@
 /// <reference types="node" />
 
 import { EventEmitter } from "events";
+import { ConnectionOptions } from "tls";
+import undici from "undici";
 
 /** nano entry function */
 declare function nano(
@@ -27,8 +29,11 @@ declare function nano(
 
 declare namespace nano {
   /** AgentOptionsConnect options */
-  interface AgentOptionsConnect {
-    timeout?: number
+  interface AgentOptionsConnect extends ConnectionOptions {
+    socketPath: string,
+    maxCachedSessions: number,
+    timeout?: number,
+    servername: string
   }
   /** AgentOptions options */
   interface AgentOptions {
@@ -57,7 +62,7 @@ declare namespace nano {
     /** HTTP Agent options
      * @see README: {@link https://www.npmjs.com/package/nano#pool-size-and-open-sockets}
      */
-    agent?: AgentOptions;
+    agentOptions?: AgentOptions | typeof undici.Agent | typeof undici.MockAgent | typeof undici.Dispatcher;
     /** Logging function 
      * @see README: {@link https://www.npmjs.com/package/nano#logging}
      */
