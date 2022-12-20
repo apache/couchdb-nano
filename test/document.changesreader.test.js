@@ -132,7 +132,7 @@ test('should emit change and batch events - db.changesReader.start', async () =>
       assert.equal(seq, '1-0')
       db.changesReader.stop()
       resolve()
-    })
+    }).on('error', reject)
   })
 })
 
