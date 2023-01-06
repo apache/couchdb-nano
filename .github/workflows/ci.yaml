@@ -1,0 +1,36 @@
+name: Nano Automated Testing
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      couchdb:
+        image: couchdb
+        ports:
+          - 5984:5984
+        options: -n 1
+        env:
+         COUCHDB_USER: admin
+         COUCHDB_PASSWORD: admin
+
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 18.x]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci
+      - run: npm run build --if-present
+      - run: TRAVIS=1 npm test
