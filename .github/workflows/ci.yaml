@@ -16,7 +16,6 @@ jobs:
         image: couchdb
         ports:
           - 5984:5984
-        options: -n 1
         env:
          COUCHDB_USER: admin
          COUCHDB_PASSWORD: admin
