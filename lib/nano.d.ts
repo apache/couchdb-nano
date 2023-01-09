@@ -823,7 +823,7 @@ declare namespace nano {
     instance_start_time: string;
 
     /** The number of purge operations on the database. */
-    purge_seq: number;
+    purge_seq: number | string;
 
     sizes: {
       /** The size of live data inside the database, in bytes. */
@@ -837,7 +837,7 @@ declare namespace nano {
     };
 
     /** The current number of updates to the database. */
-    update_seq: number;
+    update_seq: number | string;
   }
 
   /** OK response
@@ -1392,7 +1392,7 @@ declare namespace nano {
     total_rows: number;
 
     /** Current update sequence for the database. */
-    update_seq?: number;
+    update_seq?: number | string;
   }
 
   /** Fetch with POST _all_docs parameters.
@@ -1426,7 +1426,7 @@ declare namespace nano {
     offset: number;
     rows: Array<DocumentResponseRow<D> | DocumentLookupFailure>;
     total_rows: number;
-    update_seq?: number;
+    update_seq?: number | string;
   }
 
   /** Fetch revisions response
@@ -1435,7 +1435,7 @@ declare namespace nano {
     offset: number;
     rows: Array<DocumentResponseRow<D> | DocumentLookupFailure>;
     total_rows: number;
-    update_seq?: number;
+    update_seq?: number | string;
   }
 
   /** Search response
