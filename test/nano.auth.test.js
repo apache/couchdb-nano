@@ -23,6 +23,7 @@ test('should be able to authenticate - POST /_session - nano.auth', async () => 
   const response = { ok: true, name: 'admin', roles: ['_admin', 'admin'] }
   const c = 'AuthSession=YWRtaW46NUU0MTFBMDE6stHsxYnlDy4mYxwZEcnXHn4fm5w'
   const cookie = `${c}; Version=1; Expires=Mon, 10-Feb-2050 09:03:21 GMT; Max-Age=600; Path=/; HttpOnly`
+
   mockPool
     .intercept({
       method: 'post',
