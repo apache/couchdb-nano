@@ -39,6 +39,7 @@ test('should be able to authenticate - POST /_session - nano.auth', async () => 
         'Set-Cookie': cookie
       }
     })
+    
   mockPool
     .intercept({
       path: '/_all_dbs',
