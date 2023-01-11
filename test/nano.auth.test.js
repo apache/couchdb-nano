@@ -29,7 +29,7 @@ test('should be able to authenticate - POST /_session - nano.auth', async () => 
   const scope = nock(COUCH_URL)
     .post('/_session', 'name=u&password=p', { 'content-type': 'application/x-www-form-urlencoded; charset=utf-8' })
     .reply(200, response, { 'Set-Cookie': cookie })
-    .get('/_all_dbs')
+    .get('/_all_dbs', undefined, { headers: { cookie: c } })
     .reply(200, ['a'])
 
   // test POST /_session
