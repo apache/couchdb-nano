@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "homepage": "http://github.com/apache/couchdb-nano",
   "repository": "http://github.com/apache/couchdb-nano",
-  "version": "10.1.0",
+  "version": "10.1.1",
   "author": "Apache CouchDB <dev@couchdb.apache.org> (http://couchdb.apache.org)",
   "keywords": [
     "couchdb",
@@ -17,9 +17,9 @@
     "database"
   ],
   "dependencies": {
-    "http-cookie-agent": "^4.0.2",
+    "http-cookie-agent": "^5.0.2",
     "@types/tough-cookie": "^4.0.2",
-    "axios": "^1.1.3",
+    "axios": "^1.2.2",
     "qs": "^6.11.0",
     "tough-cookie": "^4.1.2",
     "node-abort-controller": "^3.0.1"
