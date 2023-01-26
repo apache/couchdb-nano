@@ -566,7 +566,7 @@ const headers = await alice.head('rabbit')
 ### db.bulk(docs, [params], [callback])
 
 Bulk operations(update/delete/insert) on the database, refer to the
-[CouchDB doc](https://docs.couchdb.org/en/2.1.1/api/database/bulk-api.html#db-bulk-docs) e.g:
+[CouchDB doc](https://docs.couchdb.org/en/stable/api/database/bulk-api.html#post--db-_bulk_docs) e.g:
 
 ```js
 const documents = [
