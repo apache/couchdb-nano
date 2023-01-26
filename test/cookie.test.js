@@ -10,7 +10,7 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-const assert = require('node:assert/strict')
+const assert = require('assert')
 
 const CookieJar = require('../lib/cookie.js')
 
