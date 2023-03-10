@@ -587,9 +587,10 @@ const response = await alice.bulk({ docs: documents })
 List all the docs in the database .
 
 ```js
-const doclist = await alice.list().then((body)
-doclist.rows.forEach((doc) => {
-  console.log(doc);
+const doclist = await alice.list().then((body)=>{
+    body.rows.forEach((doc) => {
+        console.log(doc);
+    })
 });
 ```
 
