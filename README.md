@@ -504,6 +504,16 @@ Listen to db updates, the available `params` are:
 * `params.timeout` – Number of seconds until CouchDB closes the connection. Default is 60.
 * `params.heartbeat` – Whether CouchDB will send a newline character (\n) on timeout. Default is true.
 
+### nano.info([callback])
+
+Fetch information about the CouchDB cluster:
+
+```js
+const info = await nano.info()
+```
+
+The response is an object with [CouchDB cluster information](https://docs.couchdb.org/en/stable/intro/api.html#server).
+
 ## Document functions
 
 ### db.insert(doc, [params], [callback])
