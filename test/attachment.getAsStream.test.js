@@ -50,7 +50,6 @@ test('should emit an error when stream attachment does not exist - GET /db/id/at
     const db = nano.db.use('db')
     db.attachment.getAsStream('id', 'notexist.gif')
       .on('error', (e) => {
-        console.log(e)
         assert.equal(e.statusCode, 404)
         resolve()
       })
