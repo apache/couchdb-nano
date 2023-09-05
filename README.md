@@ -541,7 +541,7 @@ const response = await alice.insert({ _id: 'myid', _rev: '1-23202479633c2b380f79
 
 ### db.destroy(docname, rev, [callback])
 
-Removes a document from CouchDB whose `_id` is `docname` and who's revision is `_rev`:
+Removes a document from CouchDB whose `_id` is `docname` and who's revision (`_rev`) is `rev`:
 
 ```js
 const response = await alice.destroy('rabbit', '3-66c01cdf99e84c83a9b3fe65b88db8c0')
