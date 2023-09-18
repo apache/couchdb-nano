@@ -17,11 +17,11 @@
     "database"
   ],
   "dependencies": {
-    "undici": "^5.22.1"
   },
   "devDependencies": {
-    "@types/node": "^20.2.3",
-    "typescript": "^5.0.4"
+    "undici": "^5.24.0",
+    "@types/node": "^20.6.2",
+    "typescript": "^5.2.2"
   },
   "scripts": {
     "test": "tsc lib/nano.d.ts && node --test ./test/*.test.js"
@@ -29,14 +29,9 @@
   "main": "./lib/nano.js",
   "types": "./lib/nano.d.ts",
   "engines": {
-    "node": ">=16.8"
+    "node": ">=18.0"
   },
   "pre-commit": [
     "test"
-  ],
-  "standard": {
-    "env": [
-      "jest"
-    ]
-  }
+  ]
 }

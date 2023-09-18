@@ -4,6 +4,8 @@
 
 Offical [Apache CouchDB](https://couchdb.apache.org/) library for [Node.js](https://nodejs.org/).
 
+> Note: Nano >=11.0.0 is for Node 18/20 and above. If you are using Node 16 or older, you need Nano 10.1.2.
+
 Features:
 
 * **Minimalistic** - There is only a minimum of abstraction between you and
@@ -241,7 +243,9 @@ const agentOptions = {
   connections: null,
   maxRedirections: 0
 }
-const nano = Nano({ url: 'http://127.0.0.1:5984', agentOptions })
+const undici = require('undici')
+const undiciOptions = new undici.Agent(agentOptions)
+const nano = Nano({ url: 'http://127.0.0.1:5984', undiciOptions })
 ```
 
 The meanings of the agentOptions attributes is described [here](https://undici.nodejs.org/#/docs/api/Agent?id=new-undiciagentoptions), [here](https://undici.nodejs.org/#/docs/api/Pool?id=parameter-pooloptions) and [here](https://undici.nodejs.org/#/docs/api/Client?id=parameter-clientoptions)

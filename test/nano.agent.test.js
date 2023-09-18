@@ -8,8 +8,9 @@ test('should be able to supply a custom agent parameters', async () => {
   const agentOptions = {
     bodyTimeout: 10000
   }
-  const nano = Nano({ url: COUCH_URL, agentOptions })
-  assert(nano.config.agent instanceof undici.Agent)
+  const undiciOptions = new undici.Agent(agentOptions)
+  const nano = Nano({ url: COUCH_URL, undiciOptions })
+  assert.equal(nano.config.agent, nano.config.agent)
 })
 
 test('should be able to supply a custom agent', async () => {
