@@ -19,6 +19,8 @@
 /// <reference types="node" />
 
 import { EventEmitter } from "events";
+import { ConnectionOptions } from "tls";
+import undici from "undici";
 
 /** nano entry function */
 declare function nano(
@@ -26,19 +28,62 @@ declare function nano(
 ): nano.ServerScope;
 
 declare namespace nano {
-  /** RequestDefaults.auth options */
-  interface RequestDefaultOptionsAuth {
-    username: string,
-    password: string
+  /** AgentOptionsConnect options */
+  interface AgentOptionsConnect extends ConnectionOptions {
+    /** An IPC endpoint, either Unix domain socket or Windows named pipe. 
+     * Default: null */
+    socketPath: string,
+    /** Maximum number of TLS cached sessions. Use 0 to disable TLS session 
+     * caching. Default: 100 */
+    maxCachedSessions: number,
+    /** Connection timeout in ms. Default: 10000 */
+    timeout?: number,
+    /** Default: null */
+    servername: string
   }
-  
-  /** RequestDefaults options */
-  interface RequestDefaultsOptions {
-    timeout?: number;
-    agent?: any;
-    headers?: object;
-    auth?: RequestDefaultOptionsAuth;
-    jar?: boolean;
+  /** AgentOptions options */
+  interface AgentOptions {
+    /** The timeout after which a request will time out, in milliseconds. 
+     * Monitors time between receiving body data. Use 0 to disable it entirely. 
+     * Default: 30000 */
+    bodyTimeout?: number,
+    /** The amount of time the parser will wait to receive the complete 
+     * HTTP headers while not sending the request. Default: 30000 */
+    headersTimeout?: number,
+    /** The maximum allowed keepAliveTimeout in ms when overridden by keep-alive hints 
+     * from the server. Default: 600000 */
+    keepAliveMaxTimeout?: number,
+    /** The timeout in ms after which a socket without active requests will time out. 
+     * Monitors time between activity on a connected socket. This value may be 
+     * overridden by keep-alive hints from the server. Default: 4000 */
+    keepAliveTimeout?: number,
+    /**  A number subtracted from server keep-alive hints when overriding 
+     * keepAliveTimeout to account for timing inaccuracies caused by 
+     * e.g. transport latency. Default: 1000 */
+    keepAliveTimeoutThreshold?: number,
+    /**  The maximum length of request headers in bytes. Default: 16384 */
+    maxHeaderSize?: number,
+    /** The maximum length of response body in bytes. Set to -1 to disable. Default: -1 */
+    maxResponseSize?: number,
+    /**  The amount of concurrent requests to be sent over the single TCP/TLS 
+     * connection according to RFC7230. Carefully consider your workload and 
+     * environment before enabling concurrent requests as pipelining may reduce 
+     * performance if used incorrectly. Pipelining is sensitive to network stack 
+     * settings as well as head of line blocking caused by e.g. long running r
+     * equests. Set to 0 to disable keep-alive connections. Default: 1 */
+    pipelining?: number,
+    /** Connection options */
+    connect?: AgentOptionsConnect,
+    /** Whether to treat request content length mismatches as errors. If true, 
+     * an error is thrown when the request content-length header doesn't match 
+     * the length of the request body. Default: true */
+    strictContentLength?: boolean,
+    /** The number of Client instances to create. 
+     * When set to null, the Pool instance will create an unlimited amount 
+     * of Client instances. */
+    connections: null,
+    /** The number of HTTP redirection to follow - Default: 0 */
+    maxRedirections?: null
   }
 
   /** Nano configuration */
@@ -49,10 +94,10 @@ declare namespace nano {
     url: string;
     /** For cookie authentication */
     cookie?: string;
-    /** HTTP request options
+    /** HTTP Agent options
      * @see README: {@link https://www.npmjs.com/package/nano#pool-size-and-open-sockets}
      */
-    requestDefaults?: RequestDefaultsOptions;
+    agentOptions?: AgentOptions | typeof undici.Agent | typeof undici.MockAgent | typeof undici.Dispatcher;
     /** Logging function 
      * @see README: {@link https://www.npmjs.com/package/nano#logging}
      */

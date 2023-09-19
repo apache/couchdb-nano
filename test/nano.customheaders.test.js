@@ -10,18 +10,17 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+const test = require('node:test')
+const assert = require('node:assert/strict')
+const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
 const Nano = require('..')
-const COUCH_URL = 'http://localhost:5984'
 const CUSTOM_HEADER = 'thequickbrownfox'
 const nano = Nano({
   url: COUCH_URL,
-  requestDefaults: {
-    headers: {
-      customheader: CUSTOM_HEADER
-    }
+  headers: {
+    customheader: CUSTOM_HEADER
   }
 })
-const nock = require('nock')
 const response = {
   db_name: 'db',
   purge_seq: '0-8KhNZEiqhyjKAgBm5Rxs',
@@ -49,21 +48,19 @@ const response = {
   instance_start_time: '0'
 }
 
-afterEach(() => {
-  nock.cleanAll()
-})
-
 test('should be able to fetch the database info - GET /db - nano.db.get', async () => {
   // mocks
-  const scope = nock(COUCH_URL)
-    .matchHeader('customheader', CUSTOM_HEADER)
-    .get('/db')
-    .reply(200, response)
+  mockPool
+    .intercept({
+      path: '/db',
+      headers: {
+        customheader: CUSTOM_HEADER
+      }
+    })
+    .reply(200, response, JSON_HEADERS)
 
   // test GET /db
   const p = await nano.db.get('db')
-  expect(typeof p).toBe('object')
-  expect(p.doc_count).toBe(0)
-  expect(p.db_name).toBe('db')
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })

@@ -10,14 +10,11 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+const test = require('node:test')
+const assert = require('node:assert/strict')
+const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
 const Nano = require('..')
-const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
-const nock = require('nock')
-
-afterEach(() => {
-  nock.cleanAll()
-})
 
 test('should be able to get a list of documents - GET /db/_all_docs - db.list', async () => {
   // mocks
@@ -48,15 +45,15 @@ test('should be able to get a list of documents - GET /db/_all_docs - db.list', 
       }
     ]
   }
-  const scope = nock(COUCH_URL)
-    .get('/db/_all_docs')
-    .reply(200, response)
+  mockPool
+    .intercept({ path: '/db/_all_docs' })
+    .reply(200, response, JSON_HEADERS)
 
   // test GET /db/_all_docs
   const db = nano.db.use('db')
   const p = await db.list()
-  expect(p).toStrictEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should be able to get a list of documents with opts - GET /db/_all_docs - db.list', async () => {
@@ -80,15 +77,15 @@ test('should be able to get a list of documents with opts - GET /db/_all_docs - 
       }
     ]
   }
-  const scope = nock(COUCH_URL)
-    .get('/db/_all_docs?include_docs=true&limit=1')
-    .reply(200, response)
+  mockPool
+    .intercept({ path: '/db/_all_docs?include_docs=true&limit=1' })
+    .reply(200, response, JSON_HEADERS)
 
   // test GET /db/_all_docs
   const db = nano.db.use('db')
   const p = await db.list({ include_docs: true, limit: 1 })
-  expect(p).toStrictEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should be able to handle 404 - GET /db/_all_docs - db.list', async () => {
@@ -97,12 +94,12 @@ test('should be able to handle 404 - GET /db/_all_docs - db.list', async () => {
     error: 'not_found',
     reason: 'missing'
   }
-  const scope = nock(COUCH_URL)
-    .get('/db/_all_docs')
-    .reply(404, response)
+  mockPool
+    .intercept({ path: '/db/_all_docs' })
+    .reply(404, response, JSON_HEADERS)
 
   // test GET /db/_all_docs
   const db = nano.db.use('db')
-  await expect(db.list()).rejects.toThrow('missing')
-  expect(scope.isDone()).toBe(true)
+  await assert.rejects(db.list(), { message: 'missing' })
+  mockAgent.assertNoPendingInterceptors()
 })
