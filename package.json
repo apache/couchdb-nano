@@ -17,8 +17,8 @@
     "database"
   ],
   "dependencies": {
-    "axios": "^1.6.2",
-    "qs": "^6.11.0",
+    "axios": "^1.6.7",
+    "qs": "^6.12.0",
     "node-abort-controller": "^3.0.1"
   },
   "devDependencies": {
