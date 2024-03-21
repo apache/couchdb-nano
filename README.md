@@ -108,7 +108,7 @@ To use `nano` you need to connect it to your CouchDB install, to do that:
 const nano = require('nano')('http://localhost:5984');
 ```
 
-> Note: The URL you supply may also contain authentication credentials e.g. `http://admin:mypassword@localhost:5984`.
+> Note: Supplying authentication credentials in the URL e.g. `http://admin:mypassword@localhost:5984` is deprecated. Use `nano.auth` instead.
 
 To create a new database:
 
