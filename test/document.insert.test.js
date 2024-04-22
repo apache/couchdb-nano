@@ -65,6 +65,23 @@ test('should be able to insert document with known id - PUT /db/id - db.insert',
   expect(scope.isDone()).toBe(true)
 })
 
+test('should be able to insert document with known id with _local - PUT /db/id - db.insert', async () => {
+  // mocks
+  const id = 'myid/_local'
+  const doc = { a: 1, b: 2 }
+  const response = { ok: true, id, rev: '1-123' }
+
+  const scope = nock(COUCH_URL)
+    .put(`/db/${encodeURIComponent(id)}`, doc)
+    .reply(200, response)
+
+  // test PUT /db
+  const db = nano.db.use('db')
+  const p = await db.insert(doc, id)
+  expect(p).toStrictEqual(response)
+  expect(scope.isDone()).toBe(true)
+})
+
 test('should be able to insert document with id in object - POST /db - db.insert', async () => {
   // mocks
   const doc = { _id: 'myid', a: 1, b: 2 }
