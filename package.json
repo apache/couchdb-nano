@@ -18,7 +18,7 @@
   ],
   "dependencies": {
     "axios": "^1.6.7",
-    "qs": "^6.12.0",
+    "neoqs": "^6.12.4",
     "node-abort-controller": "^3.0.1"
   },
   "devDependencies": {
