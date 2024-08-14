@@ -110,7 +110,7 @@ To use `nano` you need to connect it to your CouchDB install, to do that:
 const nano = require('nano')('http://127.0.0.1:5984');
 ```
 
-> Note: The URL you supply may also contain authentication credentials e.g. `http://admin:mypassword@127.0.0.1:5984`.
+> Note: Supplying authentication credentials in the URL e.g. `http://admin:mypassword@localhost:5984` is deprecated. Use `nano.auth` instead.
 
 To create a new database:
 
@@ -539,7 +539,7 @@ const response = await alice.insert({ _id: 'myid', _rev: '1-23202479633c2b380f79
 
 ### db.destroy(docname, rev, [callback])
 
-Removes a document from CouchDB whose `_id` is `docname` and who's revision is `_rev`:
+Removes a document from CouchDB whose `_id` is `docname` and whose revision (`_rev`) is `rev`:
 
 ```js
 const response = await alice.destroy('rabbit', '3-66c01cdf99e84c83a9b3fe65b88db8c0')
@@ -708,7 +708,7 @@ You may supply a number of options when you start to listen to the changes feed:
 | includeDocs | Whether to include document bodies or not | false | e.g. true |
 | wait | For `get`/`start` mode, automatically pause the changes reader after each request. When the the user calls `resume()`, the changes reader will resume.  | false | e.g. true |
 | fastChanges | Adds a seq_interval parameter to fetch changes more quickly | false           | true                             |   |
-| selector | Filters the changes feed with the supplied Mango selector | {"name":"fred}           | null                             |   |
+| selector | Filters the changes feed with the supplied Mango selector |    null       | {"name":"fred}                            |   |
 | timeout | The number of milliseconds a changes feed request waits for data| 60000         | 10000    |
 
 The events it emits are as follows:s
