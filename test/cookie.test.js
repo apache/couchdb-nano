@@ -10,7 +10,8 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-const assert = require('assert')
+const test = require('node:test')
+const assert = require('node:assert/strict')
 
 const CookieJar = require('../lib/cookie.js')
 
@@ -194,7 +195,7 @@ const sleep = async (ms) => {
 
 test('should expire cookies correctly', async () => {
   const cj = new CookieJar()
-  const expiry = new Date().getTime() + 1000 * 4
+  const expiry = new Date().getTime() + 1000 * 5
   const expiryStr = new Date(expiry).toGMTString()
   const n = 'AuthSession'
   const v = `${n}=YWRtaW46NjM5ODgzQ0Y6TuB66MczvkZ7axEJq6Fz0gOdhKY`
@@ -203,7 +204,7 @@ test('should expire cookies correctly', async () => {
   cj.parse(sc, url)
   assert.equal(cj.jar.length, 1)
   assert.notEqual(cj.getCookieString(url).length, 0)
-  await sleep(4000)
+  await sleep(5000)
   assert.equal(cj.getCookieString(url).length, 0)
   assert.equal(cj.getCookieString(url).length, 0)
 })

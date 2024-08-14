@@ -11,7 +11,7 @@
 // the License.
 
 const express = require('express')
-const db = require('nano')('http://localhost:5984/my_couch')
+const db = require('nano')('http://127.0.0.1:5984/my_couch')
 const app = module.exports = express()
 
 app.get('/', function (req, res) {

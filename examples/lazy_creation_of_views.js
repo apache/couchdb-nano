@@ -11,7 +11,7 @@
 // the License.
 
 module.exports = function () {
-  const nano = require('nano')('http://localhost:5984')
+  const nano = require('nano')('http://127.0.0.1:5984')
   const users = nano.use('users')
   const VIEWS = {
     by_twitter_id:

@@ -11,46 +11,47 @@
 // the License.
 
 const Nano = require('..')
-const assert = require('assert')
+const test = require('node:test')
+const assert = require('node:assert/strict')
 
 test('should be able to supply HTTP url - nano.config', () => {
-  const HTTP_URL = 'http://localhost:5984'
+  const HTTP_URL = 'http://127.0.0.1:5984'
   const nano = Nano(HTTP_URL)
-  expect(nano.config.url).toBe(HTTP_URL)
+  assert.equal(nano.config.url, HTTP_URL)
 })
 
 test('should be able to supply URL with database name - nano.config', () => {
-  const HTTP_URL = 'http://localhost:5984/db'
+  const HTTP_URL = 'http://127.0.0.1:5984/db'
   const nano = Nano(HTTP_URL)
-  expect(nano.config.url).toBe('http://localhost:5984')
-  expect(nano.config.db).toBe('db')
+  assert.equal(nano.config.url, 'http://127.0.0.1:5984')
+  assert.equal(nano.config.db, 'db')
 })
 
 test('should be able to supply HTTPS url - nano.config', () => {
   const HTTPS_URL = 'https://mydomain.com'
   const nano = Nano(HTTPS_URL)
-  expect(nano.config.url).toBe(HTTPS_URL)
+  assert.equal(nano.config.url, HTTPS_URL)
 })
 
 test('should be able to supply HTTP url with cookie jar - nano.config', () => {
-  const HTTP_URL = 'http://localhost:5984'
+  const HTTP_URL = 'http://127.0.0.1:5984'
   const nano = Nano({ url: HTTP_URL, jar: true })
-  expect(nano.config.url).toBe(HTTP_URL)
-  expect(nano.config.jar).toBe(true)
+  assert.equal(nano.config.url, HTTP_URL)
+  assert.equal(nano.config.jar, true)
 })
 
 test('should be able to supply HTTPS url with auth credentials - nano.config', () => {
   const HTTPS_URL = 'https://myusername:mypassword@mydomain.com'
   const nano = Nano(HTTPS_URL)
-  expect(nano.config.url).toBe(HTTPS_URL)
+  assert.equal(nano.config.url, HTTPS_URL)
 })
 
 test('should be able to supply requestDefaults - nano.config', () => {
   const HTTPS_URL = 'https://myusername:mypassword@mydomain.com'
   const defaults = { proxy: 'http://localproxy.com' }
   const nano = Nano({ url: HTTPS_URL, requestDefaults: defaults })
-  expect(nano.config.url).toBe(HTTPS_URL)
-  expect(nano.config.requestDefaults).toBe(defaults)
+  assert.equal(nano.config.url, HTTPS_URL)
+  assert.equal(nano.config.requestDefaults, defaults)
 })
 
 test('should be able to supply logging function - nano.config', () => {
@@ -59,16 +60,16 @@ test('should be able to supply logging function - nano.config', () => {
     console.log(id, args)
   }
   const nano = Nano({ url: HTTPS_URL, log: logger })
-  expect(nano.config.url).toBe(HTTPS_URL)
-  expect(typeof nano.config.log).toBe('function')
+  assert.equal(nano.config.url, HTTPS_URL)
+  assert.equal(typeof nano.config.log, 'function')
 })
 
 test('should be able to handle missing URL - nano.config', () => {
   try {
     Nano()
   } catch (e) {
-    expect(e instanceof assert.AssertionError)
-    expect(e.message).toBe('You must specify the endpoint url when invoking this module')
+    assert(e instanceof assert.AssertionError)
+    assert.equal(e.message, 'You must specify the endpoint url when invoking this module')
   }
 })
 
@@ -77,8 +78,8 @@ test('should be able to handle invalid URL #1 - nano.config', () => {
   try {
     Nano(INVALID_URL)
   } catch (e) {
-    expect(e instanceof assert.AssertionError)
-    expect(e.message).toBe('url is not valid')
+    assert(e instanceof assert.AssertionError)
+    assert.equal(e.message, 'url is not valid')
   }
 })
 
@@ -87,16 +88,16 @@ test('should be able to handle invalid URL #2 - nano.config', () => {
   try {
     Nano({ url: INVALID_URL })
   } catch (e) {
-    expect(e instanceof assert.AssertionError)
-    expect(e.message).toBe('url is not valid')
+    assert(e instanceof assert.AssertionError)
+    assert.equal(e.message, 'url is not valid')
   }
 })
 
 test('exercise the parseUrl feature for proxies etc - nano.config', () => {
-  const HTTP_URL = 'http://localhost:5984/prefix'
+  const HTTP_URL = 'http://127.0.0.1:5984/prefix'
   const nano = Nano({
     url: HTTP_URL,
     parseUrl: false
   })
-  expect(nano.config.url).toBe(HTTP_URL)
+  assert.equal(nano.config.url, HTTP_URL)
 })

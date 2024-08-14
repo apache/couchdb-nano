@@ -11,7 +11,7 @@
 // the License.
 
 const express = require('express')
-const nano = require('nano')('http://localhost:5984')
+const nano = require('nano')('http://127.0.0.1:5984')
 const app = express.createServer()
 const dbName = 'test'
 const db = nano.use(dbName)

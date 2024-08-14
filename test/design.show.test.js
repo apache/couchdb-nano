@@ -10,29 +10,26 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+const test = require('node:test')
+const assert = require('node:assert/strict')
+const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
 const Nano = require('..')
-const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
-const nock = require('nock')
-
-afterEach(() => {
-  nock.cleanAll()
-})
 
 test('should be able to use a show function - GET /db/_design/ddoc/_show/showname/docid - db.show', async () => {
   const showFunction = function (doc, req) {
     return 'Hello, world!'
   }
   // mocks
-  const scope = nock(COUCH_URL)
-    .get('/db/_design/ddoc/_show/showname/docid')
-    .reply(200, showFunction(), { 'Content-type': 'text/plain' })
+  mockPool
+    .intercept({ path: '/db/_design/ddoc/_show/showname/docid' })
+    .reply(200, showFunction(), { headers: { 'content-type': 'text/plain' } })
 
   // test GET /db/_design/ddoc/_show/showname/docid
   const db = nano.db.use('db')
   const p = await db.show('ddoc', 'showname', 'docid')
-  expect(p).toStrictEqual(showFunction())
-  expect(scope.isDone()).toBe(true)
+  assert.equal(p, showFunction())
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should be able to handle 404 - db.show', async () => {
@@ -41,29 +38,29 @@ test('should be able to handle 404 - db.show', async () => {
     error: 'not_found',
     reason: 'missing'
   }
-  const scope = nock(COUCH_URL)
-    .get('/db/_design/ddoc/_show/showname/docid')
-    .reply(404, response)
+  mockPool
+    .intercept({ path: '/db/_design/ddoc/_show/showname/docid' })
+    .reply(404, response, JSON_HEADERS)
 
   // test GET /db/_design/ddoc/_show/showname/docid
   const db = nano.db.use('db')
-  await expect(db.show('ddoc', 'showname', 'docid')).rejects.toThrow('missing')
-  expect(scope.isDone()).toBe(true)
+  await assert.rejects(db.show('ddoc', 'showname', 'docid'), { message: 'missing' })
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should detect missing parameters - db.show', async () => {
   const db = nano.db.use('db')
-  await expect(db.show()).rejects.toThrow('Invalid parameters')
-  await expect(db.show('ddoc')).rejects.toThrow('Invalid parameters')
-  await expect(db.show('ddoc', 'showname')).rejects.toThrow('Invalid parameters')
-  await expect(db.show('', 'showname', 'docid')).rejects.toThrow('Invalid parameters')
+  await assert.rejects(db.show(), { message: 'Invalid parameters' })
+  await assert.rejects(db.show('ddoc'), { message: 'Invalid parameters' })
+  await assert.rejects(db.show('ddoc', 'showname'), { message: 'Invalid parameters' })
+  await assert.rejects(db.show('', 'showname', 'docid'), { message: 'Invalid parameters' })
 })
 
 test('should detect missing parameters (callback) - db.show', () => {
   const db = nano.db.use('db')
   return new Promise((resolve, reject) => {
     db.show('', '', '', {}, (err, data) => {
-      expect(err).not.toBeNull()
+      assert.notEqual(err, null)
       resolve()
     })
   })

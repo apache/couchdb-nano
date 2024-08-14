@@ -10,7 +10,7 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-const db = require('nano')('http://localhost:5984/emails')
+const db = require('nano')('http://127.0.0.1:5984/emails')
 const async = require('async')
 
 function updateRow (row, cb) {

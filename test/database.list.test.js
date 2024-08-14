@@ -10,24 +10,22 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+const test = require('node:test')
+const assert = require('node:assert/strict')
+const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
 const Nano = require('..')
-const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
-const nock = require('nock')
 const response = ['rita', 'sue', 'bob']
-
-afterEach(() => {
-  nock.cleanAll()
-})
 
 test('should be to get list of databases - GET /_all_dbs - nano.db.list', async () => {
   // mocks
-  const scope = nock(COUCH_URL)
-    .get('/_all_dbs')
-    .reply(200, response)
+  mockPool
+    .intercept({ path: '/_all_dbs' })
+    .reply(200, response, JSON_HEADERS)
 
   // test GET /_all_dbs
   const p = await nano.db.list()
-  expect(p).toStrictEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.equal(typeof p, 'object')
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })

@@ -10,14 +10,11 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+const test = require('node:test')
+const assert = require('node:assert/strict')
+const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
 const Nano = require('..')
-const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
-const nock = require('nock')
-
-afterEach(() => {
-  nock.cleanAll()
-})
 
 test('should be able to access a MapReduce view - GET /db/_design/ddoc/_view/viewname - db.view', async () => {
   // mocks
@@ -26,15 +23,15 @@ test('should be able to access a MapReduce view - GET /db/_design/ddoc/_view/vie
       { key: null, value: 23515 }
     ]
   }
-  const scope = nock(COUCH_URL)
-    .get('/db/_design/ddoc/_view/viewname')
-    .reply(200, response)
+  mockPool
+    .intercept({ path: '/db/_design/ddoc/_view/viewname' })
+    .reply(200, response, JSON_HEADERS)
 
   // test GET /db/_design/ddoc/_view/viewname
   const db = nano.db.use('db')
   const p = await db.view('ddoc', 'viewname')
-  expect(p).toStrictEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should be able to access a MapReduce view with opts - GET /db/_design/ddoc/_view/viewname - db.view', async () => {
@@ -57,15 +54,15 @@ test('should be able to access a MapReduce view with opts - GET /db/_design/ddoc
       { key: 'BQ', value: 1 }
     ]
   }
-  const scope = nock(COUCH_URL)
-    .get('/db/_design/ddoc/_view/viewname?group=true&startkey="BA"&endkey="BQ"')
-    .reply(200, response)
+  mockPool
+    .intercept({ path: '/db/_design/ddoc/_view/viewname?group=true&startkey="BA"&endkey="BQ"' })
+    .reply(200, response, JSON_HEADERS)
 
   // test GET /db/_design/ddoc/_view/viewname
   const db = nano.db.use('db')
   const p = await db.view('ddoc', 'viewname', { group: true, startkey: 'BA', endkey: 'BQ' })
-  expect(p).toStrictEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should be able to access a MapReduce view with keys - POST /db/_design/ddoc/_view/viewname - db.view', async () => {
@@ -77,15 +74,19 @@ test('should be able to access a MapReduce view with keys - POST /db/_design/ddo
       { key: 'BB', value: 1 }
     ]
   }
-  const scope = nock(COUCH_URL)
-    .post('/db/_design/ddoc/_view/viewname', { keys })
-    .reply(200, response)
+  mockPool
+    .intercept({
+      method: 'post',
+      path: '/db/_design/ddoc/_view/viewname',
+      body: JSON.stringify({ keys })
+    })
+    .reply(200, response, JSON_HEADERS)
 
   // test POST /db/_design/ddoc/_view/viewname
   const db = nano.db.use('db')
   const p = await db.view('ddoc', 'viewname', { keys })
-  expect(p).toStrictEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should be able to access a MapReduce view with queries - POST /db/_design/ddoc/_view/viewname - db.view', async () => {
@@ -122,15 +123,19 @@ test('should be able to access a MapReduce view with queries - POST /db/_design/
       }
     ]
   }
-  const scope = nock(COUCH_URL)
-    .post('/db/_design/ddoc/_view/viewname', { queries: opts.queries })
-    .reply(200, response)
+  mockPool
+    .intercept({
+      method: 'post',
+      path: '/db/_design/ddoc/_view/viewname',
+      body: JSON.stringify({ queries: opts.queries })
+    })
+    .reply(200, response, JSON_HEADERS)
 
   // test POST /db/_design/ddoc/_view/viewname
   const db = nano.db.use('db')
   const p = await db.view('ddoc', 'viewname', opts)
-  expect(p).toStrictEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should be able to handle 404 - db.view', async () => {
@@ -139,29 +144,31 @@ test('should be able to handle 404 - db.view', async () => {
     error: 'not_found',
     reason: 'missing'
   }
-  const scope = nock(COUCH_URL)
-    .get('/db/_design/ddoc/_view/viewname?group=true&startkey="BA"&endkey="BQ"')
-    .reply(404, response)
+  mockPool
+    .intercept({
+      path: '/db/_design/ddoc/_view/viewname?group=true&startkey="BA"&endkey="BQ"'
+    })
+    .reply(404, response, JSON_HEADERS)
 
   // test GET /db/_design/ddoc/_view/viewname
   const db = nano.db.use('db')
-  await expect(db.view('ddoc', 'viewname', { group: true, startkey: 'BA', endkey: 'BQ' })).rejects.toThrow('missing')
-  expect(scope.isDone()).toBe(true)
+  await assert.rejects(db.view('ddoc', 'viewname', { group: true, startkey: 'BA', endkey: 'BQ' }), { message: 'missing' })
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should detect missing parameters - db.view', async () => {
   const db = nano.db.use('db')
-  await expect(db.view()).rejects.toThrow('Invalid parameters')
-  await expect(db.view('susan')).rejects.toThrow('Invalid parameters')
-  await expect(db.view('susan', '')).rejects.toThrow('Invalid parameters')
-  await expect(db.view('', 'susan')).rejects.toThrow('Invalid parameters')
+  await assert.rejects(db.view(), { message: 'Invalid parameters' })
+  await assert.rejects(db.view('susan'), { message: 'Invalid parameters' })
+  await assert.rejects(db.view('susan', ''), { message: 'Invalid parameters' })
+  await assert.rejects(db.view('', 'susan'), { message: 'Invalid parameters' })
 })
 
 test('should detect missing parameters (callback) - db.view', () => {
   const db = nano.db.use('db')
   return new Promise((resolve, reject) => {
     db.view('', '', (err, data) => {
-      expect(err).not.toBeNull()
+      assert.notEqual(err, null)
       resolve()
     })
   })
