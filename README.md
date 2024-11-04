@@ -5,6 +5,7 @@
 Offical [Apache CouchDB](https://couchdb.apache.org/) library for [Node.js](https://nodejs.org/).
 
 > Note: Nano >=11.0.0 is a **breaking change for Node.js versions 16 and older**. Nano 11 uses Node.js's built-in "fetch" HTTP client but this is only available in Node.js versions 18 or later. If you are using Node 16 or older then continue using Nano 10.
+> See our [migration guide](migration_guide_v10_to_v11.md) for moving from Nano 10 to Nano 11.
 
 Features:
 
