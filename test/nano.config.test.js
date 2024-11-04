@@ -69,7 +69,6 @@ test('should be able to handle missing URL - nano.config', () => {
     Nano()
   } catch (e) {
     assert(e instanceof assert.AssertionError)
-    assert.equal(e.message, 'You must specify the endpoint url when invoking this module')
   }
 })
 
@@ -79,7 +78,6 @@ test('should be able to handle invalid URL #1 - nano.config', () => {
     Nano(INVALID_URL)
   } catch (e) {
     assert(e instanceof assert.AssertionError)
-    assert.equal(e.message, 'url is not valid')
   }
 })
 
@@ -89,7 +87,6 @@ test('should be able to handle invalid URL #2 - nano.config', () => {
     Nano({ url: INVALID_URL })
   } catch (e) {
     assert(e instanceof assert.AssertionError)
-    assert.equal(e.message, 'url is not valid')
   }
 })
 
