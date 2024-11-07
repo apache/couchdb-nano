@@ -70,12 +70,3 @@ test('should detect missing parameters - db.search', async () => {
   await assert.rejects(db.search('', 'susan'), { message: 'Invalid parameters' })
 })
 
-test('should detect missing parameters (callback) - db.search', () => {
-  const db = nano.db.use('db')
-  return new Promise((resolve, reject) => {
-    db.search('', '', (err, data) => {
-      assert.notEqual(err, null)
-      resolve()
-    })
-  })
-})

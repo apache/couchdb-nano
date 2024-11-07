@@ -79,16 +79,6 @@ test('should detect missing doc id - db.get', async () => {
   await assert.rejects(db.get(), { message: 'Invalid parameters' })
 })
 
-test('should detect missing parameters (callback) - db.get', async () => {
-  await new Promise((resolve, reject) => {
-    const db = nano.db.use('db')
-    db.get(undefined, undefined, (err, data) => {
-      assert.notEqual(err, null)
-      resolve()
-    })
-  })
-})
-
 test('check request can fetch local documents - db.get', async () => {
   // mocks
   const response = { _id: '_local/id', _rev: '1-123', a: 1 }

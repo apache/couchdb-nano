@@ -64,11 +64,3 @@ test('should not attempt to create database with invalid parameters - nano.db.cr
   await assert.rejects(nano.db.create(''), { message: 'Invalid parameters' })
 })
 
-test('should detect missing parameters (callback) - nano.db.create', () => {
-  return new Promise((resolve, reject) => {
-    nano.db.create(undefined, undefined, (err, data) => {
-      assert.notEqual(err, null)
-      resolve()
-    })
-  })
-})

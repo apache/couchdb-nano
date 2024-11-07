@@ -37,32 +37,6 @@ test('should be able to head a document - HEAD /db/id - db.head', async () => {
   mockAgent.assertNoPendingInterceptors()
 })
 
-test('should be able to head a document with callback - HEAD /db/id - db.head', async () => {
-  // mocks
-  const headers = {
-    'content-type': 'application/json',
-    etag: '1-123'
-  }
-  mockPool
-    .intercept({
-      method: 'head',
-      path: '/db/id'
-    })
-    .reply(200, '', { headers })
-
-  // test HEAD /db
-  await new Promise((resolve, reject) => {
-    const db = nano.db.use('db')
-    db.head('id', (err, data, headers) => {
-      // headers get lowercased
-      assert.equal(err, null)
-      assert.equal(headers.etag, '1-123')
-      mockAgent.assertNoPendingInterceptors()
-      resolve()
-    })
-  })
-})
-
 test('should be able to head a missing document - HEAD /db/id - db.head', async () => {
   // mocks
   mockPool
@@ -83,12 +57,3 @@ test('should detect missing parameters - db.head', async () => {
   await assert.rejects(db.head(), { message: 'Invalid parameters' })
 })
 
-test('should detect missing parameters (callback) - db.head', async () => {
-  await new Promise((resolve, reject) => {
-    const db = nano.db.use('db')
-    db.head(undefined, (err, data) => {
-      assert.notEqual(err, null)
-      resolve()
-    })
-  })
-})

@@ -48,11 +48,3 @@ test('should not attempt to destroy database with empty database name - nano.db.
   await assert.rejects(nano.db.destroy(''), { message: 'Invalid parameters' })
 })
 
-test('should detect missing parameters (callback) - nano.db.destroy', () => {
-  return new Promise((resolve, reject) => {
-    nano.db.destroy(undefined, (err, data) => {
-      assert.notEqual(err, null)
-      resolve()
-    })
-  })
-})

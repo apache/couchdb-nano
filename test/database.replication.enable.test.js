@@ -88,15 +88,6 @@ test('should not attempt compact with invalid parameters - nano.db.replication.e
   await assert.rejects(nano.db.replication.enable('source', ''), { message: 'Invalid parameters' })
 })
 
-test('should detect missing parameters (callback) - nano.db.replication.enable', () => {
-  return new Promise((resolve, reject) => {
-    nano.db.replication.enable(undefined, undefined, undefined, (err, data) => {
-      assert.notEqual(err, null)
-      resolve()
-    })
-  })
-})
-
 test('should be able to send replication request db.replication.enable - POST /_replicator - db.replication.enable', async () => {
   // mocks
   mockPool.intercept({

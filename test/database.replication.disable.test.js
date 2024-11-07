@@ -53,15 +53,6 @@ test('should not to try to disable with invalid parameters - nano.db.replication
   await assert.rejects(nano.db.replication.disable('rep1'), { message: 'Invalid parameters' })
 })
 
-test('should detect missing parameters (callback) - nano.db.replication.disable', () => {
-  return new Promise((resolve, reject) => {
-    nano.db.replication.disable(undefined, undefined, (err, data) => {
-      assert.notEqual(err, null)
-      resolve()
-    })
-  })
-})
-
 test('should be able to delete a replication from db.replication.disable - DELETE /_replicator/id - db.replication.disable', async () => {
   // mocks
   mockPool.intercept({

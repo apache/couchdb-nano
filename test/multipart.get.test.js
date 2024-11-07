@@ -98,12 +98,3 @@ test('should detect missing docName - db.multipart.get', async () => {
   await assert.rejects(db.multipart.get(undefined, { conflicts: true }), { message: 'Invalid parameters' })
 })
 
-test('should detect missing parameters (callback) - db.multipart.get', async () => {
-  const db = nano.db.use('db')
-  return new Promise((resolve, reject) => {
-    db.multipart.get(undefined, undefined, (err, data) => {
-      assert.notEqual(err, null)
-      resolve()
-    })
-  })
-})

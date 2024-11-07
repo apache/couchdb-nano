@@ -102,23 +102,6 @@ test('should be list documents form a partition with opts - GET /db/_partition/_
   mockAgent.assertNoPendingInterceptors()
 })
 
-test('should be able to list partition docs (callback) - GET /db/_partition/_all_docs - db.partitionedList', async () => {
-  // mocks
-  mockPool
-    .intercept({ path: '/db/_partition/partition/_all_docs' })
-    .reply(200, response, JSON_HEADERS)
-
-  // test GET /db/_partition/_all_docs
-  await new Promise((resolve, reject) => {
-    db.partitionedList('partition', (err, data) => {
-      assert.equal(err, null)
-      assert.deepEqual(data, response)
-      mockAgent.assertNoPendingInterceptors()
-      resolve()
-    })
-  })
-})
-
 test('should escape unusual characters - GET /db/_partition/a+b/_all_docs - db.partitionedList', async () => {
   // mocks
   mockPool
@@ -126,14 +109,9 @@ test('should escape unusual characters - GET /db/_partition/a+b/_all_docs - db.p
     .reply(200, response, JSON_HEADERS)
 
   // test GET /db/_partition/_all_docs
-  await new Promise((resolve, reject) => {
-    db.partitionedList('a+b', (err, data) => {
-      assert.equal(err, null)
-      assert.deepEqual(data, response)
-      mockAgent.assertNoPendingInterceptors()
-      resolve()
-    })
-  })
+  const p = await db.partitionedList('a+b')
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should handle missing database - GET /db/_partition/_all_docs - db.partitionedList', async () => {
@@ -156,11 +134,3 @@ test('should not attempt info fetch with missing parameters - db.partitionedList
   await assert.rejects(db.partitionedList(''), { message: 'Invalid parameters' })
 })
 
-test('should detect missing parameters (callback) - db.partitionedList', async () => {
-  await new Promise((resolve, reject) => {
-    db.partitionedList(undefined, (err, data) => {
-      assert.notEqual(err, null)
-      resolve()
-    })
-  })
-})

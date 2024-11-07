@@ -82,15 +82,6 @@ test('should not attempt info fetch with invalid parameters - nano.db.replicatio
   await assert.rejects(nano.db.replication.query(), { message: 'Invalid parameters' })
 })
 
-test('should detect missing parameters (callback) - nano.db.replication.query', () => {
-  return new Promise((resolve, reject) => {
-    nano.db.replication.query(undefined, undefined, (err, data) => {
-      assert.notEqual(err, null)
-      resolve()
-    })
-  })
-})
-
 test('should be able to query a replication from db.replication.quey - GET /_replicator/id - db.replication.query', async () => {
   // mocks
   mockPool.intercept({
