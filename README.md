@@ -34,66 +34,66 @@ Note the minimum required version of Node.js is 10.
 - [Tutorials & screencasts](#tutorials-examples-in-the-wild--screencasts)
 - [Configuration](#configuration)
 - [Database functions](#database-functions)
-  - [nano.db.create(name, [callback])](#nanodbcreatename-callback)
-  - [nano.db.get(name, [callback])](#nanodbgetname-callback)
-  - [nano.db.destroy(name, [callback])](#nanodbdestroyname-callback)
-  - [nano.db.list([callback])](#nanodblistcallback)
+  - [nano.db.create(name)](#nanodbcreatename)
+  - [nano.db.get(name)](#nanodbgetname)
+  - [nano.db.destroy(name)](#nanodbdestroyname)
+  - [nano.db.list()](#nanodblist)
   - [nano.db.listAsStream()](#nanodblistasstream)
-  - [nano.db.compact(name, [designname], [callback])](#nanodbcompactname-designname-callback)
-  - [nano.db.replicate(source, target, [opts], [callback])](#nanodbreplicatesource-target-opts-callback)
-  - [nano.db.replication.enable(source, target, [opts], [callback])](#nanodbreplicationenablesource-target-opts-callback)
-  - [nano.db.replication.query(id, [opts], [callback])](#nanodbreplicationenablesource-target-opts-callback)
-  - [nano.db.replication.disable(id, [opts], [callback])](#nanodbreplicationdisableid-opts-callback)
-  - [nano.db.changes(name, [params], [callback])](#nanodbchangesname-params-callback)
+  - [nano.db.compact(name, [designname])](#nanodbcompactname-designname)
+  - [nano.db.replicate(source, target, [opts])](#nanodbreplicatesource-target-opts)
+  - [nano.db.replication.enable(source, target, [opts])](#nanodbreplicationenablesource-target-opts)
+  - [nano.db.replication.query(id, [opts])](#nanodbreplicationenablesource-target-opts)
+  - [nano.db.replication.disable(id, [opts])](#nanodbreplicationdisableid-opts)
+  - [nano.db.changes(name, [params])](#nanodbchangesname-params)
   - [nano.db.changesAsStream(name, [params])](#nanodbchangesasstreamname-params)
-  - [nano.db.info([callback])](#nanodbinfocallback)
+  - [nano.db.info()](#nanodbinfo)
   - [nano.use(name)](#nanousename)
-  - [nano.request(opts, [callback])](#nanorequestopts-callback)
+  - [nano.request(opts)](#nanorequestopts)
   - [nano.config](#nanoconfig)
-  - [nano.updates([params], [callback])](#nanoupdatesparams-callback)
-  - [nano.info([callback])](#nanoinfocallback)
+  - [nano.updates([params])](#nanoupdatesparams)
+  - [nano.info()](#nanoinfo)
 
 - [Document functions](#document-functions)
-  - [db.insert(doc, [params], [callback])](#dbinsertdoc-params-callback)
-  - [db.destroy(docname, rev, [callback])](#dbdestroydocname-rev-callback)
-  - [db.get(docname, [params], [callback])](#dbgetdocname-params-callback)
-  - [db.head(docname, [callback])](#dbheaddocname-callback)
-  - [db.bulk(docs, [params], [callback])](#dbbulkdocs-params-callback)
-  - [db.list([params], [callback])](#dblistparams-callback)
+  - [db.insert(doc, [params])](#dbinsertdoc-params)
+  - [db.destroy(docname, rev)](#dbdestroydocname-rev)
+  - [db.get(docname, [params])](#dbgetdocname-params)
+  - [db.head(docname)](#dbheaddocname)
+  - [db.bulk(docs, [params])](#dbbulkdocs-params)
+  - [db.list([params])](#dblistparams)
   - [db.listAsStream([params])](#dblistasstreamparams)
-  - [db.fetch(docnames, [params], [callback])](#dbfetchdocnames-params-callback)
-  - [db.fetchRevs(docnames, [params], [callback])](#dbfetchrevsdocnames-params-callback)
-  - [db.createIndex(indexDef, [callback])](#dbcreateindexindexdef-callback)
+  - [db.fetch(docnames, [params])](#dbfetchdocnames-params)
+  - [db.fetchRevs(docnames, [params])](#dbfetchrevsdocnames-params)
+  - [db.createIndex(indexDef)](#dbcreateindexindexdef)
   - [db.changesReader](#reading-changes-feed)
 - [Partitioned database functions](#partition-functions)
-  - [db.partitionInfo(partitionKey, [callback])](#dbpartitioninfopartitionkey-callback))
-  - [db.partitionedList(partitionKey, [params], [callback])](#dbpartitionedlistpartitionkey-params-callback)
+  - [db.partitionInfo(partitionKey)](#dbpartitioninfopartitionkey))
+  - [db.partitionedList(partitionKey, [params])](#dbpartitionedlistpartitionkey-params)
   - [db.partitionedListAsStream(partitionKey, [params])](#dbpartitionedlistasstreampartitionkey-params)
-  - [db.partitionedFind(partitionKey, query, [callback])](#dbpartitionedfindpartitionkey-query-params)
+  - [db.partitionedFind(partitionKey, query)](#dbpartitionedfindpartitionkey-query-params)
   - [db.partitionedFindAsStream(partitionKey, query)](#dbpartitionedfindasstreampartitionkey-query)
-  - [db.partitionedSearch(partitionKey, designName, searchName, params, [callback])](#dbpartitionedsearchpartitioney-designname-searchname-params-callback)
+  - [db.partitionedSearch(partitionKey, designName, searchName, params)](#dbpartitionedsearchpartitioney-designname-searchname-params)
   - [db.partitionedSearchAsStream(partitionKey, designName, searchName, params)](#dbpartitionedsearchasstreampartitionkey-designName-searchName-params)
-  - [db.partitionedView(partitionKey, designName, viewName, [params], [callback])](#dbpartitionediewpartitionkey-designname-viewname-params-callback)
+  - [db.partitionedView(partitionKey, designName, viewName, [params])](#dbpartitionediewpartitionkey-designname-viewname-params)
   - [db.partitionedViewAsStream(partitionKey, designName, viewName, [params])](#dbpartitionediewasstreampartitionkey-designname-viewname-params)
 - [Multipart functions](#multipart-functions)
-  - [db.multipart.insert(doc, attachments, [params], [callback])](#dbmultipartinsertdoc-attachments-params-callback)
-  - [db.multipart.get(docname, [params], [callback])](#dbmultipartgetdocname-params-callback)
+  - [db.multipart.insert(doc, attachments, [params])](#dbmultipartinsertdoc-attachments-params)
+  - [db.multipart.get(docname, [params])](#dbmultipartgetdocname-params)
 - [Attachments functions](#attachments-functions)
-  - [db.attachment.insert(docname, attname, att, contenttype, [params], [callback])](#dbattachmentinsertdocname-attname-att-contenttype-params-callback)
+  - [db.attachment.insert(docname, attname, att, contenttype, [params])](#dbattachmentinsertdocname-attname-att-contenttype-params)
   - [db.attachment.insertAsStream(docname, attname, att, contenttype, [params])](#dbattachmentinsertasstreamdocname-attname-att-contenttype-params)
-  - [db.attachment.get(docname, attname, [params], [callback])](#dbattachmentgetdocname-attname-params-callback)
+  - [db.attachment.get(docname, attname, [params])](#dbattachmentgetdocname-attname-params)
   - [db.attachment.getAsStream(docname, attname, [params])](#dbattachmentgetasstreamdocname-attname-params)
-  - [db.attachment.destroy(docname, attname, [params], [callback])](#dbattachmentdestroydocname-attname-params-callback)
+  - [db.attachment.destroy(docname, attname, [params])](#dbattachmentdestroydocname-attname-params)
 - [Views and design functions](#views-and-design-functions)
-  - [db.view(designname, viewname, [params], [callback])](#dbviewdesignname-viewname-params-callback)
+  - [db.view(designname, viewname, [params])](#dbviewdesignname-viewname-params)
   - [db.viewAsStream(designname, viewname, [params])](#dbviewasstreamdesignname-viewname-params)
   - [db.viewWithList(designname, viewname, listname, [params])](#dbviewwithlistdesignname-viewname-params)
   - [db.viewWithListAsStream(designname__viewname, listname, [params])](#dbviewwithlistasstreamdesignname-viewname-params)
-  - [db.show(designname, showname, doc_id, [params], [callback])](#dbshowdesignname-showname-doc_id-params-callback)
-  - [db.atomic(designname, updatename, docname, [body], [callback])](#dbatomicdesignname-updatename-docname-body-callback)
-  - [db.search(designname, viewname, params, [callback])](#dbsearchdesignname-searchname-params-callback)
+  - [db.show(designname, showname, doc_id, [params])](#dbshowdesignname-showname-doc_id-params)
+  - [db.atomic(designname, updatename, docname, [body])](#dbatomicdesignname-updatename-docname-body)
+  - [db.search(designname, viewname, params)](#dbsearchdesignname-searchname-params)
   - [db.searchAsStream(designname, viewname, params)](#dbsearchasstreamdesignname-searchname-params)
-  - [db.find(selector, [callback])](#dbfindselector-callback)
+  - [db.find(selector)](#dbfindselector)
   - [db.findAsStream(selector)](#dbfindasstreamselector)
 - [Using cookie authentication](#using-cookie-authentication)
 - [Advanced features](#advanced-features)
@@ -137,7 +137,7 @@ nano.db.create('alice').then((data) => {
 })
 ```
 
-or in the async/await style:
+2) or in the async/await style:
 
 ```js
 try {
@@ -149,21 +149,6 @@ try {
   console.error(e)
 }
 ```
-
-2) Callbacks
-
-```js
-nano.db.create('alice', (err, data) => {
-  // errors are in 'err' & response is in 'data'
-})
-```
-
-In `nano` the callback function receives always three arguments:
-
-* `err` - The error, if any.
-* `body` - The HTTP _response body_ from CouchDB, if no error.
-  JSON parsed body, binary for non JSON responses.
-* `header` - The HTTP _response header_ from CouchDB, if no error.
 
 The documentation will follow the *async/await* style.
 
@@ -256,7 +241,7 @@ You may also supply a pre-existing `undici.Agent` e.g.
 ```js
 const agent = new undici.Agent({bodyTimeout: 30000 })
 const nano = Nano({ url: 'http://127.0.0.1:5984', agentOptions: agent })
-``
+```
 
 > Note `requestDefaults` is no longer supported.
 
@@ -320,7 +305,7 @@ db.insert(p).then((response) => {
 
 ## Database functions
 
-### nano.db.create(name, [opts], [callback])
+### nano.db.create(name, [opts])
 
 Creates a CouchDB database with the given `name`, with options `opts`.
 
@@ -328,7 +313,7 @@ Creates a CouchDB database with the given `name`, with options `opts`.
 await nano.db.create('alice', { n: 3 })
 ```
 
-### nano.db.get(name, [callback])
+### nano.db.get(name)
 
 Get information about the database `name`:
 
@@ -336,7 +321,7 @@ Get information about the database `name`:
 const info = await nano.db.get('alice')
 ```
 
-### nano.db.destroy(name, [callback])
+### nano.db.destroy(name)
 
 Destroys the database `name`:
 
@@ -344,7 +329,7 @@ Destroys the database `name`:
 await nano.db.destroy('alice')
 ```
 
-### nano.db.list([callback])
+### nano.db.list()
 
 Lists all the CouchDB databases:
 
@@ -362,11 +347,11 @@ nano.db.listAsStream()
   .pipe(process.stdout);
 ```
 
-### nano.db.compact(name, [designname], [callback])
+### nano.db.compact(name, [designname])
 
 Compacts `name`, if `designname` is specified also compacts its views.
 
-### nano.db.replicate(source, target, [opts], [callback])
+### nano.db.replicate(source, target, [opts])
 
 Replicates `source` to `target` with options `opts`. The `target`database
 has to exist, add `create_target:true` to `opts` to create it prior to
@@ -378,7 +363,7 @@ const response = await nano.db.replicate('alice',
                   { create_target:true })
 ```
 
-### nano.db.replication.enable(source, target, [opts], [callback])
+### nano.db.replication.enable(source, target, [opts])
 
 Enables replication using the new CouchDB api from `source` to `target`
 with options `opts`. `target` has to exist, add `create_target:true` to
@@ -390,7 +375,7 @@ const response = await nano.db.replication.enable('alice',
                   { create_target:true })
 ```
 
-### nano.db.replication.query(id, [opts], [callback])
+### nano.db.replication.query(id, [opts])
 
 Queries the state of replication using the new CouchDB API. The `id` comes from the response
 given by the call to `replication.enable`:
@@ -402,7 +387,7 @@ const r = await nano.db.replication.enable('alice',
 const q = await nano.db.replication.query(r.id)
 ```
 
-### nano.db.replication.disable(id, [opts], [callback])
+### nano.db.replication.disable(id, [opts])
 
 Disables replication using the new CouchDB API. The `id` comes from the response given
 by the call to `replication.enable`:
@@ -414,7 +399,7 @@ const r = await nano.db.replication.enable('alice',
 await nano.db.replication.disable(r.id);
 ```
 
-### nano.db.changes(name, [params], [callback])
+### nano.db.changes(name, [params])
 
 Asks for the changes feed of `name`, `params` contains additions
 to the query string.
@@ -431,7 +416,7 @@ Same as `nano.db.changes` but returns a stream.
 nano.db.changes('alice').pipe(process.stdout);
 ```
 
-### nano.db.info([callback])
+### nano.db.info()
 
 Gets database information:
 
@@ -462,7 +447,7 @@ Alias for `nano.use`
 
 Alias for `nano.use`
 
-### nano.request(opts, [callback])
+### nano.request(opts)
 
 Makes a custom request to CouchDB. This can be used to create your own HTTP request to the CouchDB
 server, to perform operations where there is no `nano` function that encapsulates it. The available `opts` are:
@@ -481,7 +466,7 @@ server, to perform operations where there is no `nano` function that encapsulate
 * `opts.multipart` – array of objects for multipart request
 * `opts.stream` - if `true`, a `request` object is returned. Default `false` and a Promise is returned.
 
-### nano.relax(opts, [callback])
+### nano.relax(opts)
 
 Alias for `nano.request`
 
@@ -492,7 +477,7 @@ An object containing the `nano` configurations, possible keys are:
 * `url` - the CouchDB URL
 * `db` - the database name
 
-### nano.updates([params], [callback])
+### nano.updates([params])
 
 Listen to db updates, the available `params` are:
 
@@ -503,7 +488,7 @@ Listen to db updates, the available `params` are:
 * `params.timeout` – Number of seconds until CouchDB closes the connection. Default is 60.
 * `params.heartbeat` – Whether CouchDB will send a newline character (\n) on timeout. Default is true.
 
-### nano.info([callback])
+### nano.info()
 
 Fetch information about the CouchDB cluster:
 
@@ -515,7 +500,7 @@ The response is an object with [CouchDB cluster information](https://docs.couchd
 
 ## Document functions
 
-### db.insert(doc, [params], [callback])
+### db.insert(doc, [params])
 
 Inserts `doc` in the database with optional `params`. If params is a string, it's assumed it is the intended document `_id`. If params is an object, it's passed as query string parameters and `docName` is checked for defining the document `_id`:
 
@@ -524,7 +509,7 @@ const alice = nano.use('alice');
 const response = await alice.insert({ happy: true }, 'rabbit')
 ```
 
-The `insert` function can also be used with the method signature `db.insert(doc,[callback])`, where the `doc` contains the `_id` field e.g.
+The `insert` function can also be used with the method signature `db.insert(doc,)`, where the `doc` contains the `_id` field e.g.
 
 ```js
 const alice = nano.use('alice')
@@ -538,7 +523,7 @@ const alice = nano.use('alice')
 const response = await alice.insert({ _id: 'myid', _rev: '1-23202479633c2b380f79507a776743d5', happy: false })
 ```
 
-### db.destroy(docname, rev, [callback])
+### db.destroy(docname, rev)
 
 Removes a document from CouchDB whose `_id` is `docname` and whose revision (`_rev`) is `rev`:
 
@@ -546,7 +531,7 @@ Removes a document from CouchDB whose `_id` is `docname` and whose revision (`_r
 const response = await alice.destroy('rabbit', '3-66c01cdf99e84c83a9b3fe65b88db8c0')
 ```
 
-### db.get(docname, [params], [callback])
+### db.get(docname, [params])
 
 Gets a document from CouchDB whose `_id` is `docname`:
 
@@ -562,13 +547,13 @@ const doc = await alice.get('rabbit', { revs_info: true })
 
 If you pass `attachments=true`, the `doc._attachments.attachmentNameN.data` fields will contain the 
 [base-64 encoded attachments](https://docs.couchdb.org/en/stable/json-structure.html#document-with-attachments).
-Or, you can use [`db.multipart.get`](https://github.com/DougReeder/couchdb-nano#dbmultipartgetdocname-params-callback)
+Or, you can use [`db.multipart.get`](https://github.com/DougReeder/couchdb-nano#dbmultipartgetdocname-params)
 and parse the returned buffer to get the document and attachments.
 
 See the [attachments methods](https://github.com/apache/couchdb-nano#attachments-functions) to retrieve
 *just* an attachment.
 
-### db.head(docname, [callback])
+### db.head(docname)
 
 Same as `get` but lightweight version that returns headers only:
 
@@ -576,9 +561,7 @@ Same as `get` but lightweight version that returns headers only:
 const headers = await alice.head('rabbit')
 ```
 
-*Note:* if you call `alice.head` in the callback style, the headers are returned to you as the third argument of the callback function.
-
-### db.bulk(docs, [params], [callback])
+### db.bulk(docs, [params])
 
 Bulk operations(update/delete/insert) on the database, refer to the
 [CouchDB doc](https://docs.couchdb.org/en/stable/api/database/bulk-api.html#post--db-_bulk_docs) e.g:
@@ -591,7 +574,7 @@ const documents = [
 const response = await alice.bulk({ docs: documents })
 ```
 
-### db.list([params], [callback])
+### db.list([params])
 
 List all the docs in the database .
 
@@ -619,7 +602,7 @@ alice.listAsStream()
   .pipe(process.stdout)
 ```
 
-### db.fetch(docnames, [params], [callback])
+### db.fetch(docnames, [params])
 
 Bulk fetch of the database documents, `docnames` are specified as per
 [CouchDB doc](https://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs).
@@ -631,7 +614,7 @@ const keys = ['tiger', 'zebra', 'donkey'];
 const datat = await alice.fetch({keys: keys})
 ```
 
-### db.fetchRevs(docnames, [params], [callback])
+### db.fetchRevs(docnames, [params])
 
 ** changed in version 6 **
 
@@ -640,7 +623,7 @@ Bulk fetch of the revisions of the database documents, `docnames` are specified 
 additional query string `params` can be specified, this is the same method as fetch but
  `include_docs` is not automatically set to `true`.
 
-### db.createIndex(indexDef, [callback])
+### db.createIndex(indexDef)
 
 Create index on database fields, as specified in
 [CouchDB doc](https://docs.couchdb.org/en/latest/api/database/find.html#db-index).
@@ -844,7 +827,7 @@ const ddoc = {
 await db.insert(ddoc)
 ```
 
-### db.partitionInfo(partitionKey, [callback])
+### db.partitionInfo(partitionKey)
 
 Fetch the stats of a single partition:
 
@@ -852,7 +835,7 @@ Fetch the stats of a single partition:
 const stats = await alice.partitionInfo('canidae')
 ```
 
-### db.partitionedList(partitionKey, [params], [callback])
+### db.partitionedList(partitionKey, [params])
 
 Fetch documents from a database partition:
 
@@ -900,7 +883,7 @@ db.partitionedFindAsStream('canidae', { 'selector' : { 'name': 'Wolf' }})
   .pipe(process.stdout)
 ```
 
-### db.partitionedSearch(partitionKey, designName, searchName, params, [callback])
+### db.partitionedSearch(partitionKey, designName, searchName, params)
 
 Search documents from a partition by supplying a Lucene query:
 
@@ -926,7 +909,7 @@ db.partitionedSearchAsStream('canidae', 'search-ddoc', 'search-index', params)
 // { total_rows: ... , bookmark: ..., rows: [ ...] }
 ```
 
-### db.partitionedView(partitionKey, designName, viewName, params, [callback])
+### db.partitionedView(partitionKey, designName, viewName, params)
 
 Fetch documents from a MapReduce view from a partition:
 
@@ -958,7 +941,7 @@ db.partitionedViewAsStream('canidae', 'view-ddoc', 'view-name', params)
 
 ## Multipart functions
 
-### db.multipart.insert(doc, attachments, params, [callback])
+### db.multipart.insert(doc, attachments, params)
 
 Inserts a `doc` together with `attachments` and `params`. If params is a string, it's assumed as the intended document `_id`. If params is an object, its passed as query string parameters and `docName` is checked for defining the `_id`. Refer to the [doc](https://docs.couchdb.org/en/stable/api/document/common.html) for more details.
  The `attachments` parameter must be an array of objects with `name`, `data` and `content_type` properties.
@@ -973,7 +956,7 @@ fs.readFile('rabbit.png', (err, data) => {
 });
 ```
 
-### db.multipart.get(docname, [params], [callback])
+### db.multipart.get(docname, [params])
 
 Get `docname` together with its attachments via `multipart/related` request with optional [query string additions](https://docs.couchdb.org/en/stable/api/document/common.html#get--db-docid). The multipart response body is a `Buffer`.
 
@@ -983,7 +966,7 @@ const response = await alice.multipart.get('rabbit')
 
 ## Attachments functions
 
-### db.attachment.insert(docname, attname, att, contenttype, [params], [callback])
+### db.attachment.insert(docname, attname, att, contenttype, [params])
 
 Inserts an attachment `attname` to `docname`, in most cases
  `params.rev` is required. Refer to the
@@ -1008,7 +991,7 @@ fs.readFile('rabbit.png', (err, data) => {
 As of Nano 9.x, the function `db.attachment.insertAsStream` is now deprecated. Now simply pass
 a readable stream to `db.attachment.insert` as the third paramseter.
 
-### db.attachment.get(docname, attname, [params], [callback])
+### db.attachment.get(docname, attname, [params])
 
 Get `docname`'s attachment `attname` with optional query string additions
 `params`.
@@ -1029,7 +1012,7 @@ alice.attachment.getAsStream('rabbit', 'rabbit.png')
   .pipe(fs.createWriteStream('rabbit.png'));
 ```
 
-### db.attachment.destroy(docname, attname, [params], [callback])
+### db.attachment.destroy(docname, attname, [params])
 
 **changed in version 6**
 
@@ -1041,7 +1024,7 @@ const response = await alice.attachment.destroy('rabbit', 'rabbit.png', {rev: '1
 
 ## Views and design functions
 
-### db.view(designname, viewname, [params], [callback])
+### db.view(designname, viewname, [params])
 
 Calls a view of the specified `designname` with optional query string `params`. If you're looking to filter the view results by key(s) pass an array of keys, e.g
 `{ keys: ['key1', 'key2', 'key_n'] }`, as `params`.
@@ -1079,7 +1062,7 @@ alice.viewAsStream('characters', 'happy_ones', {reduce: false})
   .pipe(process.stdout);
 ```
 
-### db.viewWithList(designname, viewname, listname, [params], [callback])
+### db.viewWithList(designname, viewname, listname, [params])
 
 Calls a list function fed by the given view from the specified design document.
 
@@ -1087,7 +1070,7 @@ Calls a list function fed by the given view from the specified design document.
 const body = await alice.viewWithList('characters', 'happy_ones', 'my_list')
 ```
 
-### db.viewWithListAsStream(designname, viewname, listname, [params], [callback])
+### db.viewWithListAsStream(designname, viewname, listname, [params])
 
 Calls a list function fed by the given view from the specified design document as a stream.
 
@@ -1097,7 +1080,7 @@ alice.viewWithListAsStream('characters', 'happy_ones', 'my_list')
   .pipe(process.stdout);
 ```
 
-### db.show(designname, showname, doc_id, [params], [callback])
+### db.show(designname, showname, doc_id, [params])
 
 Calls a show function from the specified design for the document specified by doc_id with
 optional query string additions `params`.
@@ -1109,7 +1092,7 @@ const doc = await alice.show('characters', 'format_doc', '3621898430')
 Take a look at the [CouchDB wiki](https://guide.couchdb.org/draft/show.html)
 for possible query paramaters and more information on show functions.
 
-### db.atomic(designname, updatename, docname, [body], [callback])
+### db.atomic(designname, updatename, docname, [body])
 
 Calls the design's update function with the specified doc in input.
 
@@ -1133,7 +1116,7 @@ An example update handler follows:
 }
 ```
 
-### db.search(designname, searchname, params, [callback])
+### db.search(designname, searchname, params)
 
 Calls a view of the specified design with optional query string additions `params`.
 
@@ -1158,7 +1141,7 @@ Calls a view of the specified design with optional query string additions `param
 alice.search('characters', 'happy_ones', { q: 'cat' }).pipe(process.stdout);
 ```
 
-### db.find(selector, [callback])
+### db.find(selector)
 
 Perform a ["Mango" query](https://docs.couchdb.org/en/2.1.1/api/database/find.html) by supplying a JavaScript object containing a selector:
 

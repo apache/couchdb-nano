@@ -72,16 +72,6 @@ test('should detect missing parameters - db.attachment.insert', async () => {
   await assert.rejects(db.attachment.insert('docname', 't.gif', image), { message: 'Invalid parameters' })
 })
 
-test('should detect missing parameters (callback) - db.attachment.insert', () => {
-  const db = nano.db.use('db')
-  return new Promise((resolve, reject) => {
-    db.attachment.insert(undefined, undefined, undefined, undefined, undefined, (err, data) => {
-      assert.notEqual(err, null)
-      resolve()
-    })
-  })
-})
-
 test('should be able to insert document attachment as stream - PUT /db/docname/attachment - db.attachment.insert', async () => {
   // mocks
   const response = { ok: true, id: 'docname', rev: '2-456' }

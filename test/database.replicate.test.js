@@ -77,15 +77,6 @@ test('should not attempt compact invalid parameters - nano.db.replicate', async 
   await assert.rejects(nano.db.replicate('', 'target'), { message: 'Invalid parameters' })
 })
 
-test('should detect missing parameters (callback) - nano.db.replicate', () => {
-  return new Promise((resolve, reject) => {
-    nano.db.replicate(undefined, undefined, undefined, (err, data) => {
-      assert.notEqual(err, null)
-      resolve()
-    })
-  })
-})
-
 test('should be replicate from db.replicate - POST /_replicate - db.replicate', async () => {
   // mocks
   mockPool.intercept({

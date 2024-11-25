@@ -124,56 +124,8 @@ test('check request can do HEAD requests - nano.request', async () => {
     path: 'mydoc'
   }
   const p = await nano.request(req)
-  assert.deepEqual(p, response)
+  assert.deepEqual(p, headers)
   mockAgent.assertNoPendingInterceptors()
-})
-
-test('check request can do GET requests with callback - nano.request', async () => {
-  // mocks
-  const response = { ok: true }
-  mockPool
-    .intercept({ path: '/db?a=1&b=2' })
-    .reply(200, response, JSON_HEADERS)
-
-  // test GET /db?a=1&b=2
-  const req = {
-    method: 'get',
-    db: 'db',
-    qs: { a: 1, b: 2 }
-  }
-  await new Promise((resolve, reject) => {
-    nano.request(req, (err, data) => {
-      assert.equal(err, null)
-      assert.deepEqual(data, response)
-      mockAgent.assertNoPendingInterceptors()
-      resolve()
-    })
-  })
-})
-
-test('check request can do failed GET requests with callback - nano.request', async () => {
-  // mocks
-  const response = {
-    error: 'not_found',
-    reason: 'missing'
-  }
-  mockPool
-    .intercept({ path: '/db/a' })
-    .reply(404, response, JSON_HEADERS)
-
-  // test GET /db/a
-  const req = {
-    method: 'get',
-    db: 'db',
-    path: 'a'
-  }
-  await new Promise((resolve, reject) => {
-    nano.request(req, (err, data) => {
-      assert.notEqual(err, null)
-      mockAgent.assertNoPendingInterceptors()
-      resolve()
-    })
-  })
 })
 
 test('check request formats keys properly - nano.request', async () => {
@@ -313,29 +265,6 @@ test('check request can do 500s - nano.request', async () => {
   mockAgent.assertNoPendingInterceptors()
 })
 
-test('check request can do 500s with callback - nano.request', async () => {
-  // mocks
-  const errorMessage = 'Internal server error'
-  mockPool
-    .intercept({ path: '/db?a=1&b=2' })
-    .reply(500, errorMessage)
-
-  // test GET /db?a=1&b=2
-  const req = {
-    method: 'get',
-    db: 'db',
-    qs: { a: 1, b: 2 }
-  }
-
-  await new Promise((resolve, reject) => {
-    nano.request(req, (err, data) => {
-      assert.notEqual(err, null)
-      mockAgent.assertNoPendingInterceptors()
-      resolve()
-    })
-  })
-})
-
 test('check request handle empty parameter list - nano.request', async () => {
   // mocks
   const response = {
@@ -359,36 +288,6 @@ test('check request handle empty parameter list - nano.request', async () => {
   const p = await nano.request()
   assert.deepEqual(p, response)
   mockAgent.assertNoPendingInterceptors()
-})
-
-test('check request handle empty parameter list (callback) - nano.request', async () => {
-  // mocks
-  const response = {
-    couchdb: 'Welcome',
-    version: '2.3.1',
-    git_sha: 'c298091a4',
-    uuid: '865f5b0c258c5749012ce7807b4b0622',
-    features: [
-      'pluggable-storage-engines',
-      'scheduler'
-    ],
-    vendor: {
-      name: 'The Apache Software Foundation'
-    }
-  }
-  mockPool
-    .intercept({ path: '/' })
-    .reply(200, response, JSON_HEADERS)
-
-  // test GET /
-  await new Promise((resolve, reject) => {
-    nano.request((err, data) => {
-      assert.equal(err, null)
-      assert.deepEqual(data, response)
-      mockAgent.assertNoPendingInterceptors()
-      resolve()
-    })
-  })
 })
 
 test('check request handles single string parameter - nano.request', async () => {

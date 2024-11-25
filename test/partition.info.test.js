@@ -40,23 +40,6 @@ test('should be able to fetch partition info info - GET /db/_partition/partition
   mockAgent.assertNoPendingInterceptors()
 })
 
-test('should be able to fetch partition info info (callback) - GET /db/_partition/partition - db.partitionInfo', async () => {
-  // mocks
-  mockPool
-    .intercept({ path: '/db/_partition/partition' })
-    .reply(200, response, JSON_HEADERS)
-
-  // test GET /db/_partition/partition
-  await new Promise((resolve, reject) => {
-    db.partitionInfo('partition', (err, data) => {
-      assert.equal(err, null)
-      assert.deepEqual(data, response)
-      mockAgent.assertNoPendingInterceptors()
-      resolve()
-    })
-  })
-})
-
 test('should handle missing database - PUT /db - nano.db.create', async () => {
   // mocks
   const response = {
@@ -77,11 +60,3 @@ test('should not attempt info fetch with missing parameters - nano.db.get', asyn
   await assert.rejects(db.partitionInfo(''), { message: 'Invalid parameters' })
 })
 
-test('should detect missing parameters (callback) - nano.db.get', async () => {
-  await new Promise((resolve, reject) => {
-    db.partitionInfo(undefined, (err, data) => {
-      assert.notEqual(err, null)
-      resolve()
-    })
-  })
-})

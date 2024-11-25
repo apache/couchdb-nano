@@ -77,15 +77,6 @@ test('should not attempt invalid parameters - nano.db.changes', async () => {
   await assert.rejects(nano.db.changes(''), { message: 'Invalid parameters' })
 })
 
-test('should detect missing parameters (callback) - nano.db.changes', async () => {
-  return new Promise((resolve, reject) => {
-    nano.db.changes(undefined, undefined, (err, data) => {
-      assert.notEqual(err, null)
-      resolve()
-    })
-  })
-})
-
 test('should be able to fetch the changes from db.changes - GET /db/_changes - db.changes', async () => {
   // mocks
   mockPool

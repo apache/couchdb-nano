@@ -51,12 +51,3 @@ test('should detect missing parameters - db.attachment.get', async () => {
   await assert.rejects(db.attachment.get('', 'transparent.gif'), { message: 'Invalid parameters' })
 })
 
-test('should detect missing parameters (callback) - db.attachment.get', () => {
-  const db = nano.db.use('db')
-  return new Promise((resolve, reject) => {
-    db.attachment.get(undefined, undefined, undefined, (err, data) => {
-      assert.notEqual(err, null)
-      resolve()
-    })
-  })
-})

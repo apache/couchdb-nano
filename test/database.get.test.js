@@ -89,11 +89,3 @@ test('should not attempt info fetch with missing parameters - nano.db.get', asyn
   await assert.rejects(nano.db.get(''), { message: 'Invalid parameters' })
 })
 
-test('should detect missing parameters (callback) - nano.db.get', () => {
-  return new Promise((resolve, reject) => {
-    nano.db.get(undefined, (err, data) => {
-      assert.notEqual(err, null)
-      resolve()
-    })
-  })
-})

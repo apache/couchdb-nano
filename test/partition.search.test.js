@@ -64,12 +64,3 @@ test('should detect missing parameters - db.partitionedSearch', async () => {
   await assert.rejects(db.partitionedSearch('partition', '', 'susan'), { message: 'Invalid parameters' })
 })
 
-test('should detect missing parameters (callback) - db.partitionedSearch', async () => {
-  const db = nano.db.use('db')
-  await new Promise((resolve, reject) => {
-    db.partitionedSearch('', '', '', '', (err, data) => {
-      assert.notEqual(err, null)
-      resolve()
-    })
-  })
-})

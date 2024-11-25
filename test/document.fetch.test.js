@@ -172,12 +172,3 @@ test('should detect invalid parameters - db.fetch', async () => {
   await assert.rejects(db.fetch({ keys: [] }), { message: 'Invalid parameters' })
 })
 
-test('should detect missing parameters (callback) - db.fetch', async () => {
-  return new Promise((resolve, reject) => {
-    const db = nano.db.use('db')
-    db.fetch(undefined, (err, data) => {
-      assert.notEqual(err, null)
-      resolve()
-    })
-  })
-})

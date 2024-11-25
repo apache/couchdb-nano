@@ -51,25 +51,3 @@ test('should be able to fetch more uuids - GET /_uuids?count=3 - nano.uuids', as
   assert.deepEqual(p, response)
   mockAgent.assertNoPendingInterceptors()
 })
-
-test('should be able to fetch uuids callback - GET /_uuids - nano.uuids', async () => {
-  // mocks
-  const response = {
-    uuids: [
-      'c42ddf1272c7d05b2dc45b696200145f'
-    ]
-  }
-  mockPool
-    .intercept({ path: '/_uuids?count=1' })
-    .reply(200, response, JSON_HEADERS)
-
-  // test GET /_uuids
-  await new Promise((resolve, reject) => {
-    nano.uuids((err, data) => {
-      assert.equal(err, null)
-      assert.deepEqual(data, response)
-      mockAgent.assertNoPendingInterceptors()
-      resolve()
-    })
-  })
-})

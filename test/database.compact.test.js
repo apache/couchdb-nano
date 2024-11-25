@@ -46,15 +46,6 @@ test('should not attempt compact with invalid parameters - nano.db.compact', asy
   await assert.rejects(nano.db.compact(), { message: 'Invalid parameters' })
 })
 
-test('should detect missing parameters (callback) - nano.db.compact', () => {
-  return new Promise((resolve, reject) => {
-    nano.db.compact(undefined, (err, data) => {
-      assert.notEqual(err, null)
-      resolve()
-    })
-  })
-})
-
 test('should be able to send compaction request from db.compact - POST /db/_compact - db.compact', async () => {
   // mocks
   mockPool

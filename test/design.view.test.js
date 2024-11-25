@@ -164,12 +164,3 @@ test('should detect missing parameters - db.view', async () => {
   await assert.rejects(db.view('', 'susan'), { message: 'Invalid parameters' })
 })
 
-test('should detect missing parameters (callback) - db.view', () => {
-  const db = nano.db.use('db')
-  return new Promise((resolve, reject) => {
-    db.view('', '', (err, data) => {
-      assert.notEqual(err, null)
-      resolve()
-    })
-  })
-})

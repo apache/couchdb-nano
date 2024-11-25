@@ -1,7 +1,7 @@
 /**
  * @file nano.d.ts
  *
- * Type definitions for nano 6.4
+ * Type definitions for nano 11
  *
  * Project: https://github.com/apache/couchdb-nano
  *
@@ -108,8 +108,6 @@ declare namespace nano {
     parseUrl?: boolean;
   }
 
-  type Callback<R> = (error: RequestError | null, response: R, headers?: any) => void;
-
   /** An error triggered by nano */
   interface RequestError extends Error {
     /** An error code. */
@@ -154,44 +152,44 @@ declare namespace nano {
     scope<D>(db: string): DocumentScope<D>;
     /** 
      * Initiates a custom request
-     * @see README: {@link https://www.npmjs.com/package/nano#nanorequestopts-callback}
+     * @see README: {@link https://www.npmjs.com/package/nano#nanorequestopts}
      **/
-    request(opts: RequestOptions | string, callback?: Callback<any>): Promise<any>;
+    request(opts: RequestOptions | string): Promise<any>;
     /** 
      * Initiates a custom request
-     * @see README: {@link https://www.npmjs.com/package/nano#nanorequestopts-callback}
+     * @see README: {@link https://www.npmjs.com/package/nano#nanorequestopts}
      **/
-    relax(opts: RequestOptions | string, callback?: Callback<any>): Promise<any>;
+    relax(opts: RequestOptions | string): Promise<any>;
     /** 
      * Initiates a custom request
-     * @see README: {@link https://www.npmjs.com/package/nano#nanorequestopts-callback}
+     * @see README: {@link https://www.npmjs.com/package/nano#nanorequestopts}
      **/
-    dinosaur(opts: RequestOptions | string, callback?: Callback<any>): Promise<any>;
+    dinosaur(opts: RequestOptions | string): Promise<any>;
     /** 
      * Initiates new session for specified user credentials by providing Cookie value.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/server/authn.html#cookie-authentication} */
-    auth(username: string, userpass: string, callback?: Callback<DatabaseAuthResponse>): Promise<DatabaseAuthResponse>;
+    auth(username: string, userpass: string): Promise<DatabaseAuthResponse>;
     /** 
      * Returns information about the authenticated user, including a User Context Object, the authentication method and database that were used, and a list of configured authentication handlers on the server.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/server/authn.html#get--_session} */
-    session(callback?: Callback<DatabaseSessionResponse>): Promise<DatabaseSessionResponse>;
+    session(): Promise<DatabaseSessionResponse>;
     /** 
      * Returns a list of all database events in the CouchDB instance.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates} */
-    updates(callback?: Callback<DatabaseUpdatesResponse>): Promise<DatabaseUpdatesResponse>;
+    updates(): Promise<DatabaseUpdatesResponse>;
     /**
      * Returns a list of all database events in the CouchDB instance.
      *  @see Docs: {@link http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates} */
-    updates(params: UpdatesParams, callback?: Callback<DatabaseUpdatesResponse>): Promise<DatabaseUpdatesResponse>;
+    updates(params: UpdatesParams): Promise<DatabaseUpdatesResponse>;
     /**
      * Requests one or more Universally Unique Identifiers (UUIDs) from the CouchDB instance.
      * @see Docs: {@link https://docs.couchdb.org/en/stable/api/server/common.html#uuids}
      */
-    uuids(num?: number, callback?: Callback<any>): Promise<UUIDObject>;
+    uuids(num?: number): Promise<UUIDObject>;
     /** 
     * Accessing the root of a CouchDB instance returns meta information about the instance.
     * @see Docs: {@link https://docs.couchdb.org/en/stable/api/server/common.html#api-server-root} */
-    info(callback?: Callback<InfoResponse>): Promise<InfoResponse>;
+    info(): Promise<InfoResponse>;
   }
 
   interface UUIDObject {
@@ -222,23 +220,23 @@ declare namespace nano {
   /** Database scope */
   interface DatabaseScope {
     replication: {
-        enable(source: string, target: string, opts0: object, callback0?: Callback<DatabaseCreateResponse>): Promise<DatabaseCreateResponse>;
-        disable(id:string, rev: string, opts0: object, callback0?: Callback<DatabaseCreateResponse>): Promise<DatabaseCreateResponse>;
-        query(id: string, opts0: object, callback0?: Callback<DatabaseGetResponse>): Promise<DatabaseGetResponse>;
+        enable(source: string, target: string, opts: object): Promise<DatabaseCreateResponse>;
+        disable(id:string, rev: string, opts: object): Promise<DatabaseCreateResponse>;
+        query(id: string, opts: object): Promise<DatabaseGetResponse>;
     };
     /** 
      * Create database.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/database/common.html#put--db} */
-    create(name: string, params?: DatabaseCreateParams, callback?: Callback<DatabaseCreateResponse>): Promise<DatabaseCreateResponse>;
+    create(name: string, params?: DatabaseCreateParams): Promise<DatabaseCreateResponse>;
     /** Get database information.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/database/common.html#get--db} */
-    get(name: string, callback?: Callback<DatabaseGetResponse>): Promise<DatabaseGetResponse>;
+    get(name: string): Promise<DatabaseGetResponse>;
     /** Delete database.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/database/common.html#delete--db} */
-    destroy(name: string, callback?: Callback<OkResponse>): Promise<OkResponse>;
+    destroy(name: string): Promise<OkResponse>;
     /** List databases. 
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/server/common.html#get--_all_dbs} */
-    list(callback?: Callback<string[]>): Promise<string[]>;
+    list(): Promise<string[]>;
     /** List databases as a stream.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/server/common.html#get--_all_dbs} */
     listAsStream(): NodeJS.ReadStream;
@@ -247,31 +245,29 @@ declare namespace nano {
     use<D>(db: string): DocumentScope<D>;
     /** Request compaction on a database.
      * @see Docs: {@link https://docs.couchdb.org/en/stable/api/database/compact.html} */
-    compact(name: string, callback?: Callback<OkResponse>): Promise<OkResponse>;
+    compact(name: string): Promise<OkResponse>;
     /** Request compaction of a database's view indexes.
      * @see Docs: {@link https://docs.couchdb.org/en/stable/api/database/compact.html} */
-    compact(name: string, designname: string, callback?: Callback<OkResponse>): Promise<OkResponse>;
+    compact(name: string, designname: string): Promise<OkResponse>;
     /** Request a replication operation. 
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/server/common.html#post--_replicate} */
     replicate<D>(
       source: string | DocumentScope<D>,
-      target: string | DocumentScope<D>,
-      callback?: Callback<DatabaseReplicateResponse>
+      target: string | DocumentScope<D>
     ): Promise<DatabaseReplicateResponse>;
     /** Reqiest a replication 
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/server/common.html#post--_replicate} */
     replicate<D>(
       source: string | DocumentScope<D>,
       target: string | DocumentScope<D>,
-      options: DatabaseReplicateOptions,
-      callback?: Callback<DatabaseReplicateResponse>
+      options: DatabaseReplicateOptions
     ): Promise<DatabaseReplicateResponse>;
     /** Return sorted list of changes to a database.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/database/changes.html#get--db-_changes} */
-    changes(name: string, callback?: Callback<DatabaseChangesResponse>): Promise<DatabaseChangesResponse>;
+    changes(name: string): Promise<DatabaseChangesResponse>;
     /**  Return sorted list of changes to a database with options.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/database/compact.html#post--db-_compact} */
-    changes(name: string, params: DatabaseChangesParams, callback?: Callback<DatabaseChangesResponse>): Promise<DatabaseChangesResponse>;
+    changes(name: string, params: DatabaseChangesParams): Promise<DatabaseChangesResponse>;
     /**  Return sorted list of changes to a database as a stream.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/database/changes.html#get--db-_changes} */
     changesAsStream(name: string): NodeJS.ReadStream;
@@ -280,10 +276,10 @@ declare namespace nano {
     changesAsStream(name: string, params: DatabaseChangesParams): NodeJS.ReadStream;
     /** Return a list of all database events.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates} */
-    updates(callback?: Callback<DatabaseUpdatesResponse>): Promise<DatabaseUpdatesResponse>;
+    updates(): Promise<DatabaseUpdatesResponse>;
     /** Return a list of all database event with options
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/server/common.html#get--_db_updates} */
-    updates(params: UpdatesParams, callback?: Callback<DatabaseUpdatesResponse>): Promise<DatabaseUpdatesResponse>;
+    updates(params: UpdatesParams): Promise<DatabaseUpdatesResponse>;
   }
 
   /** ChangesReader options */
@@ -330,75 +326,70 @@ declare namespace nano {
     readonly config: ServerConfig;
     /** Get database info
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/database/common.html#get--db} */
-    info(callback?: Callback<DatabaseGetResponse>): Promise<DatabaseGetResponse>;
+    info(): Promise<DatabaseGetResponse>;
     /** Request a replication opertation with this datbase as the target.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/server/common.html#post--_replicate} */
-    replicate<D>(
-      target: string | DocumentScope<D>,
-      callback?: Callback<DatabaseReplicateResponse>
-    ): Promise<DatabaseReplicateResponse>;
+    replicate<D>(target: string | DocumentScope<D>): Promise<DatabaseReplicateResponse>;
     /** Request a replication opertation with this datbase as the target with options.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/server/common.html#post--_replicate} */
     replicate(
       target: string | DocumentScope<D>,
-      options: any,
-      callback?: Callback<DatabaseReplicateResponse>
+      options: any
     ): Promise<DatabaseReplicateResponse>;
     /** Request compaction on this database.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/database/compact.html#post--db-_compact} */
-    compact(callback?: Callback<OkResponse>): Promise<OkResponse>;
+    compact(): Promise<OkResponse>;
     /** Return sorted list of changes to this database.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/database/changes.html#get--db-_changes} */
-    changes(callback?: Callback<DatabaseChangesResponse>): Promise<DatabaseChangesResponse>;
+    changes(): Promise<DatabaseChangesResponse>;
     /** Return sorted list of changes to this database with options.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/database/changes.html#get--db-_changes} */
-    changes(params: DatabaseChangesParams, callback?: Callback<DatabaseChangesResponse>): Promise<DatabaseChangesResponse>;
+    changes(params: DatabaseChangesParams): Promise<DatabaseChangesResponse>;
     /**  Changes feed follower. 
      * @see README: {@link https://www.npmjs.com/package/nano#reading-changes-feed} */
     changesReader: ChangesReaderScope;
     /** Initiates new session for specified user credentials by providing Cookie value.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/server/authn.html#cookie-authentication} */
-    auth(username: string, userpass: string, callback?: Callback<DatabaseAuthResponse>): Promise<DatabaseAuthResponse>;
+    auth(username: string, userpass: string): Promise<DatabaseAuthResponse>;
     /** Returns information about the authenticated user, including a User Context Object, the authentication method and database that were used, and a list of configured authentication handlers on the server.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/server/authn.html#get--_session} */
-    session(callback?: Callback<DatabaseSessionResponse>): Promise<DatabaseSessionResponse>;
+    session(): Promise<DatabaseSessionResponse>;
     /** Insert a document into this database.
      * @see POST Docs: {@link http://docs.couchdb.org/en/latest/api/database/common.html#post--db}
      * @see PUT Docs: {@link http://docs.couchdb.org/en/latest/api/document/common.html#put--db-docid} */
-    insert(document: ViewDocument<D> | D & MaybeDocument, callback?: Callback<DocumentInsertResponse>): Promise<DocumentInsertResponse>;
+    insert(document: ViewDocument<D> | D & MaybeDocument): Promise<DocumentInsertResponse>;
     /** 
      * Insert a document into this database with options.
      * @see POST Docs: {@link http://docs.couchdb.org/en/latest/api/database/common.html#post--db}
      * @see PUT Docs: {@link http://docs.couchdb.org/en/latest/api/document/common.html#put--db-docid} */
     insert(
       document: ViewDocument<D> | D & MaybeDocument,
-      params: DocumentInsertParams | string | null,
-      callback?: Callback<DocumentInsertResponse>
+      params: DocumentInsertParams | string | null
     ): Promise<DocumentInsertResponse>;
     /** Fetch a document from this database.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/document/common.html#get--db-docid} */
-    get(docname: string, callback?: Callback<DocumentGetResponse & D>): Promise<DocumentGetResponse & D>;
+    get(docname: string): Promise<DocumentGetResponse & D>;
     /** Fetch a document from this database with options.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/document/common.html#get--db-docid} */
-    get(docname: string, params?: DocumentGetParams, callback?: Callback<DocumentGetResponse & D>): Promise<DocumentGetResponse & D>;
+    get(docname: string, params?: DocumentGetParams): Promise<DocumentGetResponse & D>;
     /** Fetch document meta data, useful for fetching a document's current revision.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/document/common.html#head--db-docid} */
-    head(docname: string, callback?: Callback<DocumentHeadResponseHeaders>): Promise<DocumentHeadResponseHeaders>;
+    head(docname: string): Promise<DocumentHeadResponseHeaders>;
     /** Delete a document from this database.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/document/common.html#delete--db-docid} */
-    destroy(docname: string, rev: string, callback?: Callback<DocumentDestroyResponse>): Promise<DocumentDestroyResponse>;
+    destroy(docname: string, rev: string): Promise<DocumentDestroyResponse>;
     /** Bulk insert/update/delete multiple documents in this database.
      * @see Docs: {@link https://docs.couchdb.org/en/stable/api/database/bulk-api.html#db-bulk-docs} */
-    bulk(docs: BulkModifyDocsWrapper, callback?: Callback<DocumentBulkResponse[]>): Promise<DocumentBulkResponse[]>;
+    bulk(docs: BulkModifyDocsWrapper): Promise<DocumentBulkResponse[]>;
     /** Bulk insert/update/delete multiple documents in this database, with options.
      * @see Docs: {@link https://docs.couchdb.org/en/stable/api/database/bulk-api.html#db-bulk-docs} */
-    bulk(docs: BulkModifyDocsWrapper, params: any, callback?: Callback<DocumentInsertResponse[]>): Promise<DocumentInsertResponse[]>;
+    bulk(docs: BulkModifyDocsWrapper, params: any): Promise<DocumentInsertResponse[]>;
     /** List documents from this database.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/database/bulk-api.html#get--db-_all_docs} */
-    list(callback?: Callback<DocumentListResponse<D>>): Promise<DocumentListResponse<D>>;
+    list(): Promise<DocumentListResponse<D>>;
     /** List documents from this database with options.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/database/bulk-api.html#get--db-_all_docs} */
-    list(params: DocumentListParams, callback?: Callback<DocumentListResponse<D>>): Promise<DocumentListResponse<D>>;
+    list(params: DocumentListParams): Promise<DocumentListResponse<D>>;
     /** List document from this database as a stream.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/database/bulk-api.html#get--db-_all_docs} */
     listAsStream(): NodeJS.ReadStream;
@@ -407,29 +398,25 @@ declare namespace nano {
     listAsStream(params: DocumentListParams): NodeJS.ReadStream;
     /** Fetch a list of documents by _id.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs} */
-    fetch(docnames: BulkFetchDocsWrapper, callback?: Callback<DocumentFetchResponse<D>>): Promise<DocumentFetchResponse<D>>;
+    fetch(docnames: BulkFetchDocsWrapper): Promise<DocumentFetchResponse<D>>;
     /** Fetch a list of documents by _id with options.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs} */
     fetch(
       docnames: BulkFetchDocsWrapper,
-      params: DocumentFetchParams,
-      callback?: Callback<DocumentFetchResponse<D>>
+      params: DocumentFetchParams
     ): Promise<DocumentFetchResponse<D>>;
     /** Fetch revisions of a list of document _ids.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs} */
-    fetchRevs(docnames: BulkFetchDocsWrapper, callback?: Callback<DocumentFetchRevsResponse<D>>): Promise<DocumentFetchRevsResponse<D>>;
+    fetchRevs(docnames: BulkFetchDocsWrapper): Promise<DocumentFetchRevsResponse<D>>;
     /** Fetch revisions of a list of document _ids with options.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs} */
     fetchRevs(
       docnames: BulkFetchDocsWrapper,
-      params: DocumentFetchParams,
-      callback?: Callback<DocumentFetchRevsResponse<D>>
+      params: DocumentFetchParams
     ): Promise<DocumentFetchRevsResponse<D>>;
     /** Create a Mango index.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/database/find.html#db-index} */
-    createIndex(indexDef: CreateIndexRequest,
-                callback?:  Callback<CreateIndexResponse>
-    ): Promise<CreateIndexResponse>;
+    createIndex(indexDef: CreateIndexRequest): Promise<CreateIndexResponse>;
     /** Multipart HTTP functions */
     multipart: Multipart<D>;
     /** Attachment functions */
@@ -439,8 +426,7 @@ declare namespace nano {
     show(
       designname: string,
       showname: string,
-      doc_id: string,
-      callback?: Callback<any>
+      doc_id: string
     ): Promise<any>;
     /** Apply a show function to a document.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/ddoc/render.html#get--db-_design-ddoc-_show-func} */
@@ -448,16 +434,14 @@ declare namespace nano {
       designname: string,
       showname: string,
       doc_id: string,
-      params: any,
-      callback?: Callback<any>
+      params: any
     ): Promise<any>;
     /** Executes an update function on the server side for the supplied document id.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/ddoc/render.html#put--db-_design-ddoc-_update-func-docid} */
     atomic<R>(
       designname: string,
       updatename: string,
-      docname: string,
-      callback?: Callback<R>
+      docname: string
     ): Promise<R>;
     /** Executes an update function on the server side for the supplied document id with body.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/ddoc/render.html#put--db-_design-ddoc-_update-func-docid} */
@@ -465,16 +449,14 @@ declare namespace nano {
       designname: string,
       updatename: string,
       docname: string,
-      body: any,
-      callback?: Callback<R>
+      body: any
     ): Promise<R>;
     /** Executes an update function on the server side for the supplied document id.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/ddoc/render.html#put--db-_design-ddoc-_update-func-docid} */
     updateWithHandler(
       designname: string,
       updatename: string,
-      docname: string,
-      callback?: Callback<OkResponse>
+      docname: string
     ): Promise<OkResponse>;
     /** Executes an update function on the server side for the supplied document id with body.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/ddoc/render.html#put--db-_design-ddoc-_update-func-docid} */
@@ -482,16 +464,14 @@ declare namespace nano {
       designname: string,
       updatename: string,
       docname: string,
-      body: any,
-      callback?: Callback<OkResponse>
+      body: any
     ): Promise<OkResponse>;
     /** Executes a search request against the named index.
      * @see Docs: {@link https://docs.couchdb.org/en/latest/api/ddoc/search.html#db-design-design-doc-search-index-name} */
     search<V>(
       designname: string,
       searchname: string,
-      params: DocumentSearchParams,
-      callback?: Callback<DocumentSearchResponse<V>>
+      params: DocumentSearchParams
     ): Promise<DocumentSearchResponse<V>>;
     /** Executes a search request against the named index as a stream.
      * @see Docs: {@link https://docs.couchdb.org/en/latest/api/ddoc/search.html#db-design-design-doc-search-index-name} */
@@ -506,23 +486,20 @@ declare namespace nano {
       designname: string,
       viewname: string,
       meta: any,
-      params?: any,
-      callback?: Callback<any>
+      params?: any
     ): Promise<any>;
     /** Executes a view from a Design Document.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view} */
     view<V>(
       designname: string,
-      viewname: string,
-      callback?: Callback<DocumentViewResponse<V,D>>
+      viewname: string
     ): Promise<DocumentViewResponse<V,D>>;
     /**  Executes a view from a Design Document, with options.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view} */
     view<V>(
       designname: string,
       viewname: string,
-      params: DocumentViewParams,
-      callback?: Callback<DocumentViewResponse<V,D>>
+      params: DocumentViewParams
     ): Promise<DocumentViewResponse<V,D>>;
     /** Executes a view from a Design Document as a stream
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view} */
@@ -542,8 +519,7 @@ declare namespace nano {
     viewWithList(
       designname: string,
       viewname: string,
-      listname: string,
-      callback?: Callback<any>
+      listname: string
     ): Promise<any>;
     /** Applies a list function to a view with options.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/ddoc/render.html#db-design-design-doc-list-list-name-view-name} */
@@ -551,16 +527,14 @@ declare namespace nano {
       designname: string,
       viewname: string,
       listname: string,
-      params: DocumentViewParams,
-      callback?: Callback<any>
+      params: DocumentViewParams
     ): Promise<any>;
     /** Applies a list function to a view as a stream.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/ddoc/render.html#db-design-design-doc-list-list-name-view-name} */
     viewWithListAsStream(
         designname: string,
         viewname: string,
-        listname: string,
-        callback?: Callback<any>
+        listname: string
     ): NodeJS.ReadStream;
     /** Applies a list function to a view with options as a stream.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/ddoc/render.html#db-design-design-doc-list-list-name-view-name} */
@@ -568,26 +542,25 @@ declare namespace nano {
         designname: string,
         viewname: string,
         listname: string,
-        params: DocumentViewParams,
-        callback?: Callback<any>
+        params: DocumentViewParams
     ): NodeJS.ReadStream;
     /** Run Mango query.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/database/find.html#db-find} */
-    find(query: MangoQuery, callback?: Callback<MangoResponse<D>>): Promise <MangoResponse<D>>;
+    find(query: MangoQuery): Promise <MangoResponse<D>>;
     /** Server scope */
     server: ServerScope;
     /** Fetch information about a single partition in this database.
      * @see Docs: {@link https://docs.couchdb.org/en/latest/api/partitioned-dbs.html#db-partition-partition} */
-    partitionInfo(partitionKey: string, callback?: Callback<PartitionInfoResponse>): Promise <PartitionInfoResponse>;
+    partitionInfo(partitionKey: string): Promise <PartitionInfoResponse>;
     /** List documents in a single partition in this database.
      * @see Docs: {@link https://docs.couchdb.org/en/latest/api/partitioned-dbs.html#db-partition-partition-all-docs} */
-    partitionedList(partitionKey: string, params?: DocumentFetchParams, callback?: Callback<DocumentListResponse<D>>): Promise<DocumentListResponse<D>>;
+    partitionedList(partitionKey: string, params?: DocumentFetchParams): Promise<DocumentListResponse<D>>;
     /** List documents in a single partition in this database as a stream.
      * @see Docs: {@link https://docs.couchdb.org/en/latest/api/partitioned-dbs.html#db-partition-partition-all-docs} */
     partitionedListAsStream(partitionKey: string, params?: DocumentFetchParams): NodeJS.ReadStream;
     /** Run Mango query a single partition in this database.
      * @see Docs: {@link https://docs.couchdb.org/en/latest/api/partitioned-dbs.html#db-partition-partition-id-find} */
-    partitionedFind(partitionKey: string, query: MangoQuery, callback?: Callback<MangoResponse<D>>): Promise <MangoResponse<D>>;
+    partitionedFind(partitionKey: string, query: MangoQuery): Promise <MangoResponse<D>>;
     /** Run Mango query a single partition in this database, as a stream.
      * @see Docs: {@link https://docs.couchdb.org/en/latest/api/partitioned-dbs.html#db-partition-partition-id-find} */
     partitionedFindAsStream(partitionKey: string, query: MangoQuery): NodeJS.ReadStream;
@@ -596,8 +569,7 @@ declare namespace nano {
       partitionKey: string,
       designname: string,
       searchname: string,
-      params: DocumentSearchParams,
-      callback?: Callback<DocumentSearchResponse<V>>
+      params: DocumentSearchParams
     ): Promise<DocumentSearchResponse<V>>;
     /** Run a full-text search in a single partition in this database, as a stream. */
     partitionedSearchAsStream(
@@ -612,8 +584,7 @@ declare namespace nano {
       partitionKey: string,
       designname: string,
       viewname: string,
-      params: DocumentViewParams,
-      callback?: Callback<DocumentViewResponse<V,D>>
+      params: DocumentViewParams
     ): Promise<DocumentViewResponse<V,D>>;
     /** Executes the specified view function in a single partition from the specified design document, as a stream
      * @see Docs: {@link https://docs.couchdb.org/en/latest/api/partitioned-dbs.html#db-partition-partition-design-design-doc-view-view-name} */
@@ -636,16 +607,16 @@ declare namespace nano {
   interface Multipart<D> {
     /** Create doc with multiple attachments using mutlipart HTTP request.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/document/common.html#creating-multiple-attachments} */
-    insert(doc: D, attachments: AttachmentData[], callback?: Callback<DocumentInsertResponse>): Promise<DocumentInsertResponse>;
+    insert(doc: D, attachments: AttachmentData[]): Promise<DocumentInsertResponse>;
     /** Create doc with multiple attachments using mutlipart HTTP request with options.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/document/common.html#creating-multiple-attachments} */
-    insert(doc: D, attachments: AttachmentData[], params: any, callback?: Callback<DocumentInsertResponse>): Promise<DocumentInsertResponse>;
+    insert(doc: D, attachments: AttachmentData[], params: any): Promise<DocumentInsertResponse>;
     /** Fetch document and its attachments as a multipart HTTP request. 
      * @see Docs: {@link https://docs.couchdb.org/en/latest/api/document/common.html#efficient-multiple-attachments-retrieving} */
-    get(docname: string, callback?: Callback<any>): Promise<any>;
+    get(docname: string): Promise<any>;
     /** Fetch document and its attachments as a multipart HTTP request with options.
      * @see Docs: {@link https://docs.couchdb.org/en/latest/api/document/common.html#efficient-multiple-attachments-retrieving} */
-     get(docname: string, params: any, callback?: Callback<any>): Promise<any>;
+     get(docname: string, params: any): Promise<any>;
   }
 
   /** Attachment functions */
@@ -656,8 +627,7 @@ declare namespace nano {
       docname: string,
       attname: string,
       att: any,
-      contenttype: string,
-      callback?: Callback<DocumentInsertResponse>
+      contenttype: string
     ): Promise<DocumentInsertResponse>;
     /** Insert an attachment with options.
      * @see Docs: {@link https://docs.couchdb.org/en/latest/api/document/attachments.html#put--db-docid-attname} */
@@ -666,12 +636,11 @@ declare namespace nano {
       attname: string,
       att: any,
       contenttype: string,
-      params: any,
-      callback?: Callback<DocumentInsertResponse>
+      params: any
     ): Promise<DocumentInsertResponse>;
     /** Get an attachment.
      * @see Docs: {@link https://docs.couchdb.org/en/latest/api/document/attachments.html#get--db-docid-attname} */
-    get(docname: string, attname: string, callback?: Callback<Buffer>): Promise<Buffer>;
+    get(docname: string, attname: string): Promise<Buffer>;
     /** Get an attachment as a stream.
      * @see Docs: {@link https://docs.couchdb.org/en/latest/api/document/attachments.html#get--db-docid-attname} */
     getAsStream(docname: string, attname: string): NodeJS.ReadStream;
@@ -680,19 +649,17 @@ declare namespace nano {
     get(
       docname: string,
       attname: string,
-      params: any,
-      callback?: Callback<Buffer>
+      params: any
     ): Promise<Buffer>;
     /** Delete an attachment.
      * @see Docs: {@link https://docs.couchdb.org/en/latest/api/document/attachments.html#delete--db-docid-attname} */
-    destroy(docname: string, attname: string, callback?: Callback<any>): Promise<any>;
+    destroy(docname: string, attname: string): Promise<any>;
     /** Delete an attachment with options.
      * @see Docs: {@link https://docs.couchdb.org/en/latest/api/document/attachments.html#delete--db-docid-attname} */
     destroy(
       docname: string,
       attname: string,
-      params: any,
-      callback?: Callback<any>
+      params: any
     ): Promise<any>;
   }
 
@@ -703,7 +670,7 @@ declare namespace nano {
   }
 
   /** Custom request options 
-   * @see README: {@link https://www.npmjs.com/package/nano#nanorequestopts-callback}*/
+   * @see README: {@link https://www.npmjs.com/package/nano#nanorequestopts}*/
   interface RequestOptions {
     db?: string;
     method?: string;
