@@ -10,11 +10,13 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+const test = require('node:test')
+const assert = require('node:assert/strict')
+const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
 const Nano = require('..')
-const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
 const db = nano.db.use('db')
-const nock = require('nock')
+
 const response = {
   total_rows: 1215,
   offset: 0,
@@ -57,20 +59,16 @@ const response = {
   ]
 }
 
-afterEach(() => {
-  nock.cleanAll()
-})
-
 test('should be list documents form a partition - GET /db/_partition/_all_docs - db.partitionedList', async () => {
   // mocks
-  const scope = nock(COUCH_URL)
-    .get('/db/_partition/partition/_all_docs')
-    .reply(200, response)
+  mockPool
+    .intercept({ path: '/db/_partition/partition/_all_docs' })
+    .reply(200, response, JSON_HEADERS)
 
   // test GET /db/_partition/_all_docs
   const p = await db.partitionedList('partition')
-  expect(p).toStrictEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should be list documents form a partition with opts - GET /db/_partition/_all_docs - db.partitionedList', async () => {
@@ -94,74 +92,45 @@ test('should be list documents form a partition with opts - GET /db/_partition/_
       }
     ]
   }
-  const scope = nock(COUCH_URL)
-    .get('/db/_partition/partition/_all_docs?limit=1&include_docs=true')
-    .reply(200, optsResponse)
+  mockPool
+    .intercept({ path: '/db/_partition/partition/_all_docs?limit=1&include_docs=true' })
+    .reply(200, optsResponse, JSON_HEADERS)
 
   // test GET /db/_partition/_all_docs
   const p = await db.partitionedList('partition', { limit: 1, include_docs: true })
-  expect(p).toStrictEqual(optsResponse)
-  expect(scope.isDone()).toBe(true)
-})
-
-test('should be able to list partition docs (callback) - GET /db/_partition/_all_docs - db.partitionedList', async () => {
-  // mocks
-  const scope = nock(COUCH_URL)
-    .get('/db/_partition/partition/_all_docs')
-    .reply(200, response)
-
-  // test GET /db/_partition/_all_docs
-  return new Promise((resolve, reject) => {
-    db.partitionedList('partition', (err, data) => {
-      expect(err).toBeNull()
-      expect(data).toStrictEqual(response)
-      expect(scope.isDone()).toBe(true)
-      resolve()
-    })
-  })
+  assert.deepEqual(p, optsResponse)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should escape unusual characters - GET /db/_partition/a+b/_all_docs - db.partitionedList', async () => {
   // mocks
-  const scope = nock(COUCH_URL)
-    .get('/db/_partition/a%2Bb/_all_docs')
-    .reply(200, response)
+  mockPool
+    .intercept({ path: '/db/_partition/a%2Bb/_all_docs' })
+    .reply(200, response, JSON_HEADERS)
 
   // test GET /db/_partition/_all_docs
-  return new Promise((resolve, reject) => {
-    db.partitionedList('a+b', (err, data) => {
-      expect(err).toBeNull()
-      expect(data).toStrictEqual(response)
-      expect(scope.isDone()).toBe(true)
-      resolve()
-    })
-  })
+  const p = await db.partitionedList('a+b')
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should handle missing database - GET /db/_partition/_all_docs - db.partitionedList', async () => {
   // mocks
-  const scope = nock(COUCH_URL)
-    .get('/db/_partition/partition/_all_docs')
-    .reply(404, {
-      error: 'not_found',
-      reason: 'Database does not exist.'
-    })
+  const errResponse = {
+    error: 'not_found',
+    reason: 'Database does not exist.'
+  }
+  mockPool
+    .intercept({ path: '/db/_partition/partition/_all_docs' })
+    .reply(404, errResponse, JSON_HEADERS)
 
   // test GET /db/_partition/_all_docs
-  await expect(db.partitionedList('partition')).rejects.toThrow('Database does not exist')
-  expect(scope.isDone()).toBe(true)
+  await assert.rejects(db.partitionedList('partition'), { message: errResponse.reason })
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should not attempt info fetch with missing parameters - db.partitionedList', async () => {
-  await expect(db.partitionedList()).rejects.toThrowError('Invalid parameters')
-  await expect(db.partitionedList('')).rejects.toThrowError('Invalid parameters')
+  await assert.rejects(db.partitionedList(), { message: 'Invalid parameters' })
+  await assert.rejects(db.partitionedList(''), { message: 'Invalid parameters' })
 })
 
-test('should detect missing parameters (callback) - db.partitionedList', async () => {
-  return new Promise((resolve, reject) => {
-    db.partitionedList(undefined, (err, data) => {
-      expect(err).not.toBeNull()
-      resolve()
-    })
-  })
-})

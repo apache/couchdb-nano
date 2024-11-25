@@ -10,22 +10,23 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+const test = require('node:test')
+const assert = require('node:assert/strict')
 const Nano = require('..')
-const COUCH_URL = 'http://localhost:5984'
-const nano = Nano(COUCH_URL)
+const nano = Nano('http://myurl.com')
 
 test('should be able to use a database - nano.db.use', () => {
   const db = nano.db.use('db1')
-  expect(typeof db).toBe('object')
-  expect(typeof db.get).toBe('function')
-  expect(typeof db.replication).toBe('object')
-  expect(db.config.db).toBe('db1')
+  assert.equal(typeof db, 'object')
+  assert.equal(typeof db.get, 'function')
+  assert.equal(typeof db.replication, 'object')
+  assert.equal(db.config.db, 'db1')
 })
 
 test('should be able to use a database - nano.use', () => {
   const db = nano.use('db2')
-  expect(typeof db).toBe('object')
-  expect(typeof db.get).toBe('function')
-  expect(typeof db.replication).toBe('object')
-  expect(db.config.db).toBe('db2')
+  assert.equal(typeof db, 'object')
+  assert.equal(typeof db.get, 'function')
+  assert.equal(typeof db.replication, 'object')
+  assert.equal(db.config.db, 'db2')
 })

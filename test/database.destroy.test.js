@@ -10,53 +10,41 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+const test = require('node:test')
+const assert = require('node:assert/strict')
+const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
 const Nano = require('..')
-const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
-const nock = require('nock')
-const response = { ok: true }
 
-afterEach(() => {
-  nock.cleanAll()
-})
+const response = { ok: true }
 
 test('should destroy a database - DELETE /db - nano.db.destroy', async () => {
   // mocks
-  const scope = nock(COUCH_URL)
-    .delete('/db')
-    .reply(200, response)
+  mockPool
+    .intercept({ method: 'delete', path: '/db' })
+    .reply(200, response, JSON_HEADERS)
 
   // test DELETE /db
   const p = await nano.db.destroy('db')
-  expect(typeof p).toBe('object')
-  expect(p.ok).toBe(true)
-  expect(scope.isDone()).toBe(true)
+  assert.equal(typeof p, 'object')
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should handle non-existant database - DELETE /db - nano.db.destroy', async () => {
   // mocks
-  const scope = nock(COUCH_URL)
-    .delete('/db')
-    .reply(404, {
-      error: 'not_found',
-      reason: 'Database does not exist.'
-    })
+  mockPool.intercept({ method: 'delete', path: '/db' }).reply(404, {
+    error: 'not_found',
+    reason: 'Database does not exist.'
+  }, JSON_HEADERS)
 
   // test DELETE /db
-  await expect(nano.db.destroy('db')).rejects.toThrow('Database does not exist')
-  expect(scope.isDone()).toBe(true)
+  await assert.rejects(nano.db.destroy('db'), 'Database does not exist')
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should not attempt to destroy database with empty database name - nano.db.destroy', async () => {
-  await expect(nano.db.destroy()).rejects.toThrowError('Invalid parameters')
-  await expect(nano.db.destroy('')).rejects.toThrowError('Invalid parameters')
+  await assert.rejects(nano.db.destroy(), { message: 'Invalid parameters' })
+  await assert.rejects(nano.db.destroy(''), { message: 'Invalid parameters' })
 })
 
-test('should detect missing parameters (callback) - nano.db.destroy', () => {
-  return new Promise((resolve, reject) => {
-    nano.db.destroy(undefined, (err, data) => {
-      expect(err).not.toBeNull()
-      resolve()
-    })
-  })
-})

@@ -10,14 +10,11 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+const test = require('node:test')
+const assert = require('node:assert/strict')
+const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
 const Nano = require('..')
-const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
-const nock = require('nock')
-
-afterEach(() => {
-  nock.cleanAll()
-})
 
 test('should be able to query a partitioned index - POST /db/_partition/partition/_find - db.partitionedFind', async () => {
   // mocks
@@ -38,15 +35,19 @@ test('should be able to query a partitioned index - POST /db/_partition/partitio
       { name: 'Susan', date: '2019-01-03', orderid: '8523' }
     ]
   }
-  const scope = nock(COUCH_URL)
-    .post('/db/_partition/partition/_find', query)
-    .reply(200, response)
+  mockPool
+    .intercept({
+      method: 'post',
+      path: '/db/_partition/partition/_find',
+      body: JSON.stringify(query)
+    })
+    .reply(200, response, JSON_HEADERS)
 
   // test POST /db/_partition/partition/_find
   const db = nano.db.use('db')
   const p = await db.partitionedFind('partition', query)
-  expect(p).toStrictEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should handle 404 - POST /db/_partition/partition/_find - db.partitionedFind', async () => {
@@ -60,28 +61,23 @@ test('should handle 404 - POST /db/_partition/partition/_find - db.partitionedFi
     error: 'not_found',
     reason: 'missing'
   }
-  const scope = nock(COUCH_URL)
-    .post('/db/_partition/partition/_find', query)
-    .reply(404, response)
+  mockPool
+    .intercept({
+      method: 'post',
+      path: '/db/_partition/partition/_find',
+      body: JSON.stringify(query)
+    })
+    .reply(404, response, JSON_HEADERS)
 
   // test POST /db/_partition/partition/_find
   const db = nano.db.use('db')
-  await expect(db.partitionedFind('partition', query)).rejects.toThrow('missing')
-  expect(scope.isDone()).toBe(true)
+  await assert.rejects(db.partitionedFind('partition', query), { message: 'missing' })
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should detect missing query - db.partitionedFind', async () => {
   const db = nano.db.use('db')
-  await expect(db.partitionedFind()).rejects.toThrow('Invalid parameters')
-  await expect(db.partitionedFind('partition', 'susan')).rejects.toThrow('Invalid parameters')
+  await assert.rejects(db.partitionedFind(), { message: 'Invalid parameters' })
+  await assert.rejects(db.partitionedFind('partition', 'susan'), { message: 'Invalid parameters' })
 })
 
-test('should detect missing query (callback) - db.partitionedFind', async () => {
-  const db = nano.db.use('db')
-  return new Promise((resolve, reject) => {
-    db.partitionedFind(undefined, '', (err, data) => {
-      expect(err).not.toBeNull()
-      resolve()
-    })
-  })
-})

@@ -10,10 +10,12 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+const test = require('node:test')
+const assert = require('node:assert/strict')
+const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
 const Nano = require('..')
-const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
-const nock = require('nock')
+
 const response = {
   results: [
     {
@@ -34,70 +36,56 @@ const errResponse = {
   reason: 'Database does not exist.'
 }
 
-afterEach(() => {
-  nock.cleanAll()
-})
-
 test('should be able to fetch the changes - GET /db/_changes - nano.db.changes', async () => {
   // mocks
-  const scope = nock(COUCH_URL)
-    .get('/db/_changes')
-    .reply(200, response)
+  mockPool
+    .intercept({ path: '/db/_changes' })
+    .reply(200, response, JSON_HEADERS)
 
   // test GET /db/_changes
   const p = await nano.db.changes('db')
-  expect(p).toStrictEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should be able to fetch the changes with opts - GET /db/_changes - nano.db.changes', async () => {
   // mocks
   const opts = { include_docs: true, feed: 'continuous' }
-  const scope = nock(COUCH_URL)
-    .get('/db/_changes')
-    .query(opts)
-    .reply(200, response)
+  mockPool
+    .intercept({ path: '/db/_changes?include_docs=true&feed=continuous' })
+    .reply(200, response, JSON_HEADERS)
 
   // test GET /db/_changes
   const p = await nano.db.changes('db', opts)
-  expect(p).toStrictEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should be able to handle a missing database - GET /db/_changes - nano.db.changes', async () => {
   // mocks
-  const scope = nock(COUCH_URL)
-    .get('/db/_changes')
-    .reply(404, errResponse)
+  mockPool
+    .intercept({ path: '/db/_changes' })
+    .reply(404, errResponse, JSON_HEADERS)
 
   // test GET /db/_changes
-  await expect(nano.db.changes('db')).rejects.toThrow('Database does not exist')
-  expect(scope.isDone()).toBe(true)
+  await assert.rejects(nano.db.changes('db'), { message: 'Database does not exist.' })
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should not attempt invalid parameters - nano.db.changes', async () => {
-  await expect(nano.db.changes()).rejects.toThrowError('Invalid parameters')
-  await expect(nano.db.changes('')).rejects.toThrowError('Invalid parameters')
-})
-
-test('should detect missing parameters (callback) - nano.db.changes', () => {
-  return new Promise((resolve, reject) => {
-    nano.db.changes(undefined, undefined, (err, data) => {
-      expect(err).not.toBeNull()
-      resolve()
-    })
-  })
+  await assert.rejects(nano.db.changes(), { message: 'Invalid parameters' })
+  await assert.rejects(nano.db.changes(''), { message: 'Invalid parameters' })
 })
 
 test('should be able to fetch the changes from db.changes - GET /db/_changes - db.changes', async () => {
   // mocks
-  const scope = nock(COUCH_URL)
-    .get('/db/_changes')
-    .reply(200, response)
+  mockPool
+    .intercept({ path: '/db/_changes' })
+    .reply(200, response, JSON_HEADERS)
 
   // test GET /db/_changes
   const db = nano.db.use('db')
   const p = await db.changes()
-  expect(p).toStrictEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })

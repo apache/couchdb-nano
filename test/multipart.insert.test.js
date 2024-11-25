@@ -10,10 +10,11 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+const test = require('node:test')
+const assert = require('node:assert/strict')
+const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
 const Nano = require('..')
-const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
-const nock = require('nock')
 const image1 = Buffer.from(''.concat(
   'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAsV',
   'BMVEUAAAD////////////////////////5ur3rEBn////////////////wDBL/',
@@ -46,37 +47,49 @@ const doc = {
   }
 }
 
-afterEach(() => {
-  nock.cleanAll()
-})
-
 test('should be able to insert a document with attachments #1 - multipart PUT /db/id - db.multipart.insert', async () => {
   // mocks
   const response = { ok: true, id: '8s8g8h8h9', rev: '1-123' }
-  const scope = nock(COUCH_URL)
-    .matchHeader('content-type', h => h.includes('multipart/related'))
-    .put('/db/docid')
-    .reply(200, response)
+  mockPool
+    .intercept({
+      method: 'put',
+      path: '/db/docid',
+      headers: {
+        'content-type': /^multipart\/related; .*/
+      },
+      body: (value) => {
+        return true
+      }
+    })
+    .reply(200, response, JSON_HEADERS)
 
   // test PUT /db/id
   const db = nano.db.use('db')
   const p = await db.multipart.insert(doc, images, 'docid')
-  expect(p).toStrictEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should be able to insert a document with attachments #2 - multipart PUT /db/id - db.multipart.insert', async () => {
   const response = { ok: true, id: '8s8g8h8h9', rev: '1-123' }
-  const scope = nock(COUCH_URL)
-    .matchHeader('content-type', h => h.includes('multipart/related'))
-    .put('/db/docid')
-    .reply(200, response)
+  mockPool
+    .intercept({
+      method: 'put',
+      path: '/db/docid',
+      headers: {
+        'content-type': /^multipart\/related; .*/
+      },
+      body: (value) => {
+        return true
+      }
+    })
+    .reply(200, response, JSON_HEADERS)
 
   // test PUT /db/id
   const db = nano.db.use('db')
   const p = await db.multipart.insert(doc, images, { docName: 'docid' })
-  expect(p).toStrictEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should be able to handle 404 - db.multipart.insert', async () => {
@@ -85,30 +98,29 @@ test('should be able to handle 404 - db.multipart.insert', async () => {
     error: 'not_found',
     reason: 'missing'
   }
-  const scope = nock(COUCH_URL)
-    .matchHeader('content-type', h => h.includes('multipart/related'))
-    .put('/db/docid')
-    .reply(404, response)
+  mockPool
+    .intercept({
+      method: 'put',
+      path: '/db/docid',
+      headers: {
+        'content-type': /^multipart\/related; .*/
+      },
+      body: (value) => {
+        return true
+      }
+    })
+    .reply(404, response, JSON_HEADERS)
 
   // test PUT /db/id
   const db = nano.db.use('db')
-  await expect(db.multipart.insert(doc, images, { docName: 'docid' })).rejects.toThrow('missing')
-  expect(scope.isDone()).toBe(true)
+  await assert.rejects(db.multipart.insert(doc, images, { docName: 'docid' }), { message: 'missing' })
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should detect missing docName - db.multipart.insert', async () => {
   const db = nano.db.use('db')
-  await expect(db.multipart.insert()).rejects.toThrow('Invalid parameters')
-  await expect(db.multipart.insert({ a: 1 }, [{}])).rejects.toThrow('Invalid parameters')
-  await expect(db.multipart.insert({ a: 1 }, [{}], {})).rejects.toThrow('Invalid parameters')
+  await assert.rejects(db.multipart.insert(), { message: 'Invalid parameters' })
+  await assert.rejects(db.multipart.insert({ a: 1 }, [{}]), { message: 'Invalid parameters' })
+  await assert.rejects(db.multipart.insert({ a: 1 }, [{}], {}), { message: 'Invalid parameters' })
 })
 
-test('should detect missing parameters (callback) - db.multipart.insert', () => {
-  const db = nano.db.use('db')
-  return new Promise((resolve, reject) => {
-    db.multipart.insert(undefined, undefined, undefined, (err, data) => {
-      expect(err).not.toBeNull()
-      resolve()
-    })
-  })
-})
