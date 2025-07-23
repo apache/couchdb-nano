@@ -36,7 +36,7 @@
   "main": "./lib/nano.js",
   "types": "./lib/nano.d.ts",
   "engines": {
-    "node": ">=14"
+    "node": ">=16"
   },
   "pre-commit": [
     "test"
