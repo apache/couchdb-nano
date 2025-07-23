@@ -17,7 +17,7 @@
     "database"
   ],
   "dependencies": {
-    "axios": "^1.7.4",
+    "axios": "^1.10.0",
     "qs": "^6.13.0",
     "node-abort-controller": "^3.1.1"
   },
@@ -36,7 +36,7 @@
   "main": "./lib/nano.js",
   "types": "./lib/nano.d.ts",
   "engines": {
-    "node": ">=14"
+    "node": ">=16"
   },
   "pre-commit": [
     "test"
