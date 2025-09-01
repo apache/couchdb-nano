@@ -2,13 +2,13 @@
 
 The highlights:
 
-- Nano 11's HTTP client is replaced with the native Node.js _fetch_ function meaning that Nano 11 only works on Node.js 18 and above.
+- Nano 11's HTTP client is replaced with the native Node.js _fetch_ function meaning that Nano 11 only works on Node.js 20 and above.
 - Nano no longer supports `requestDefaults` to configure the client options.
 - Nano no longer supports callbacks.
 
 ## Node.js versions
 
-> ** Nano 11 is a breaking change for users of Node.s 16 or earlier **
+> ** Nano 11 is a breaking change for users of Node.s 18 or earlier **
 
 Nano 10 uses the Axios library as an HTTP/HTTPS client. Keeping up with changes to Axios and its dependencies made maintaining this library a chore, so as of Nano 11 we use Node.js's built-in _fetch_ API as our HTTP client. This makes Nano a _zero dependency_ library which makes for faster installs, easier maintenance and slightly better performance.
 
