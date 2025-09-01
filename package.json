@@ -19,9 +19,9 @@
   "dependencies": {
   },
   "devDependencies": {
-    "undici": "^6.2.1",
-    "@types/node": "^22.3.0",
-    "typescript": "^5.5.4"
+    "undici": "^7.15.0",
+    "@types/node": "^24.3.0",
+    "typescript": "^5.9.2"
   },
   "scripts": {
     "test": "tsc lib/nano.d.ts && node --test ./test/*.test.js"
