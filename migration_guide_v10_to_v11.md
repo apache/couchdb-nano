@@ -8,14 +8,14 @@ The highlights:
 
 ## Node.js versions
 
-> ** Nano 11 is a breaking change for users of Node.s 18 or earlier **
+> ** Nano 11 is a breaking change for users of Node.s 20 or earlier **
 
 Nano 10 uses the Axios library as an HTTP/HTTPS client. Keeping up with changes to Axios and its dependencies made maintaining this library a chore, so as of Nano 11 we use Node.js's built-in _fetch_ API as our HTTP client. This makes Nano a _zero dependency_ library which makes for faster installs, easier maintenance and slightly better performance.
 
-Nano 11 is only compatible with Node.js versions 18 and older, because it is only these Node versions that have the [fetch](https://nodejs.org/dist/latest-v18.x/docs/api/globals.html#fetch) HTTP client baked in. See [Node.js's Long-term Support page](https://nodejs.org/en/about/previous-releases) to see which are the currently supported and maintained versions. In short:
+Nano 11 is only compatible with Node.js versions 20 and newer, because it is only these Node versions that have the [fetch](https://nodejs.org/dist/latest-v18.x/docs/api/globals.html#fetch) HTTP client baked in. See [Node.js's Long-term Support page](https://nodejs.org/en/about/previous-releases) to see which are the currently supported and maintained versions. In short:
 
-- If you are using Node.js 18 or newer, use Nano 11.
-- If you need to use Node.js 16 or older, use Nano 10.
+- If you are using Node.js 20 or newer, use Nano 11.
+- If you need to use Node.js 18 or older, use Nano 10.
 
 Nano 10 may continue to receive some security fixes for a time, but Nano 11 represents the future of this project and at some point, support for Nano 10 will cease.
 
