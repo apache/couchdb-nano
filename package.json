@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "homepage": "http://github.com/apache/couchdb-nano",
   "repository": "http://github.com/apache/couchdb-nano",
-  "version": "10.1.4",
+  "version": "11.0.0",
   "author": "Apache CouchDB <dev@couchdb.apache.org> (http://couchdb.apache.org)",
   "keywords": [
     "couchdb",
@@ -17,33 +17,21 @@
     "database"
   ],
   "dependencies": {
-    "axios": "^1.10.0",
-    "qs": "^6.13.0",
-    "node-abort-controller": "^3.1.1"
   },
   "devDependencies": {
-    "@types/node": "^22.3.0",
-    "jest": "^29.7.0",
-    "nock": "^13.5.4",
-    "standard": "^17.1.0",
-    "typescript": "^5.5.4"
+    "undici": "^7.15.0",
+    "@types/node": "^24.3.0",
+    "typescript": "^5.9.2"
   },
   "scripts": {
-    "standard": "standard --fix",
-    "test": "standard && tsc lib/nano.d.ts && npm run jest",
-    "jest": "jest test/* --coverage --env node"
+    "test": "tsc lib/nano.d.ts && node --test ./test/*.test.js"
   },
   "main": "./lib/nano.js",
   "types": "./lib/nano.d.ts",
   "engines": {
-    "node": ">=16"
+    "node": ">=20.0"
   },
   "pre-commit": [
     "test"
-  ],
-  "standard": {
-    "env": [
-      "jest"
-    ]
-  }
+  ]
 }

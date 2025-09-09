@@ -10,14 +10,11 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+const test = require('node:test')
+const assert = require('node:assert/strict')
+const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
 const Nano = require('../lib/nano')
-const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
-const nock = require('nock')
-
-afterEach(() => {
-  nock.cleanAll()
-})
 
 test('should be able to get info - GET / - nano.info', async () => {
   // mocks
@@ -30,12 +27,12 @@ test('should be able to get info - GET / - nano.info', async () => {
     features: ['access-ready', 'partitioned', 'pluggable-storage-engines', 'reshard', 'scheduler'],
     vendor: { name: 'The Apache Software Foundation' }
   }
-  const scope = nock(COUCH_URL)
-    .get('/')
-    .reply(200, response)
+  mockPool
+    .intercept({ path: '/' })
+    .reply(200, response, JSON_HEADERS)
 
   // test GET /_session
   const p = await nano.info()
-  expect(p).toStrictEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })

@@ -10,14 +10,11 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+const test = require('node:test')
+const assert = require('node:assert/strict')
+const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
 const Nano = require('..')
-const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
-const nock = require('nock')
-
-afterEach(() => {
-  nock.cleanAll()
-})
 
 test('should be able to insert documents in bulk - POST /db/_bulk_docs - db.bulk', async () => {
   // mocks
@@ -27,15 +24,19 @@ test('should be able to insert documents in bulk - POST /db/_bulk_docs - db.bulk
     { ok: true, id: 'y', rev: '1-456' },
     { ok: true, id: 'z', rev: '1-789' }
   ]
-  const scope = nock(COUCH_URL)
-    .post('/db/_bulk_docs', { docs })
-    .reply(200, response)
+  mockPool
+    .intercept({
+      method: 'post',
+      path: '/db/_bulk_docs',
+      body: JSON.stringify({ docs })
+    })
+    .reply(200, response, JSON_HEADERS)
 
   // test POST /db/_bulk_docs
   const db = nano.db.use('db')
   const p = await db.bulk({ docs })
-  expect(p).toStrictEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should be able to handle missing database - POST /db/_bulk_docs - db.bulk', async () => {
@@ -45,12 +46,16 @@ test('should be able to handle missing database - POST /db/_bulk_docs - db.bulk'
     error: 'not_found',
     reason: 'Database does not exist.'
   }
-  const scope = nock(COUCH_URL)
-    .post('/db/_bulk_docs', { docs })
-    .reply(404, response)
+  mockPool
+    .intercept({
+      method: 'post',
+      path: '/db/_bulk_docs',
+      body: JSON.stringify({ docs })
+    })
+    .reply(404, response, JSON_HEADERS)
 
   // test POST /db/_bulk_docs
   const db = nano.db.use('db')
-  await expect(db.bulk({ docs })).rejects.toThrow('Database does not exist.')
-  expect(scope.isDone()).toBe(true)
+  await assert.rejects(db.bulk({ docs }), { message: 'Database does not exist.' })
+  mockAgent.assertNoPendingInterceptors()
 })

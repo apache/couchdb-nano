@@ -10,37 +10,34 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+const test = require('node:test')
+const assert = require('node:assert/strict')
+const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
 const Nano = require('..')
-const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
-const nock = require('nock')
 
-afterEach(() => {
-  nock.cleanAll()
-})
-
-test('should be able to access a MapReduce view as a stream - GET /db/_design/ddoc/_view/viewname - db.viewAsStream', () => {
+test('should be able to access a MapReduce view as a stream - GET /db/_design/ddoc/_view/viewname - db.viewAsStream', async () => {
   // mocks
   const response = {
     rows: [
       { key: null, value: 23515 }
     ]
   }
-  const scope = nock(COUCH_URL)
-    .get('/db/_design/ddoc/_view/viewname')
-    .reply(200, response)
+  mockPool
+    .intercept({ path: '/db/_design/ddoc/_view/viewname' })
+    .reply(200, response, JSON_HEADERS)
 
-  return new Promise((resolve, reject) => {
+  await new Promise((resolve, reject) => {
     const db = nano.db.use('db')
     const s = db.viewAsStream('ddoc', 'viewname')
-    expect(typeof s).toBe('object')
+    assert.equal(typeof s, 'object')
     let buffer = ''
     s.on('data', (chunk) => {
       buffer += chunk.toString()
     })
     s.on('end', () => {
-      expect(buffer).toBe(JSON.stringify(response))
-      expect(scope.isDone()).toBe(true)
+      assert.equal(buffer, JSON.stringify(response))
+      mockAgent.assertNoPendingInterceptors()
       resolve()
     })
   })

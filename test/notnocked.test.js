@@ -10,8 +10,10 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+const test = require('node:test')
+const assert = require('node:assert/strict')
 const Nano = require('..')
-const COUCH_URL = 'http://admin:admin@localhost:5984'
+const COUCH_URL = 'http://admin:admin@127.0.0.1:5984'
 const nano = Nano(COUCH_URL)
 const dbName = 'notnocked' + new Date().getTime()
 let db
@@ -20,7 +22,7 @@ const emit = (k, v) => {
 }
 
 test('should be able to create a database string', () => {
-  expect(typeof dbName).toBe('string')
+  assert(typeof dbName, 'string')
 })
 
 // this section only runs if the TRAVIS environment variable is set.
@@ -48,15 +50,15 @@ if (process.env.TRAVIS) {
 
   test('should be able to get database info - nano.db.bulk', async () => {
     const info = await db.info(dbName)
-    expect(info.doc_count).toBe(7)
+    assert.equal(info.doc_count, 7)
   })
 
   test('should be able to delete a document', async () => {
     const doc = await db.get('dummy')
     await db.destroy('dummy', doc._rev)
     const info = await db.info(dbName)
-    expect(info.doc_count).toBe(6)
-    expect(info.doc_del_count).toBe(1)
+    assert.equal(info.doc_count, 6)
+    assert.equal(info.doc_del_count, 1)
   })
 
   test('should be able to update a document', async () => {
@@ -64,13 +66,13 @@ if (process.env.TRAVIS) {
     doc.newfield = true
     await db.insert(doc)
     const info = await db.info(dbName)
-    expect(info.doc_count).toBe(6)
+    assert.equal(info.doc_count, 6)
   })
 
   test('should be able to list documents in a database', async () => {
     const data = await db.list({ limit: 1, descending: true })
-    expect(data.rows.length).toBe(1)
-    expect(data.rows[0].id).toBe('snowbell')
+    assert.equal(data.rows.length, 1)
+    assert.equal(data.rows[0].id, 'snowbell')
   })
 
   test('should be able to create a view', async () => {
@@ -102,7 +104,7 @@ if (process.env.TRAVIS) {
         { id: 'crookshanks', key: 2004, value: 'Crookshanks' }
       ]
     }
-    expect(response).toStrictEqual(data)
+    assert.deepEqual(response, data)
   })
 
   test('should be able to destroy a database - nano.db.destroy', async () => {

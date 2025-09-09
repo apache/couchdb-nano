@@ -10,67 +10,57 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+const test = require('node:test')
+const assert = require('node:assert/strict')
+const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
 const Nano = require('..')
-const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
-const nock = require('nock')
 const response = { ok: true }
-
-afterEach(() => {
-  nock.cleanAll()
-})
 
 test('should create a database - PUT /db - nano.db.create', async () => {
   // mocks
-  const scope = nock(COUCH_URL)
-    .put('/db')
-    .reply(200, response)
+  mockPool
+    .intercept({ method: 'put', path: '/db' })
+    .reply(200, response, JSON_HEADERS)
 
   // test GET /db
   const p = await nano.db.create('db')
-  expect(typeof p).toBe('object')
-  expect(p.ok).toBe(true)
-  expect(scope.isDone()).toBe(true)
+  assert.equal(typeof p, 'object')
+  assert.equal(p.ok, true)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should create a database with parameters - PUT /db?partitioned=true - nano.db.create', async () => {
   // mocks
-  const scope = nock(COUCH_URL)
-    .put('/db')
-    .query({ partitioned: 'true', q: '1' })
-    .reply(200, response)
+  mockPool.intercept({
+    method: 'put',
+    path: '/db?partitioned=true&q=1'
+  }).reply(200, response, JSON_HEADERS)
 
   // test GET /db
   const p = await nano.db.create('db', { partitioned: true, q: 1 })
-  expect(typeof p).toBe('object')
-  expect(p.ok).toBe(true)
-  expect(scope.isDone()).toBe(true)
+  assert.equal(typeof p, 'object')
+  assert.equal(p.ok, true)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should handle pre-existing database - PUT /db - nano.db.create', async () => {
   // mocks
-  const scope = nock(COUCH_URL)
-    .put('/db')
-    .reply(412, {
-      error: 'file_exists',
-      reason: 'The database could not be created, the file already exists.'
-    })
+  mockPool.intercept({
+    method: 'put',
+    path: '/db'
+  }).reply(412, {
+    error: 'file_exists',
+    reason: 'The database could not be created, the file already exists.'
+  }, JSON_HEADERS)
 
   // test PUT /db
-  await expect(nano.db.create('db')).rejects.toThrow('The database could not be created')
-  expect(scope.isDone()).toBe(true)
+  await assert.rejects(nano.db.create('db'), { message: 'The database could not be created, the file already exists.' })
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should not attempt to create database with invalid parameters - nano.db.create', async () => {
-  await expect(nano.db.create()).rejects.toThrowError('Invalid parameters')
-  await expect(nano.db.create('')).rejects.toThrowError('Invalid parameters')
+  await assert.rejects(nano.db.create(), { message: 'Invalid parameters' })
+  await assert.rejects(nano.db.create(''), { message: 'Invalid parameters' })
 })
 
-test('should detect missing parameters (callback) - nano.db.create', () => {
-  return new Promise((resolve, reject) => {
-    nano.db.create(undefined, undefined, (err, data) => {
-      expect(err).not.toBeNull()
-      resolve()
-    })
-  })
-})

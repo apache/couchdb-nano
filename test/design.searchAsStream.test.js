@@ -10,16 +10,13 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+const test = require('node:test')
+const assert = require('node:assert/strict')
+const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
 const Nano = require('..')
-const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
-const nock = require('nock')
 
-afterEach(() => {
-  nock.cleanAll()
-})
-
-test('should be able to access a search index as a stream - POST /db/_design/ddoc/_search/searchname - db.searchAsStream', () => {
+test('should be able to access a search index as a stream - POST /db/_design/ddoc/_search/searchname - db.searchAsStream', async () => {
   // mocks
   const response = {
     total_rows: 100000,
@@ -29,21 +26,25 @@ test('should be able to access a search index as a stream - POST /db/_design/ddo
     ]
   }
   const params = { q: '*:*' }
-  const scope = nock(COUCH_URL)
-    .post('/db/_design/ddoc/_search/searchname', params)
-    .reply(200, response)
+  mockPool
+    .intercept({
+      method: 'post',
+      path: '/db/_design/ddoc/_search/searchname',
+      body: JSON.stringify(params)
+    })
+    .reply(200, response, JSON_HEADERS)
 
-  return new Promise((resolve, reject) => {
+  await new Promise((resolve, reject) => {
     const db = nano.db.use('db')
     const s = db.searchAsStream('ddoc', 'searchname', params)
-    expect(typeof s).toBe('object')
+    assert.equal(typeof s, 'object')
     let buffer = ''
     s.on('data', (chunk) => {
       buffer += chunk.toString()
     })
     s.on('end', () => {
-      expect(buffer).toBe(JSON.stringify(response))
-      expect(scope.isDone()).toBe(true)
+      assert.equal(buffer, JSON.stringify(response))
+      mockAgent.assertNoPendingInterceptors()
       resolve()
     })
   })

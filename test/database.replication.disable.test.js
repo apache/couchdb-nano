@@ -10,70 +10,59 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+const test = require('node:test')
+const assert = require('node:assert/strict')
+const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
+
 const Nano = require('..')
-const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
-const nock = require('nock')
 const response = { ok: true, id: 'rep1', rev: '2-123' }
 const errResponse = {
   error: 'not_found',
   reason: 'missing'
 }
 
-afterEach(() => {
-  nock.cleanAll()
-})
-
 test('should be able to delete a replication - DELETE /_replicator/id - nano.db.replication.disable', async () => {
   // mocks
-  const scope = nock(COUCH_URL)
-    .delete('/_replicator/rep1')
-    .query({ rev: '1-456' })
-    .reply(200, response)
+  mockPool.intercept({
+    method: 'delete',
+    path: '/_replicator/rep1?rev=1-456'
+  }).reply(200, response, JSON_HEADERS)
 
   // test DELETE /_replicator/id
   const p = await nano.db.replication.disable('rep1', '1-456')
-  expect(p).toEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should be able to handle a 404 - DELETE /_replicator/id - nano.db.replication.disable', async () => {
   // mocks
-  const scope = nock(COUCH_URL)
-    .delete('/_replicator/rep1')
-    .query({ rev: '1-456' })
-    .reply(404, errResponse)
+  mockPool.intercept({
+    method: 'delete',
+    path: '/_replicator/rep1?rev=1-456'
+  }).reply(404, errResponse, JSON_HEADERS)
 
   // test DELETE /_replicator/id
-  await expect(nano.db.replication.disable('rep1', '1-456')).rejects.toThrow('missing')
-  expect(scope.isDone()).toBe(true)
+  await assert.rejects(nano.db.replication.disable('rep1', '1-456'), { message: 'missing' })
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should not to try to disable with invalid parameters - nano.db.replication.disable', async () => {
-  await expect(nano.db.replication.disable(undefined, '1-456')).rejects.toThrowError('Invalid parameters')
-  await expect(nano.db.replication.disable('', '1-456')).rejects.toThrowError('Invalid parameters')
-  await expect(nano.db.replication.disable('rep1')).rejects.toThrowError('Invalid parameters')
-})
-
-test('should detect missing parameters (callback) - nano.db.replication.disable', () => {
-  return new Promise((resolve, reject) => {
-    nano.db.replication.disable(undefined, undefined, (err, data) => {
-      expect(err).not.toBeNull()
-      resolve()
-    })
-  })
+  await assert.rejects(nano.db.replication.disable(undefined, '1-456'), { message: 'Invalid parameters' })
+  await assert.rejects(nano.db.replication.disable('', '1-456'), { message: 'Invalid parameters' })
+  await assert.rejects(nano.db.replication.disable('rep1'), { message: 'Invalid parameters' })
 })
 
 test('should be able to delete a replication from db.replication.disable - DELETE /_replicator/id - db.replication.disable', async () => {
   // mocks
-  const scope = nock(COUCH_URL)
-    .delete('/_replicator/rep1')
-    .query({ rev: '1-456' })
-    .reply(200, response)
+  mockPool.intercept({
+    method: 'delete',
+    path: '/_replicator/rep1?rev=1-456'
+  }).reply(200, response, JSON_HEADERS)
 
   // test DELETE /_replicator/id
   const db = nano.db.use('db')
   const p = await db.replication.disable('rep1', '1-456')
-  expect(p).toEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })

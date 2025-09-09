@@ -10,14 +10,11 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
+const test = require('node:test')
+const assert = require('node:assert/strict')
+const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
 const Nano = require('..')
-const COUCH_URL = 'http://localhost:5984'
 const nano = Nano(COUCH_URL)
-const nock = require('nock')
-
-afterEach(() => {
-  nock.cleanAll()
-})
 
 test('should be able to access a search index - POST /db/_design/ddoc/_search/searchname - db.search', async () => {
   // mocks
@@ -29,15 +26,19 @@ test('should be able to access a search index - POST /db/_design/ddoc/_search/se
     ]
   }
   const params = { q: '*:*' }
-  const scope = nock(COUCH_URL)
-    .post('/db/_design/ddoc/_search/searchname', params)
-    .reply(200, response)
+  mockPool
+    .intercept({
+      method: 'post',
+      path: '/db/_design/ddoc/_search/searchname',
+      body: JSON.stringify(params)
+    })
+    .reply(200, response, JSON_HEADERS)
 
   // test POST /db/_design/ddoc/_search/searchnameGET /db
   const db = nano.db.use('db')
   const p = await db.search('ddoc', 'searchname', params)
-  expect(p).toStrictEqual(response)
-  expect(scope.isDone()).toBe(true)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should be able to handle 404 - db.search', async () => {
@@ -47,30 +48,25 @@ test('should be able to handle 404 - db.search', async () => {
     reason: 'missing'
   }
   const params = { q: '*:*' }
-  const scope = nock(COUCH_URL)
-    .post('/db/_design/ddoc/_search/searchname', params)
-    .reply(404, response)
+  mockPool
+    .intercept({
+      method: 'post',
+      path: '/db/_design/ddoc/_search/searchname',
+      body: JSON.stringify(params)
+    })
+    .reply(404, response, JSON_HEADERS)
 
   // test POST /db/_design/ddoc/_search/searchname
   const db = nano.db.use('db')
-  await expect(db.search('ddoc', 'searchname', params)).rejects.toThrow('missing')
-  expect(scope.isDone()).toBe(true)
+  await assert.rejects(db.search('ddoc', 'searchname', params), { message: 'missing' })
+  mockAgent.assertNoPendingInterceptors()
 })
 
 test('should detect missing parameters - db.search', async () => {
   const db = nano.db.use('db')
-  await expect(db.search()).rejects.toThrow('Invalid parameters')
-  await expect(db.search('susan')).rejects.toThrow('Invalid parameters')
-  await expect(db.search('susan', '')).rejects.toThrow('Invalid parameters')
-  await expect(db.search('', 'susan')).rejects.toThrow('Invalid parameters')
+  await assert.rejects(db.search(), { message: 'Invalid parameters' })
+  await assert.rejects(db.search('susan'), { message: 'Invalid parameters' })
+  await assert.rejects(db.search('susan', ''), { message: 'Invalid parameters' })
+  await assert.rejects(db.search('', 'susan'), { message: 'Invalid parameters' })
 })
 
-test('should detect missing parameters (callback) - db.search', () => {
-  const db = nano.db.use('db')
-  return new Promise((resolve, reject) => {
-    db.search('', '', (err, data) => {
-      expect(err).not.toBeNull()
-      resolve()
-    })
-  })
-})
