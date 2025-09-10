@@ -7,6 +7,8 @@ Offical [Apache CouchDB](https://couchdb.apache.org/) library for [Node.js](http
 > Note: Nano >=11.0.0 is a **breaking change for Node.js versions 16 and older**. Nano 11 uses Node.js's built-in "fetch" HTTP client but this is only available in Node.js versions 18 or later. If you are using Node 16 or older then continue using Nano 10.
 > See our [migration guide](migration_guide_v10_to_v11.md) for moving from Nano 10 to Nano 11.
 
+> Note: Nano >=12.0.0 is ESM-only, meaning that the `import` syntax is used to load the module instead of `require`.
+
 Features:
 
 * **Minimalistic** - There is only a minimum of abstraction between you and
@@ -26,7 +28,7 @@ or save `nano` as a dependency of your project with
 
     npm install --save nano
 
-Note the minimum required version of Node.js is 10.
+Note the minimum required version of Node.js is 20.
 
 ## Table of contents
 
@@ -108,7 +110,8 @@ Note the minimum required version of Node.js is 10.
 To use `nano` you need to connect it to your CouchDB install, to do that:
 
 ```js
-const nano = require('nano')('http://127.0.0.1:5984');
+import Nano from 'nano'
+const nano = Nano('http://127.0.0.1:5984')
 ```
 
 > Note: Supplying authentication credentials in the URL e.g. `http://admin:mypassword@localhost:5984` is deprecated. Use `nano.auth` instead.
@@ -116,13 +119,13 @@ const nano = require('nano')('http://127.0.0.1:5984');
 To create a new database:
 
 ```js
-nano.db.create('alice');
+nano.db.create('alice')
 ```
 
 and to use an existing database:
 
 ```js
-const alice = nano.db.use('alice');
+const alice = nano.db.use('alice')
 ```
 
 Under-the-hood, calls like `nano.db.create` are making HTTP API calls to the CouchDB service. Such operations are *asynchronous*. There are two ways to receive the asynchronous data back from the library
@@ -184,15 +187,16 @@ You can also see your document in futon (http://127.0.0.1:5984/_utils).
 Configuring nano to use your database server is as simple as:
 
 ```js
-const nano = require('nano')('http://127.0.0.1:5984')
-const db = nano.use('foo');
+import Nano from 'nano'
+const nano = Nano('http://127.0.0.1:5984')
+const db = nano.use('foo')
 ```
 
 If you don't need to instrument database objects you can simply:
 
 ```js
 // nano parses the URL and knows this is a database
-const db = require('nano')('http://127.0.0.1:5984/foo');
+const db = Nano('http://127.0.0.1:5984/foo')
 ```
 
 You can tell nano to not parse the URL (maybe the server is behind a proxy, is accessed through a rewrite rule or other):
@@ -200,12 +204,12 @@ You can tell nano to not parse the URL (maybe the server is behind a proxy, is a
 ```js
 // nano does not parse the URL and return the server api
 // "http://127.0.0.1:5984/prefix" is the CouchDB server root
-const couch = require('nano')(
+const couch = Nano(
   { 
     url : "http://127.0.0.1:5984/prefix"
     parseUrl : false
-  });
-const db = couch.use('foo');
+  })
+const db = couch.use('foo')
 ```
 
 ### Pool size and open sockets
@@ -213,6 +217,8 @@ const db = couch.use('foo');
 To specify the number of connections, timeouts and pool size, supply an `agentOptions` object when starting up Nano. 
 
 ```js
+import Nano from 'nano'
+import undici from 'undici'
 const agentOptions = {
   bodyTimeout: 30000,
   headersTimeout: 30000,
@@ -229,7 +235,6 @@ const agentOptions = {
   connections: null,
   maxRedirections: 0
 }
-const undici = require('undici')
 const undiciOptions = new undici.Agent(agentOptions)
 const nano = Nano({ url: 'http://127.0.0.1:5984', undiciOptions })
 ```
@@ -251,13 +256,13 @@ To supply customer headers with each request, supply a headers object when start
 
 
 ```js
-const couch = require('nano')(
+const couch = Nano(
   { 
     url : "http://127.0.0.1:5984/prefix"
     headers: {
       mycustomheader: '42'
     }
-  });
+  })
 ```
 
 ## TypeScript
@@ -342,9 +347,9 @@ const dblist = await nano.db.list()
 Lists all the CouchDB databases as a stream:
 
 ```js
-nano.db.listAsStream()
+(await nano.db.listAsStream())
   .on('error', (e) => console.error('error', e))
-  .pipe(process.stdout);
+  .pipe(process.stdout)
 ```
 
 ### nano.db.compact(name, [designname])
@@ -396,7 +401,7 @@ by the call to `replication.enable`:
 const r = await nano.db.replication.enable('alice',
                    'http://admin:password@otherhost.com:5984/alice',
                    { create_target:true })
-await nano.db.replication.disable(r.id);
+await nano.db.replication.disable(r.id)
 ```
 
 ### nano.db.changes(name, [params])
@@ -413,7 +418,7 @@ const c = await nano.db.changes('alice')
 Same as `nano.db.changes` but returns a stream.
 
 ```js
-nano.db.changes('alice').pipe(process.stdout);
+( await nano.db.changes('alice')).pipe(process.stdout)
 ```
 
 ### nano.db.info()
@@ -429,7 +434,7 @@ const info = await nano.db.info()
 Returns a database object that allows you to perform operations against that database:
 
 ```js
-const alice = nano.use('alice');
+const alice = nano.use('alice')
 await alice.insert({ happy: true }, 'rabbit')
 ```
 
@@ -505,7 +510,7 @@ The response is an object with [CouchDB cluster information](https://docs.couchd
 Inserts `doc` in the database with optional `params`. If params is a string, it's assumed it is the intended document `_id`. If params is an object, it's passed as query string parameters and `docName` is checked for defining the document `_id`:
 
 ```js
-const alice = nano.use('alice');
+const alice = nano.use('alice')
 const response = await alice.insert({ happy: true }, 'rabbit')
 ```
 
@@ -570,7 +575,7 @@ Bulk operations(update/delete/insert) on the database, refer to the
 const documents = [
   { a:1, b:2 },
   { _id: 'tiger', striped: true}
-];
+]
 const response = await alice.bulk({ docs: documents })
 ```
 
@@ -581,9 +586,9 @@ List all the docs in the database .
 ```js
 const doclist = await alice.list().then((body)=>{
     body.rows.forEach((doc) => {
-        console.log(doc);
+      console.log(doc)
     })
-});
+})
 ```
 
 or with optional query string additions `params`:
@@ -597,7 +602,7 @@ const doclist = await alice.list({include_docs: true})
 List all the docs in the database as a stream.
 
 ```js
-alice.listAsStream()
+(await alice.listAsStream())
   .on('error', (e) => console.error('error', e))
   .pipe(process.stdout)
 ```
@@ -610,7 +615,7 @@ additional query string `params` can be specified, `include_docs` is always set
 to `true`.
 
 ```js
-const keys = ['tiger', 'zebra', 'donkey'];
+const keys = ['tiger', 'zebra', 'donkey']
 const datat = await alice.fetch({keys: keys})
 ```
 
@@ -632,7 +637,7 @@ Create index on database fields, as specified in
 const indexDef = {
   index: { fields: ['foo'] },
   name: 'fooindex'
-};
+}
 const response = await alice.createIndex(indexDef)
 ```
 
@@ -656,11 +661,11 @@ const db = nano.db.use('mydb')
 db.changesReader.start()
   .on('change', (change) => { console.log(change) })
   .on('batch', (b) => {
-    console.log('a batch of', b.length, 'changes has arrived');
+    console.log('a batch of', b.length, 'changes has arrived')
   }).on('seq', (s) => {
-    console.log('sequence token', s);
+    console.log('sequence token', s)
   }).on('error', (e) => {
-    console.error('error', e);
+    console.error('error', e)
   })
 ```
 
@@ -671,7 +676,7 @@ If you want `changesReader` to hold off making the next `_changes` API call unti
 ```js
 db.changesReader.get({wait: true})
   .on('batch', (b) => {
-    console.log('a batch of', b.length, 'changes has arrived');
+    console.log('a batch of', b.length, 'changes has arrived')
     // do some asynchronous work here and call "changesReader.resume()"
     // when you're ready for the next API call to be dispatched.
     // In this case, wait 5s before the next changes feed request.
@@ -679,8 +684,8 @@ db.changesReader.get({wait: true})
       db.changesReader.resume()
     }, 5000)
   }).on('end', () => {
-    console.log('changes feed monitoring has stopped');
-  });
+    console.log('changes feed monitoring has stopped')
+  })
 ```
 
 You may supply a number of options when you start to listen to the changes feed:
@@ -853,12 +858,12 @@ Fetch documents from a partition as a stream:
 
 ```js
 // fetch document id/revs from a partition
-nano.db.partitionedListAsStream('canidae')
+(await nano.db.partitionedListAsStream('canidae'))
   .on('error', (e) => console.error('error', e))
   .pipe(process.stdout)
 
 // add document bodies but limit size of response
-nano.db.partitionedListAsStream('canidae', { include_docs: true, limit: 5 })
+(await nano.db.partitionedListAsStream('canidae', { include_docs: true, limit: 5 }))
   .on('error', (e) => console.error('error', e))
   .pipe(process.stdout)
 ```
@@ -878,7 +883,7 @@ Query documents from a partition by supplying a Mango selector as a stream:
 
 ```js
 // find document whose name is 'wolf' in the 'canidae' partition
-db.partitionedFindAsStream('canidae', { 'selector' : { 'name': 'Wolf' }})
+(await db.partitionedFindAsStream('canidae', { 'selector' : { 'name': 'Wolf' }}))
   .on('error', (e) => console.error('error', e))
   .pipe(process.stdout)
 ```
@@ -903,7 +908,7 @@ Search documents from a partition by supplying a Lucene query as a stream:
 const params = {
   q: 'name:\'Wolf\''
 }
-db.partitionedSearchAsStream('canidae', 'search-ddoc', 'search-index', params)
+(await db.partitionedSearchAsStream('canidae', 'search-ddoc', 'search-index', params))
   .on('error', (e) => console.error('error', e))
   .pipe(process.stdout)
 // { total_rows: ... , bookmark: ..., rows: [ ...] }
@@ -933,7 +938,7 @@ const params = {
   endkey: 'b',
   limit: 1
 }
-db.partitionedViewAsStream('canidae', 'view-ddoc', 'view-name', params)
+(await db.partitionedViewAsStream('canidae', 'view-ddoc', 'view-name', params))
   .on('error', (e) => console.error('error', e))
   .pipe(process.stdout)
 // { rows: [ { key: ... , value: [Object] } ] }
@@ -947,13 +952,13 @@ Inserts a `doc` together with `attachments` and `params`. If params is a string,
  The `attachments` parameter must be an array of objects with `name`, `data` and `content_type` properties.
 
 ```js
-const fs = require('fs');
+import fs from 'node:fs'
 
 fs.readFile('rabbit.png', (err, data) => {
   if (!err) {
     await alice.multipart.insert({ foo: 'bar' }, [{name: 'rabbit.png', data: data, content_type: 'image/png'}], 'mydoc')
   }
-});
+})
 ```
 
 ### db.multipart.get(docname, [params])
@@ -973,7 +978,7 @@ Inserts an attachment `attname` to `docname`, in most cases
  [CouchDB doc](https://docs.couchdb.org/en/latest/api/document/attachments.html#db-doc-attachment) for more details.
 
 ```js
-const fs = require('fs');
+import fs from 'node:fs'
 
 fs.readFile('rabbit.png', (err, data) => {
   if (!err) {
@@ -983,13 +988,13 @@ fs.readFile('rabbit.png', (err, data) => {
       'image/png',
       { rev: '12-150985a725ec88be471921a54ce91452' })
   }
-});
+})
 ```
 
 ### db.attachment.insertAsStream(docname, attname, att, contenttype, [params])
 
 As of Nano 9.x, the function `db.attachment.insertAsStream` is now deprecated. Now simply pass
-a readable stream to `db.attachment.insert` as the third paramseter.
+a readable stream to `db.attachment.insert` as the third parameter.
 
 ### db.attachment.get(docname, attname, [params])
 
@@ -997,7 +1002,7 @@ Get `docname`'s attachment `attname` with optional query string additions
 `params`.
 
 ```js
-const fs = require('fs');
+import fs from 'node:fs'
 
 const body = await alice.attachment.get('rabbit', 'rabbit.png')
 fs.writeFile('rabbit.png', body)
@@ -1006,10 +1011,10 @@ fs.writeFile('rabbit.png', body)
 ### db.attachment.getAsStream(docname, attname, [params])
 
 ```js
-const fs = require('fs');
-alice.attachment.getAsStream('rabbit', 'rabbit.png')
+import fs from 'node:fs'
+(await alice.attachment.getAsStream('rabbit', 'rabbit.png'))
   .on('error', e => console.error)
-  .pipe(fs.createWriteStream('rabbit.png'));
+  .pipe(fs.createWriteStream('rabbit.png'))
 ```
 
 ### db.attachment.destroy(docname, attname, [params])
@@ -1057,9 +1062,9 @@ const body = alice.view('characters', 'happy_ones', { include_docs: true })
 Same as `db.view` but returns a stream:
 
 ```js
-alice.viewAsStream('characters', 'happy_ones', {reduce: false})
+(await alice.viewAsStream('characters', 'happy_ones', {reduce: false}))
   .on('error', (e) => console.error('error', e))
-  .pipe(process.stdout);
+  .pipe(process.stdout)
 ```
 
 ### db.viewWithList(designname, viewname, listname, [params])
@@ -1075,9 +1080,9 @@ const body = await alice.viewWithList('characters', 'happy_ones', 'my_list')
 Calls a list function fed by the given view from the specified design document as a stream.
 
 ```js
-alice.viewWithListAsStream('characters', 'happy_ones', 'my_list')
+(await alice.viewWithListAsStream('characters', 'happy_ones', 'my_list'))
   .on('error', (e) => console.error('error', e))
-  .pipe(process.stdout);
+  .pipe(process.stdout)
 ```
 
 ### db.show(designname, showname, doc_id, [params])
@@ -1138,7 +1143,7 @@ Check out the tests for a fully functioning example.
 Calls a view of the specified design with optional query string additions `params`. Returns stream.
 
 ```js
-alice.search('characters', 'happy_ones', { q: 'cat' }).pipe(process.stdout);
+(await alice.search('characters', 'happy_ones', { q: 'cat' })).pipe(process.stdout)
 ```
 
 ### db.find(selector)
@@ -1154,7 +1159,7 @@ const q = {
   },
   fields: [ "name", "age", "tags", "url" ],
   limit:50
-};
+}
 const response = await alice.find(q)
 ```
 
@@ -1171,10 +1176,10 @@ const q = {
   },
   fields: [ "name", "age", "tags", "url" ],
   limit:50
-};
-alice.findAsStream(q)
+}
+(await alice.findAsStream(q))
   .on('error', (e) => console.error('error', e))
-  .pipe(process.stdout);
+  .pipe(process.stdout)
 ```
 
 ## using cookie authentication
@@ -1182,7 +1187,8 @@ alice.findAsStream(q)
 Nano supports making requests using CouchDB's [cookie authentication](http://guide.couchdb.org/editions/1/en/security.html#cookies) functionality. If you initialise *Nano* so that it is cookie-aware, you may call `nano.auth` first to get a session cookie. Nano will behave like a web browser, remembering your session cookie and refreshing it if a new one is received in a future HTTP response.
 
 ```js
-const nano = require('nano')({
+import Nano from 'nano'
+const nano = Nano({
   url: 'http://127.0.0.1:5984'
 })
 const username = 'user'
@@ -1237,12 +1243,12 @@ function getrabbitrev(rev) {
                  doc: 'rabbit',
                  method: 'get',
                  params: { rev: rev }
-               });
+               })
 }
 
 getrabbitrev('4-2e6cdc4c7e26b745c2881a24e0eeece2').then((body) => {
-  console.log(body);
-});
+  console.log(body)
+})
 ```
 
 ### Pipes
@@ -1250,12 +1256,13 @@ getrabbitrev('4-2e6cdc4c7e26b745c2881a24e0eeece2').then((body) => {
 You can pipe the return values of certain nano functions like other stream. For example if our `rabbit` document has an attachment with name `picture.png` you can pipe it to a `writable stream`:
 
 ```js
-const fs = require('fs');
-const nano = require('nano')('http://127.0.0.1:5984/');
-const alice = nano.use('alice');
-alice.attachment.getAsStream('rabbit', 'picture.png')
+import fs from 'node:fs'
+import Nano from 'nano'
+const nano = Nano('http://127.0.0.1:5984/')
+const alice = nano.use('alice')
+(await alice.attachment.getAsStream('rabbit', 'picture.png'))
   .on('error', (e) => console.error('error', e))
-  .pipe(fs.createWriteStream('/tmp/rabbit.png'));
+  .pipe(fs.createWriteStream('/tmp/rabbit.png'))
 ```
 
 then open `/tmp/rabbit.png` and you will see the rabbit picture.
@@ -1285,13 +1292,12 @@ const nano = Nano({ url: process.env.COUCH_URL, log: console.log })
 You may supply your own logging function to format the data before output:
 
 ```js
-const url = require('url')
 const logger = (data) => {
   // only output logging if there is an environment variable set
   if (process.env.LOG === 'nano') {
     // if this is a request
     if (typeof data.err === 'undefined') {
-      const u = new url.URL(data.uri)
+      const u = new URL(data.uri)
       console.log(data.method, u.pathname, data.qs)
     } else {
       // this is a response
