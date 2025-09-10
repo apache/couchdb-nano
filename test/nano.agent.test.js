@@ -1,8 +1,8 @@
-const test = require('node:test')
-const assert = require('node:assert/strict')
-const { COUCH_URL, mockAgent } = require('./mock.js')
-const Nano = require('../lib/nano')
-const undici = require('undici')
+import undici from 'undici'
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import { COUCH_URL, mockAgent } from './mock.js'
+import Nano from '../lib/nano.js'
 
 test('should be able to supply a custom agent parameters', async () => {
   const agentOptions = {

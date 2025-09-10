@@ -10,10 +10,11 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-const test = require('node:test')
-const assert = require('node:assert/strict')
-const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
-const Nano = require('..')
+import fs from 'node:fs'
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } from './mock.js'
+import Nano from '../lib/nano.js'
 const nano = Nano(COUCH_URL)
 const DBNAME = 'db'
 
@@ -206,7 +207,6 @@ test('should keep polling the changes feed (wait: true) - db.changesReader.start
 })
 
 test('spooling changes - db.changesReader.spool', async () => {
-  const fs = require('fs')
   const reply = fs.readFileSync('./test/changes.json')
   const replyObj = JSON.parse(reply)
   mockPool
@@ -229,7 +229,6 @@ test('spooling changes - db.changesReader.spool', async () => {
 })
 
 test('spooling changes - numeric seq - db.changesReader.spool', async () => {
-  const fs = require('fs')
   const reply = fs.readFileSync('./test/changes_numeric.json')
   const replyObj = JSON.parse(reply)
   mockPool
