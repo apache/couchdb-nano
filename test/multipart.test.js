@@ -1,6 +1,6 @@
-const test = require('node:test')
-const assert = require('node:assert/strict')
-const MultiPartFactory = require('../lib/multipart.js')
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import  MultiPartFactory from '../lib/multipart.js'
 const textAttachment = { name: 'test.txt', data: 'Hello\r\nWorld!', content_type: 'text/plain' }
 const anotherTextAttachment = { name: 'test2.txt', data: 'the quick brown fox', content_type: 'text/plain' }
 

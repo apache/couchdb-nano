@@ -10,9 +10,9 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-const Nano = require('..')
-const test = require('node:test')
-const assert = require('node:assert/strict')
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import Nano from '../lib/nano.js'
 
 test('should be able to supply HTTP url - nano.config', () => {
   const HTTP_URL = 'http://127.0.0.1:5984'
