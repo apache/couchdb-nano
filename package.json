@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "homepage": "http://github.com/apache/couchdb-nano",
   "repository": "http://github.com/apache/couchdb-nano",
-  "version": "11.0.0",
+  "version": "11.0.1",
   "author": "Apache CouchDB <dev@couchdb.apache.org> (http://couchdb.apache.org)",
   "keywords": [
     "couchdb",
@@ -19,8 +19,8 @@
   "dependencies": {
   },
   "devDependencies": {
-    "undici": "^7.15.0",
-    "@types/node": "^24.3.0",
+    "undici": "^7.16.0",
+    "@types/node": "^24.4.0",
     "typescript": "^5.9.2"
   },
   "scripts": {
