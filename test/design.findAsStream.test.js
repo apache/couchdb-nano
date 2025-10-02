@@ -43,19 +43,15 @@ test('should be able to query an index as a stream- POST /db/_find - db.findAsSt
     })
     .reply(200, response, JSON_HEADERS)
 
-  await new Promise((resolve, reject) => {
-    // test POST /db/_find
-    const db = nano.db.use('db')
-    const s = db.findAsStream(query)
-    assert.equal(typeof s, 'object')
-    let buffer = ''
-    s.on('data', (chunk) => {
-      buffer += chunk.toString()
-    })
-    s.on('end', () => {
-      assert.equal(buffer, JSON.stringify(response))
-      mockAgent.assertNoPendingInterceptors()
-      resolve()
-    })
+  // test POST /db/_find
+  const db = nano.db.use('db')
+  const s = await db.findAsStream(query)
+  let buffer = ''
+  s.on('data', (chunk) => {
+    buffer += chunk.toString()
+  })
+  s.on('end', () => {
+    assert.equal(buffer, JSON.stringify(response))
+    mockAgent.assertNoPendingInterceptors()
   })
 })

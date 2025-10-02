@@ -26,19 +26,15 @@ test('should be able to access a MapReduce view as a stream - GET /db/_design/dd
   mockPool
     .intercept({ path: '/db/_design/ddoc/_view/viewname' })
     .reply(200, response, JSON_HEADERS)
-
-  await new Promise((resolve, reject) => {
-    const db = nano.db.use('db')
-    const s = db.viewAsStream('ddoc', 'viewname')
-    assert.equal(typeof s, 'object')
-    let buffer = ''
-    s.on('data', (chunk) => {
-      buffer += chunk.toString()
-    })
-    s.on('end', () => {
-      assert.equal(buffer, JSON.stringify(response))
-      mockAgent.assertNoPendingInterceptors()
-      resolve()
-    })
+    
+  const db = nano.db.use('db')
+  const s = await db.viewAsStream('ddoc', 'viewname')
+  let buffer = ''
+  s.on('data', (chunk) => {
+    buffer += chunk.toString()
+  })
+  s.on('end', () => {
+    assert.equal(buffer, JSON.stringify(response))
+    mockAgent.assertNoPendingInterceptors()
   })
 })

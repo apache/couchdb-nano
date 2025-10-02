@@ -321,10 +321,7 @@ test('check request handles cookies - nano.request', async () => {
     .intercept({
       method: 'post',
       path: '/_session',
-      body: 'name=u&password=p',
-      headers: {
-        'content-type': 'application/x-www-form-urlencoded; charset=utf-8'
-      }
+      body: JSON.stringify({ name: username, password })
     })
     .reply(200, response, {
       headers: {
@@ -337,7 +334,7 @@ test('check request handles cookies - nano.request', async () => {
   const req = {
     method: 'post',
     path: '_session',
-    form: {
+    body: {
       name: username,
       password
     }

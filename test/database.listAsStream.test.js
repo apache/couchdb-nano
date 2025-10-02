@@ -23,18 +23,14 @@ test('should get a streamed list of databases - GET /_all_dbs - nano.db.listAsSt
     .intercept({ path: '/_all_dbs' })
     .reply(200, response, JSON_HEADERS)
 
-  await new Promise((resolve, reject) => {
-    // test GET /_all_dbs
-    const s = nano.db.listAsStream()
-    assert.equal(typeof s, 'object')
-    let buffer = ''
-    s.on('data', (chunk) => {
-      buffer += chunk.toString()
-    })
-    s.on('end', () => {
-      assert.equal(buffer, JSON.stringify(response))
-      mockAgent.assertNoPendingInterceptors()
-      resolve()
-    })
+  // test GET /_all_dbs
+  const s = await nano.db.listAsStream()
+  let buffer = ''
+  s.on('data', (chunk) => {
+    buffer += chunk.toString()
+  })
+  s.on('end', () => {
+    assert.equal(buffer, JSON.stringify(response))
+    mockAgent.assertNoPendingInterceptors()
   })
 })

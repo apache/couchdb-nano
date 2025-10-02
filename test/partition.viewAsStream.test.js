@@ -33,19 +33,15 @@ test('should get a streamed list of documents from a view from  partition - GET 
     .intercept({ path: '/db/_partition/partition/_design/ddoc/_view/viewname?reduce=false&startkey=%22a%22&endkey=%22b%22&limit=1' })
     .reply(200, response, JSON_HEADERS)
 
-  await new Promise((resolve, reject) => {
-    // test GET /db/_partition/partition/_design/ddoc/_view/viewnameGET /db/_all_docs
-    const db = nano.db.use('db')
-    const s = db.partitionedViewAsStream('partition', 'ddoc', 'viewname', params)
-    assert.equal(typeof s, 'object')
-    let buffer = ''
-    s.on('data', (chunk) => {
-      buffer += chunk.toString()
-    })
-    s.on('end', () => {
-      assert.equal(buffer, JSON.stringify(response))
-      mockAgent.assertNoPendingInterceptors()
-      resolve()
-    })
+  // test GET /db/_partition/partition/_design/ddoc/_view/viewnameGET /db/_all_docs
+  const db = nano.db.use('db')
+  const s = await db.partitionedViewAsStream('partition', 'ddoc', 'viewname', params)
+  let buffer = ''
+  s.on('data', (chunk) => {
+    buffer += chunk.toString()
+  })
+  s.on('end', () => {
+    assert.equal(buffer, JSON.stringify(response))
+    mockAgent.assertNoPendingInterceptors()
   })
 })

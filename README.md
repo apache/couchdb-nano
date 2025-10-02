@@ -347,7 +347,7 @@ const dblist = await nano.db.list()
 Lists all the CouchDB databases as a stream:
 
 ```js
-nano.db.listAsStream()
+(await nano.db.listAsStream())
   .on('error', (e) => console.error('error', e))
   .pipe(process.stdout)
 ```
@@ -418,7 +418,7 @@ const c = await nano.db.changes('alice')
 Same as `nano.db.changes` but returns a stream.
 
 ```js
-nano.db.changes('alice').pipe(process.stdout)
+( await nano.db.changes('alice')).pipe(process.stdout)
 ```
 
 ### nano.db.info()
@@ -602,7 +602,7 @@ const doclist = await alice.list({include_docs: true})
 List all the docs in the database as a stream.
 
 ```js
-alice.listAsStream()
+(await alice.listAsStream())
   .on('error', (e) => console.error('error', e))
   .pipe(process.stdout)
 ```
@@ -858,12 +858,12 @@ Fetch documents from a partition as a stream:
 
 ```js
 // fetch document id/revs from a partition
-nano.db.partitionedListAsStream('canidae')
+(await nano.db.partitionedListAsStream('canidae'))
   .on('error', (e) => console.error('error', e))
   .pipe(process.stdout)
 
 // add document bodies but limit size of response
-nano.db.partitionedListAsStream('canidae', { include_docs: true, limit: 5 })
+(await nano.db.partitionedListAsStream('canidae', { include_docs: true, limit: 5 }))
   .on('error', (e) => console.error('error', e))
   .pipe(process.stdout)
 ```
@@ -883,7 +883,7 @@ Query documents from a partition by supplying a Mango selector as a stream:
 
 ```js
 // find document whose name is 'wolf' in the 'canidae' partition
-db.partitionedFindAsStream('canidae', { 'selector' : { 'name': 'Wolf' }})
+(await db.partitionedFindAsStream('canidae', { 'selector' : { 'name': 'Wolf' }}))
   .on('error', (e) => console.error('error', e))
   .pipe(process.stdout)
 ```
@@ -908,7 +908,7 @@ Search documents from a partition by supplying a Lucene query as a stream:
 const params = {
   q: 'name:\'Wolf\''
 }
-db.partitionedSearchAsStream('canidae', 'search-ddoc', 'search-index', params)
+(await db.partitionedSearchAsStream('canidae', 'search-ddoc', 'search-index', params))
   .on('error', (e) => console.error('error', e))
   .pipe(process.stdout)
 // { total_rows: ... , bookmark: ..., rows: [ ...] }
@@ -938,7 +938,7 @@ const params = {
   endkey: 'b',
   limit: 1
 }
-db.partitionedViewAsStream('canidae', 'view-ddoc', 'view-name', params)
+(await db.partitionedViewAsStream('canidae', 'view-ddoc', 'view-name', params))
   .on('error', (e) => console.error('error', e))
   .pipe(process.stdout)
 // { rows: [ { key: ... , value: [Object] } ] }
@@ -994,7 +994,7 @@ fs.readFile('rabbit.png', (err, data) => {
 ### db.attachment.insertAsStream(docname, attname, att, contenttype, [params])
 
 As of Nano 9.x, the function `db.attachment.insertAsStream` is now deprecated. Now simply pass
-a readable stream to `db.attachment.insert` as the third paramseter.
+a readable stream to `db.attachment.insert` as the third parameter.
 
 ### db.attachment.get(docname, attname, [params])
 
@@ -1012,7 +1012,7 @@ fs.writeFile('rabbit.png', body)
 
 ```js
 import fs from 'node:fs'
-alice.attachment.getAsStream('rabbit', 'rabbit.png')
+(await alice.attachment.getAsStream('rabbit', 'rabbit.png'))
   .on('error', e => console.error)
   .pipe(fs.createWriteStream('rabbit.png'))
 ```
@@ -1062,7 +1062,7 @@ const body = alice.view('characters', 'happy_ones', { include_docs: true })
 Same as `db.view` but returns a stream:
 
 ```js
-alice.viewAsStream('characters', 'happy_ones', {reduce: false})
+(await alice.viewAsStream('characters', 'happy_ones', {reduce: false}))
   .on('error', (e) => console.error('error', e))
   .pipe(process.stdout)
 ```
@@ -1080,7 +1080,7 @@ const body = await alice.viewWithList('characters', 'happy_ones', 'my_list')
 Calls a list function fed by the given view from the specified design document as a stream.
 
 ```js
-alice.viewWithListAsStream('characters', 'happy_ones', 'my_list')
+(await alice.viewWithListAsStream('characters', 'happy_ones', 'my_list'))
   .on('error', (e) => console.error('error', e))
   .pipe(process.stdout)
 ```
@@ -1143,7 +1143,7 @@ Check out the tests for a fully functioning example.
 Calls a view of the specified design with optional query string additions `params`. Returns stream.
 
 ```js
-alice.search('characters', 'happy_ones', { q: 'cat' }).pipe(process.stdout)
+(await alice.search('characters', 'happy_ones', { q: 'cat' })).pipe(process.stdout)
 ```
 
 ### db.find(selector)
@@ -1177,7 +1177,7 @@ const q = {
   fields: [ "name", "age", "tags", "url" ],
   limit:50
 }
-alice.findAsStream(q)
+(await alice.findAsStream(q))
   .on('error', (e) => console.error('error', e))
   .pipe(process.stdout)
 ```
@@ -1260,7 +1260,7 @@ import fs from 'node:fs'
 import Nano from 'nano'
 const nano = Nano('http://127.0.0.1:5984/')
 const alice = nano.use('alice')
-alice.attachment.getAsStream('rabbit', 'picture.png')
+(await alice.attachment.getAsStream('rabbit', 'picture.png'))
   .on('error', (e) => console.error('error', e))
   .pipe(fs.createWriteStream('/tmp/rabbit.png'))
 ```

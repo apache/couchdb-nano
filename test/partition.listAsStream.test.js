@@ -49,20 +49,16 @@ test('should get a streamed list of documents from a partition- GET /db/_partiti
     .intercept({ path: '/db/_partition/partition/_all_docs' })
     .reply(200, response, JSON_HEADERS)
 
-  await new Promise((resolve, reject) => {
-    // test GET /db/_partition/_all_docs
-    const db = nano.db.use('db')
-    const s = db.partitionedListAsStream('partition')
-    assert(typeof s, 'object')
-    let buffer = ''
-    s.on('data', (chunk) => {
-      buffer += chunk.toString()
-    })
-    s.on('end', () => {
-      assert.equal(buffer, JSON.stringify(response))
-      mockAgent.assertNoPendingInterceptors()
-      resolve()
-    })
+  // test GET /db/_partition/_all_docs
+  const db = nano.db.use('db')
+  const s = await db.partitionedListAsStream('partition')
+  let buffer = ''
+  s.on('data', (chunk) => {
+    buffer += chunk.toString()
+  })
+  s.on('end', () => {
+    assert.equal(buffer, JSON.stringify(response))
+    mockAgent.assertNoPendingInterceptors()
   })
 })
 
@@ -91,19 +87,15 @@ test('should get a streamed list of documents from a partition with opts- GET /d
     .intercept({ path: '/db/_partition/partition/_all_docs?limit=1&include_docs=true' })
     .reply(200, response, JSON_HEADERS)
 
-  await new Promise((resolve, reject) => {
-    // test GET /db/_partition/_all_docs
-    const db = nano.db.use('db')
-    const s = db.partitionedListAsStream('partition', { limit: 1, include_docs: true })
-    assert.equal(typeof s, 'object')
-    let buffer = ''
-    s.on('data', (chunk) => {
-      buffer += chunk.toString()
-    })
-    s.on('end', () => {
-      assert.equal(buffer, JSON.stringify(response))
-      mockAgent.assertNoPendingInterceptors()
-      resolve()
-    })
+  // test GET /db/_partition/_all_docs
+  const db = nano.db.use('db')
+  const s = await db.partitionedListAsStream('partition', { limit: 1, include_docs: true })
+  let buffer = ''
+  s.on('data', (chunk) => {
+    buffer += chunk.toString()
+  })
+  s.on('end', () => {
+    assert.equal(buffer, JSON.stringify(response))
+    mockAgent.assertNoPendingInterceptors()
   })
 })

@@ -395,10 +395,10 @@ declare namespace nano {
     list(params: DocumentListParams): Promise<DocumentListResponse<D>>;
     /** List document from this database as a stream.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/database/bulk-api.html#get--db-_all_docs} */
-    listAsStream(): NodeJS.ReadStream;
+    listAsStream(): Promise<NodeJS.ReadStream>;
     /** List document from this database as a stream with options.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/database/bulk-api.html#get--db-_all_docs} */
-    listAsStream(params: DocumentListParams): NodeJS.ReadStream;
+    listAsStream(params: DocumentListParams): Promise<NodeJS.ReadStream>;
     /** Fetch a list of documents by _id.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs} */
     fetch(docnames: BulkFetchDocsWrapper): Promise<DocumentFetchResponse<D>>;
@@ -482,7 +482,7 @@ declare namespace nano {
       designname: string,
       searchname: string,
       params: DocumentSearchParams
-    ): NodeJS.ReadStream;
+    ): Promise<NodeJS.ReadStream>;
     /** Low-level wrapper that executes a view from a Design Document.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view} */
     baseView<V>(
@@ -509,14 +509,14 @@ declare namespace nano {
     viewAsStream<V>(
       designname: string,
       viewname: string
-    ): NodeJS.ReadStream;
+    ): Promise<NodeJS.ReadStream>;
     /** Executes a view from a Design Document, with options as a stream
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/ddoc/views.html#get--db-_design-ddoc-_view-view} */
     viewAsStream<V>(
       designname: string,
       viewname: string,
       params: DocumentViewParams
-    ): NodeJS.ReadStream;
+    ): Promise<NodeJS.ReadStream>;
     /** Applies a list function to a view.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/ddoc/render.html#db-design-design-doc-list-list-name-view-name} */
     viewWithList(
@@ -538,7 +538,7 @@ declare namespace nano {
         designname: string,
         viewname: string,
         listname: string
-    ): NodeJS.ReadStream;
+    ): Promise<NodeJS.ReadStream>;
     /** Applies a list function to a view with options as a stream.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/ddoc/render.html#db-design-design-doc-list-list-name-view-name} */
     viewWithListAsStream(
@@ -546,7 +546,7 @@ declare namespace nano {
         viewname: string,
         listname: string,
         params: DocumentViewParams
-    ): NodeJS.ReadStream;
+    ): Promise<NodeJS.ReadStream>;
     /** Run Mango query.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/database/find.html#db-find} */
     find(query: MangoQuery): Promise <MangoResponse<D>>;
@@ -563,13 +563,13 @@ declare namespace nano {
     partitionedList(partitionKey: string, params?: DocumentFetchParams): Promise<DocumentListResponse<D>>;
     /** List documents in a single partition in this database as a stream.
      * @see Docs: {@link https://docs.couchdb.org/en/latest/api/partitioned-dbs.html#db-partition-partition-all-docs} */
-    partitionedListAsStream(partitionKey: string, params?: DocumentFetchParams): NodeJS.ReadStream;
+    partitionedListAsStream(partitionKey: string, params?: DocumentFetchParams): Promise<NodeJS.ReadStream>;
     /** Run Mango query a single partition in this database.
      * @see Docs: {@link https://docs.couchdb.org/en/latest/api/partitioned-dbs.html#db-partition-partition-id-find} */
     partitionedFind(partitionKey: string, query: MangoQuery): Promise <MangoResponse<D>>;
     /** Run Mango query a single partition in this database, as a stream.
      * @see Docs: {@link https://docs.couchdb.org/en/latest/api/partitioned-dbs.html#db-partition-partition-id-find} */
-    partitionedFindAsStream(partitionKey: string, query: MangoQuery): NodeJS.ReadStream;
+    partitionedFindAsStream(partitionKey: string, query: MangoQuery): Promise<NodeJS.ReadStream>;
     /** Run a full-text search in a single partition in this database. */
     partitionedSearch<V>(
       partitionKey: string,
@@ -583,7 +583,7 @@ declare namespace nano {
       designname: string,
       searchname: string,
       params: DocumentSearchParams
-    ): NodeJS.ReadStream;
+    ): Promise<NodeJS.ReadStream>;
     /** Executes the specified view function in a single partition from the specified design document.
      * @see Docs: {@link https://docs.couchdb.org/en/latest/api/partitioned-dbs.html#db-partition-partition-design-design-doc-view-view-name} */
     partitionedView<V>(
@@ -599,7 +599,7 @@ declare namespace nano {
       designname: string,
       viewname: string,
       params: DocumentViewParams
-    ): NodeJS.ReadStream;
+    ): Promise<NodeJS.ReadStream>;
   }
 
   /** attachment data */
@@ -649,7 +649,7 @@ declare namespace nano {
     get(docname: string, attname: string): Promise<Buffer>;
     /** Get an attachment as a stream.
      * @see Docs: {@link https://docs.couchdb.org/en/latest/api/document/attachments.html#get--db-docid-attname} */
-    getAsStream(docname: string, attname: string): NodeJS.ReadStream;
+    getAsStream(docname: string, attname: string): Promise<NodeJS.ReadStream>;
     /** Get an attachment with options.
      * @see Docs: {@link https://docs.couchdb.org/en/latest/api/document/attachments.html#get--db-docid-attname} */
     get(

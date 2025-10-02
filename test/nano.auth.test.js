@@ -28,10 +28,7 @@ test('should be able to authenticate - POST /_session - nano.auth', async () => 
     .intercept({
       method: 'post',
       path: '/_session',
-      body: 'name=u&password=p',
-      headers: {
-        'content-type': 'application/x-www-form-urlencoded; charset=utf-8'
-      }
+      body: JSON.stringify({ name: username, password })
     })
     .reply(200, response, {
       headers: {
@@ -70,10 +67,7 @@ test('should be able to handle cookie refresh - POST /_session - nano.auth', asy
     .intercept({
       method: 'post',
       path: '/_session',
-      body: 'name=u&password=p',
-      headers: {
-        'content-type': 'application/x-www-form-urlencoded; charset=utf-8'
-      }
+      body: JSON.stringify({ name: username, password })
     })
     .reply(200, response, {
       headers: {

@@ -34,18 +34,14 @@ test('should be able to access a search index as a stream - POST /db/_design/ddo
     })
     .reply(200, response, JSON_HEADERS)
 
-  await new Promise((resolve, reject) => {
-    const db = nano.db.use('db')
-    const s = db.searchAsStream('ddoc', 'searchname', params)
-    assert.equal(typeof s, 'object')
-    let buffer = ''
-    s.on('data', (chunk) => {
-      buffer += chunk.toString()
-    })
-    s.on('end', () => {
-      assert.equal(buffer, JSON.stringify(response))
-      mockAgent.assertNoPendingInterceptors()
-      resolve()
-    })
+  const db = nano.db.use('db')
+  const s = await db.searchAsStream('ddoc', 'searchname', params)
+  let buffer = ''
+  s.on('data', (chunk) => {
+    buffer += chunk.toString()
+  })
+  s.on('end', () => {
+    assert.equal(buffer, JSON.stringify(response))
+    mockAgent.assertNoPendingInterceptors()
   })
 })
