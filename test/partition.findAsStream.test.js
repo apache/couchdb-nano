@@ -43,19 +43,15 @@ test('should get a queried streamed list of documents from a partition- POST /db
     })
     .reply(200, response, JSON_HEADERS)
 
-  await new Promise((resolve, reject) => {
-    // test /db/_partition/partition/_find
-    const db = nano.db.use('db')
-    const s = db.partitionedFindAsStream('partition', query)
-    assert.equal(typeof s, 'object')
-    let buffer = ''
-    s.on('data', (chunk) => {
-      buffer += chunk.toString()
-    })
-    s.on('end', () => {
-      assert.equal(buffer, JSON.stringify(response))
-      mockAgent.assertNoPendingInterceptors()
-      resolve()
-    })
+  // test /db/_partition/partition/_find
+  const db = nano.db.use('db')
+  const s = await db.partitionedFindAsStream('partition', query)
+  let buffer = ''
+  s.on('data', (chunk) => {
+    buffer += chunk.toString()
+  })
+  s.on('end', () => {
+    assert.equal(buffer, JSON.stringify(response))
+    mockAgent.assertNoPendingInterceptors()
   })
 })
