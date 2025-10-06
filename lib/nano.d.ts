@@ -105,7 +105,10 @@ declare namespace nano {
     /** Set to false to prevent parsing of url 
      * @see README: {@link https://www.npmjs.com/package/nano#configuration}
      */
-    parseUrl?: boolean;
+    headers?: object;
+    /** Custom request headers
+     * @see README: {@link https://www.npmjs.com/package/nano#configuration}
+     */
   }
 
   /** An error triggered by nano */
