@@ -10,10 +10,10 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-const test = require('node:test')
-const assert = require('node:assert/strict')
-const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
-const Nano = require('..')
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } from './mock.js'
+import Nano from '../lib/nano.js'
 const nano = Nano(COUCH_URL)
 const response = {
   results: [
@@ -37,21 +37,18 @@ test('should get a streamed list of changes - GET /_changes - nano.db.changesAsS
     .intercept({ path: '/db/_changes' })
     .reply(200, response, JSON_HEADERS)
 
-  await new Promise((resolve, reject) => {
-    // test GET /db/_changes
-    const db = nano.db.use('db')
-    const s = db.changesAsStream()
-    assert.equal(typeof s, 'object')
-    let buffer = ''
-    s.on('data', (chunk) => {
-      buffer += chunk.toString()
-    })
-    s.on('end', () => {
-      assert.equal(buffer, JSON.stringify(response))
-      mockAgent.assertNoPendingInterceptors()
-      resolve()
-    })
+  // test GET /db/_changes
+  const db = nano.db.use('db')
+  const s = await db.changesAsStream()
+  let buffer = ''
+  s.on('data', (chunk) => {
+    buffer += chunk.toString()
   })
+  s.on('end', () => {
+    assert.equal(buffer, JSON.stringify(response))
+    mockAgent.assertNoPendingInterceptors()
+  })
+
 })
 
 test('should get a streamed list of changes with opts - GET /_changes - nano.db.changesAsStream', async () => {
@@ -61,19 +58,15 @@ test('should get a streamed list of changes with opts - GET /_changes - nano.db.
     .intercept({ path: '/db/_changes?include_docs=true' })
     .reply(200, response, JSON_HEADERS)
 
-  await new Promise((resolve, reject) => {
-    // test GET /db/_changes
-    const db = nano.db.use('db')
-    const s = db.changesAsStream(opts)
-    assert.equal(typeof s, 'object')
-    let buffer = ''
-    s.on('data', (chunk) => {
-      buffer += chunk.toString()
-    })
-    s.on('end', () => {
-      assert.equal(buffer, JSON.stringify(response))
-      mockAgent.assertNoPendingInterceptors()
-      resolve()
-    })
+  // test GET /db/_changes
+  const db = nano.db.use('db')
+  const s = await db.changesAsStream(opts)
+  let buffer = ''
+  s.on('data', (chunk) => {
+    buffer += chunk.toString()
+  })
+  s.on('end', () => {
+    assert.equal(buffer, JSON.stringify(response))
+    mockAgent.assertNoPendingInterceptors()
   })
 })

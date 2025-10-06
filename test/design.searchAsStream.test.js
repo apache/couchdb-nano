@@ -10,10 +10,10 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-const test = require('node:test')
-const assert = require('node:assert/strict')
-const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
-const Nano = require('..')
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } from './mock.js'
+import Nano from '../lib/nano.js'
 const nano = Nano(COUCH_URL)
 
 test('should be able to access a search index as a stream - POST /db/_design/ddoc/_search/searchname - db.searchAsStream', async () => {
@@ -34,18 +34,14 @@ test('should be able to access a search index as a stream - POST /db/_design/ddo
     })
     .reply(200, response, JSON_HEADERS)
 
-  await new Promise((resolve, reject) => {
-    const db = nano.db.use('db')
-    const s = db.searchAsStream('ddoc', 'searchname', params)
-    assert.equal(typeof s, 'object')
-    let buffer = ''
-    s.on('data', (chunk) => {
-      buffer += chunk.toString()
-    })
-    s.on('end', () => {
-      assert.equal(buffer, JSON.stringify(response))
-      mockAgent.assertNoPendingInterceptors()
-      resolve()
-    })
+  const db = nano.db.use('db')
+  const s = await db.searchAsStream('ddoc', 'searchname', params)
+  let buffer = ''
+  s.on('data', (chunk) => {
+    buffer += chunk.toString()
+  })
+  s.on('end', () => {
+    assert.equal(buffer, JSON.stringify(response))
+    mockAgent.assertNoPendingInterceptors()
   })
 })

@@ -10,10 +10,10 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-const test = require('node:test')
-const assert = require('node:assert/strict')
-const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
-const Nano = require('..')
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } from './mock.js'
+import Nano from '../lib/nano.js'
 const nano = Nano({ url: COUCH_URL })
 
 test('should be able to authenticate - POST /_session - nano.auth', async () => {
@@ -28,10 +28,7 @@ test('should be able to authenticate - POST /_session - nano.auth', async () => 
     .intercept({
       method: 'post',
       path: '/_session',
-      body: 'name=u&password=p',
-      headers: {
-        'content-type': 'application/x-www-form-urlencoded; charset=utf-8'
-      }
+      body: JSON.stringify({ name: username, password })
     })
     .reply(200, response, {
       headers: {
@@ -70,10 +67,7 @@ test('should be able to handle cookie refresh - POST /_session - nano.auth', asy
     .intercept({
       method: 'post',
       path: '/_session',
-      body: 'name=u&password=p',
-      headers: {
-        'content-type': 'application/x-www-form-urlencoded; charset=utf-8'
-      }
+      body: JSON.stringify({ name: username, password })
     })
     .reply(200, response, {
       headers: {

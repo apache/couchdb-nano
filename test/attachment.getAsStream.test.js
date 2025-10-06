@@ -10,32 +10,29 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-const test = require('node:test')
-const assert = require('node:assert/strict')
-const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
-const Nano = require('..')
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } from './mock.js'
+import Nano from '../lib/nano.js'
 const nano = Nano(COUCH_URL)
 const image = Buffer.from('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', 'base64')
 
-test('should be able to get an attachment as a stream - GET /db/id/attname - db.attachment.getAsStream', () => {
+test('should be able to get an attachment as a stream - GET /db/id/attname - db.attachment.getAsStream', async () => {
   // mocks
   mockPool
     .intercept({ path: '/db/id/transparent.gif' })
     .reply(200, image, { headers: { 'content-type': 'image/gif' } })
 
   // test GET /db/id/attname
-  return new Promise((resolve, reject) => {
-    const db = nano.db.use('db')
-    let response = Buffer.from('')
-    db.attachment.getAsStream('id', 'transparent.gif')
-      .on('data', (data) => {
-        response = Buffer.concat([response, data])
-      })
-      .on('end', () => {
-        assert.equal(response.toString('base64'), image.toString('base64'))
-        mockAgent.assertNoPendingInterceptors()
-        resolve()
-      })
+  const db = nano.db.use('db')
+  let response = Buffer.from('')
+  const s = await db.attachment.getAsStream('id', 'transparent.gif')
+  s.on('data', (data) => {
+    response = Buffer.concat([response, data])
+  })
+  .on('end', () => {
+    assert.equal(response.toString('base64'), image.toString('base64'))
+    mockAgent.assertNoPendingInterceptors()
   })
 })
 
@@ -46,12 +43,9 @@ test('should emit an error when stream attachment does not exist - GET /db/id/at
     .intercept({ path: '/db/id/notexist.gif' })
     .reply(404, response, JSON_HEADERS)
 
-  await new Promise((resolve, reject) => {
-    const db = nano.db.use('db')
-    db.attachment.getAsStream('id', 'notexist.gif')
-      .on('error', (e) => {
-        assert.equal(e.statusCode, 404)
-        resolve()
-      })
+  const db = nano.db.use('db')
+  const s = await db.attachment.getAsStream('id', 'notexist.gif')
+  s.on('error', (e) => {
+    assert.equal(e.statusCode, 404)
   })
 })

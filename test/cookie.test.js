@@ -10,10 +10,9 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-const test = require('node:test')
-const assert = require('node:assert/strict')
-
-const CookieJar = require('../lib/cookie.js')
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import CookieJar from '../lib/cookie.js'
 
 test('should parse cookies correctly', () => {
   const cj = new CookieJar()
