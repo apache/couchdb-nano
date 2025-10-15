@@ -550,6 +550,9 @@ declare namespace nano {
     /** Run Mango query.
      * @see Docs: {@link http://docs.couchdb.org/en/latest/api/database/find.html#db-find} */
     find(query: MangoQuery): Promise <MangoResponse<D>>;
+    /** Run Mango query as a stream.
+     * @see Docs: {@link http://docs.couchdb.org/en/latest/api/database/find.html#db-find} */
+    findAsStream(query: MangoQuery): NodeJS.ReadStream;
     /** Server scope */
     server: ServerScope;
     /** Fetch information about a single partition in this database.
