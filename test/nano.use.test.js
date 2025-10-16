@@ -10,9 +10,9 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-const test = require('node:test')
-const assert = require('node:assert/strict')
-const Nano = require('..')
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import Nano from '../lib/nano.js'
 const nano = Nano('http://myurl.com')
 
 test('should be able to use a database - nano.db.use', () => {

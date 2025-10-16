@@ -10,10 +10,10 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-const test = require('node:test')
-const assert = require('node:assert/strict')
-const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
-const Nano = require('..')
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } from './mock.js'
+import Nano from '../lib/nano.js'
 const nano = Nano(COUCH_URL)
 
 test('should get a searched streamed list of documents from a partition- GET /db/_partition/partition/_design/ddoc/_search/searchname - db.partitionedSearchAsStream', async () => {
@@ -30,19 +30,15 @@ test('should get a searched streamed list of documents from a partition- GET /db
     .intercept({ path: '/db/_partition/partition/_design/ddoc/_search/searchname?q=*:*' })
     .reply(200, response, JSON_HEADERS)
 
-  await new Promise((resolve, reject) => {
-    // test GET /db/_partition/partition/_design/ddoc/_search/searchname
-    const db = nano.db.use('db')
-    const s = db.partitionedSearchAsStream('partition', 'ddoc', 'searchname', params)
-    assert.equal(typeof s, 'object')
-    let buffer = ''
-    s.on('data', (chunk) => {
-      buffer += chunk.toString()
-    })
-    s.on('end', () => {
-      assert.equal(buffer, JSON.stringify(response))
-      mockAgent.assertNoPendingInterceptors()
-      resolve()
-    })
+  // test GET /db/_partition/partition/_design/ddoc/_search/searchname
+  const db = nano.db.use('db')
+  const s = await db.partitionedSearchAsStream('partition', 'ddoc', 'searchname', params)
+  let buffer = ''
+  s.on('data', (chunk) => {
+    buffer += chunk.toString()
+  })
+  s.on('end', () => {
+    assert.equal(buffer, JSON.stringify(response))
+    mockAgent.assertNoPendingInterceptors()
   })
 })

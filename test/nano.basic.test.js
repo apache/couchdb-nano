@@ -14,27 +14,25 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } from './mock.js'
 import Nano from '../lib/nano.js'
-const nano = Nano(COUCH_URL)
+const username = 'username'
+const password = 'password'
+const nano = Nano(`http://${username}:${password}@127.0.0.1:5984`)
 
-test('should be able to access a MapReduce view as a stream - GET /db/_design/ddoc/_view/viewname - db.viewAsStream', async () => {
+test('should be able to authenticate with basic auth', async () => {
   // mocks
-  const response = {
-    rows: [
-      { key: null, value: 23515 }
-    ]
-  }
+  const response = ['replicator']
+
   mockPool
-    .intercept({ path: '/db/_design/ddoc/_view/viewname' })
+    .intercept({
+      path: '/_all_dbs',
+      headers: {
+        Authorization: 'Basic dXNlcm5hbWU6cGFzc3dvcmQ='
+      }
+    })
     .reply(200, response, JSON_HEADERS)
     
-  const db = nano.db.use('db')
-  const s = await db.viewAsStream('ddoc', 'viewname')
-  let buffer = ''
-  s.on('data', (chunk) => {
-    buffer += chunk.toString()
-  })
-  s.on('end', () => {
-    assert.equal(buffer, JSON.stringify(response))
-    mockAgent.assertNoPendingInterceptors()
-  })
+  // test POST /_session
+  const p = await nano.db.list()
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
 })

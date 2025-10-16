@@ -10,10 +10,10 @@
 // License for the specific language governing permissions and limitations under
 // the License.
 
-const test = require('node:test')
-const assert = require('node:assert/strict')
-const { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
-const Nano = require('..')
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import { COUCH_URL, mockAgent, mockPool, JSON_HEADERS } from './mock.js'
+import Nano from '../lib/nano.js'
 
 test('should be able to log output with user-defined function', async () => {
   // setup Nano with custom logger
@@ -36,5 +36,56 @@ test('should be able to log output with user-defined function', async () => {
   const p = await db.get('id')
   assert.deepEqual(p, response)
   assert.equal(logs.length, 2)
+  mockAgent.assertNoPendingInterceptors()
+})
+
+test('should be able to log output with cookie auth', async () => {
+  // setup Nano with custom logger
+  const logs = []
+  const nano = Nano({
+    url: COUCH_URL,
+    log: (data) => {
+      logs.push(data)
+    }
+  })
+
+  // mocks
+  // mocks
+  const username = 'u'
+  const password = 'p'
+  const response = { ok: true, name: 'admin', roles: ['_admin', 'admin'] }
+  const c = 'AuthSession=YWRtaW46NUU0MTFBMDE6stHsxYnlDy4mYxwZEcnXHn4fm5w'
+  const cookie = `${c}; Version=1; Expires=Mon, 10-Feb-2050 09:03:21 GMT; Max-Age=600; Path=/; HttpOnly`
+
+  mockPool
+    .intercept({
+      method: 'post',
+      path: '/_session',
+      body: JSON.stringify({ name: username, password })
+    })
+    .reply(200, response, {
+      headers: {
+        'content-type': 'application/json',
+        'Set-Cookie': cookie
+      }
+    })
+  mockPool
+    .intercept({
+      path: '/_all_dbs',
+      headers: {
+        cookie: c
+      }
+    })
+    .reply(200, ['a'], JSON_HEADERS)
+
+  // test POST /_session
+  const p = await nano.auth(username, password)
+  assert.deepEqual(p, response)
+  const q = await nano.db.list()
+  assert.deepEqual(q, ['a'])
+  assert.equal(logs.length, 4)
+  // check set-cookie and cookie are scrubbed
+  assert.equal(logs[1].headers['set-cookie'], 'XXXXXX')
+  assert.equal(logs[2].headers['cookie'], 'XXXXXX')
   mockAgent.assertNoPendingInterceptors()
 })
