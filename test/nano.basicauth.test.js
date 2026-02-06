@@ -12,10 +12,11 @@
 
 const test = require('node:test')
 const assert = require('node:assert/strict')
-const COUCH_URL="http://admin[:admin]@localhost:5984"
+const COUCH_URL="http://admin[:admin]@127.0.0.1:5984"
 const { mockAgent, mockPool, JSON_HEADERS } = require('./mock.js')
 const Nano = require('..')
-const nano = Nano(COUCH_URL)
+const nano = Nano({ url: COUCH_URL })
+const pkg = require('../package.json')
 
 test('should handle special characters in username & password', async () => {
   // mocks
@@ -24,7 +25,8 @@ test('should handle special characters in username & password', async () => {
     .intercept({
       path: '/_all_dbs',
       headers: {
-        'Authorization': auth
+        'authorization': auth,
+        'content-type': 'application/json'
       }
     })
     .reply(200, ['a'], JSON_HEADERS)
