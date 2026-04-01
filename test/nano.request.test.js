@@ -442,3 +442,25 @@ test('check request sends headers for gzipped responses - nano.request', async (
   assert.deepEqual(p, response)
   mockAgent.assertNoPendingInterceptors()
 })
+
+
+test('check request parses JSON with character set', async () => {
+  // mocks
+  const response = { ok: true }
+  const CHARSET_HEADERS = { headers: { 'content-type': 'application/json; charset=utf-8' } }
+  mockPool
+    .intercept({
+      path: '/db/mydoc'
+    })
+    .reply(200, response, CHARSET_HEADERS)
+
+  // test GET /db?a=1&b=2
+  const req = {
+    method: 'get',
+    db: 'db',
+    doc: 'mydoc'
+  }
+  const p = await nano.request(req)
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
+})
