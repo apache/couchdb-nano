@@ -702,6 +702,7 @@ declare namespace nano {
 
   interface BulkModifyDocsWrapper {
     docs: any[];
+    new_edits?: boolean;
   }
 
   interface BulkFetchDocsWrapper {
