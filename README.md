@@ -4,10 +4,8 @@
 
 Offical [Apache CouchDB](https://couchdb.apache.org/) library for [Node.js](https://nodejs.org/).
 
-> Note: Nano >=11.0.0 is a **breaking change for Node.js versions 16 and older**. Nano 11 uses Node.js's built-in "fetch" HTTP client but this is only available in Node.js versions 18 or later. If you are using Node 16 or older then continue using Nano 10.
-> See our [migration guide](migration_guide_v10_to_v11.md) for moving from Nano 10 to Nano 11.
-
-> Note: Nano >=12.0.0 is ESM-only, meaning that the `import` syntax is used to load the module instead of `require`.
+> Note: Nano >=12.0.0 is written in ESM JavaScript, meaning that the `import` syntax is used to load the module instead of `require`. The code is transpiled into ESM and CommonJS artifacts which are published to npm.
+> Nano 12's breaking change is that the `..AsStream` variants of the API calls now return Promises that resolve as streams, rather than stream object. See the code examples below on how to `await` the result of each `..AsStream` function before using its resultant stream.
 
 Features:
 
@@ -111,10 +109,26 @@ To use `nano` you need to connect it to your CouchDB install, to do that:
 
 ```js
 import Nano from 'nano'
-const nano = Nano('http://127.0.0.1:5984')
 ```
 
-> Note: Supplying authentication credentials in the URL e.g. `http://admin:mypassword@localhost:5984` is deprecated. Use `nano.auth` instead.
+or in a CommonJS project:
+
+```js
+const Nano = require('Nano')
+```
+
+Then setup Nano with the URL and credentials of your Cloudant instance:
+
+```js
+// session auth
+const nano = Nano('http://127.0.0.1:5984')
+await nano.auth('admin', 'mypassword')
+
+// or basic auth
+const nano = Nano('http://admin:mypassword@localhost:5984')
+```
+
+> Note: Using basic auth is deprecated. Use `nano.auth` instead.
 
 To create a new database:
 
@@ -180,7 +194,7 @@ you have inserted a document with an _id of rabbit.
   rev: '1-6e4cb465d49c0368ac3946506d26335d' }
 ```
 
-You can also see your document in futon (http://127.0.0.1:5984/_utils).
+You can also see your document in the CouchDB dashboard (http://127.0.0.1:5984/_utils).
 
 ## Configuration
 
@@ -239,7 +253,7 @@ const undiciOptions = new undici.Agent(agentOptions)
 const nano = Nano({ url: 'http://127.0.0.1:5984', undiciOptions })
 ```
 
-The meanings of the agentOptions attributes is described [here](https://undici.nodejs.org/#/docs/api/Agent?id=new-undiciagentoptions), [here](https://undici.nodejs.org/#/docs/api/Pool?id=parameter-pooloptions) and [here](https://undici.nodejs.org/#/docs/api/Client?id=parameter-clientoptions)
+The meanings of the agentOptions attributes is described [here](https://undici.nodejs.org/api/Client#parameter-clientoptions).
 
 You may also supply a pre-existing `undici.Agent` e.g.
 
@@ -254,11 +268,10 @@ const nano = Nano({ url: 'http://127.0.0.1:5984', agentOptions: agent })
 
 To supply customer headers with each request, supply a headers object when starting up Nano:
 
-
 ```js
 const couch = Nano(
   { 
-    url : "http://127.0.0.1:5984/prefix"
+    url : "http://127.0.0.1:5984/prefix",
     headers: {
       mycustomheader: '42'
     }
@@ -315,7 +328,7 @@ db.insert(p).then((response) => {
 Creates a CouchDB database with the given `name`, with options `opts`.
 
 ```js
-await nano.db.create('alice', { n: 3 })
+await nano.db.create('alice', { partitioned: false })
 ```
 
 ### nano.db.get(name)
@@ -418,7 +431,7 @@ const c = await nano.db.changes('alice')
 Same as `nano.db.changes` but returns a stream.
 
 ```js
-( await nano.db.changes('alice')).pipe(process.stdout)
+(await nano.db.changes('alice')).pipe(process.stdout)
 ```
 
 ### nano.db.info()
@@ -584,11 +597,7 @@ const response = await alice.bulk({ docs: documents })
 List all the docs in the database .
 
 ```js
-const doclist = await alice.list().then((body)=>{
-    body.rows.forEach((doc) => {
-      console.log(doc)
-    })
-})
+const doclist = await alice.list()
 ```
 
 or with optional query string additions `params`:
@@ -620,8 +629,6 @@ const datat = await alice.fetch({keys: keys})
 ```
 
 ### db.fetchRevs(docnames, [params])
-
-** changed in version 6 **
 
 Bulk fetch of the revisions of the database documents, `docnames` are specified as per
 [CouchDB doc](https://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_all_docs).
@@ -1340,14 +1347,11 @@ npm run test
 * code: `git clone git://github.com/apache/couchdb-nano.git`
 * home: <https://github.com/apache/couchdb-nano>
 * bugs: <https://github.com/apache/couchdb-nano/issues>
-* chat: [Freenode IRC @ #couchdb-dev][8]
 
 [1]: https://npmjs.org
 [2]: https://github.com/apache/couchdb-nano/issues
 [4]: https://github.com/apache/couchdb-nano/blob/main/cfg/couch.example.js
-[8]: https://webchat.freenode.net?channels=%23couchdb-dev
 
-https://freenode.org/
 
 ## Release
 
