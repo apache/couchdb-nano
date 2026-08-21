@@ -1,6 +1,15 @@
 {
   "name": "nano",
   "description": "The official CouchDB client for Node.js",
+  "main": "./dist/nano-cjs.js",
+  "exports": {
+    ".": {
+      "types": "./lib/nano.d.ts",
+      "import": "./dist/nano-esm.mjs",
+      "require": "./dist/nano-cjs.js"
+    }
+  },
+  "types": "./lib/nano.d.ts",
   "license": "Apache-2.0",
   "homepage": "http://github.com/apache/couchdb-nano",
   "repository": "http://github.com/apache/couchdb-nano",
@@ -16,8 +25,6 @@
     "nano",
     "database"
   ],
-  "dependencies": {
-  },
   "devDependencies": {
     "@types/node": "^26.2.0",
     "rolldown": "^1.2.4",
@@ -29,8 +36,6 @@
     "build": "npx rolldown -c rolldown.config.mjs",
     "prepublishOnly": "npm run build"
   },
-  "main": "./lib/nano.js",
-  "types": "./lib/nano.d.ts",
   "engines": {
     "node": ">=20.0"
   },
