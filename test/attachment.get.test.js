@@ -43,6 +43,21 @@ test('should be able to get an attachment with opts - GET /db/id/attname - db.at
   mockAgent.assertNoPendingInterceptors()
 })
 
+test('should be able to get a JSON attachment as a buffer - GET /db/id/attname - db.attachment.get', async () => {
+  // mocks
+  const json = JSON.stringify({ foo: 'bar' })
+  mockPool
+    .intercept({ path: '/db/id/att.json' })
+    .reply(200, json, { headers: { 'content-type': 'application/json' } })
+
+  // test GET /db/id/attname
+  const db = nano.db.use('db')
+  const p = await db.attachment.get('id', 'att.json')
+  assert(Buffer.isBuffer(p), 'JSON attachment should be a buffer')
+  assert.equal(p.toString(), json)
+  mockAgent.assertNoPendingInterceptors()
+})
+
 test('should detect missing parameters - db.attachment.get', async () => {
   const db = nano.db.use('db')
   await assert.rejects(db.attachment.get(), { message: 'Invalid parameters' })
