@@ -138,6 +138,101 @@ test('should be able to access a MapReduce view with queries - POST /db/_design/
   mockAgent.assertNoPendingInterceptors()
 })
 
+test('should omit undefined opts from the query string - GET /db/_design/ddoc/_view/viewname - db.view', async () => {
+  // mocks
+  const response = {
+    rows: [
+      { key: 'BA', value: 21 }
+    ]
+  }
+  mockPool
+    .intercept({ path: '/db/_design/ddoc/_view/viewname?include_docs=true' })
+    .reply(200, response, JSON_HEADERS)
+
+  // test GET /db/_design/ddoc/_view/viewname
+  const db = nano.db.use('db')
+  const p = await db.view('ddoc', 'viewname', { limit: undefined, include_docs: true })
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
+})
+
+test('should omit undefined JSON-encoded opts from the query string - GET /db/_design/ddoc/_view/viewname - db.view', async () => {
+  // mocks
+  const response = {
+    rows: [
+      { key: 'BA', value: 21 }
+    ]
+  }
+  mockPool
+    .intercept({ path: '/db/_design/ddoc/_view/viewname?group=true' })
+    .reply(200, response, JSON_HEADERS)
+
+  // test GET /db/_design/ddoc/_view/viewname
+  const db = nano.db.use('db')
+  const p = await db.view('ddoc', 'viewname', { start_key: undefined, end_key: undefined, group: true })
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
+})
+
+test('should omit undefined keys from the query string - GET /db/_design/ddoc/_view/viewname - db.view', async () => {
+  // mocks
+  const response = {
+    rows: [
+      { key: 'BA', value: 21 }
+    ]
+  }
+  mockPool
+    .intercept({ path: '/db/_design/ddoc/_view/viewname?reduce=false' })
+    .reply(200, response, JSON_HEADERS)
+
+  // test GET /db/_design/ddoc/_view/viewname
+  const db = nano.db.use('db')
+  const p = await db.view('ddoc', 'viewname', { keys: undefined, reduce: false })
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
+})
+
+test('should omit undefined opts from the query string with keys - POST /db/_design/ddoc/_view/viewname - db.view', async () => {
+  // mocks
+  const keys = ['BA', 'BD']
+  const response = {
+    rows: [
+      { key: 'BA', value: 21 }
+    ]
+  }
+  mockPool
+    .intercept({
+      method: 'post',
+      path: '/db/_design/ddoc/_view/viewname?include_docs=true',
+      body: JSON.stringify({ keys })
+    })
+    .reply(200, response, JSON_HEADERS)
+
+  // test POST /db/_design/ddoc/_view/viewname
+  const db = nano.db.use('db')
+  const p = await db.view('ddoc', 'viewname', { keys, limit: undefined, include_docs: true })
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
+})
+
+test('should still send null JSON-encoded opts in the query string - GET /db/_design/ddoc/_view/viewname - db.view', async () => {
+  // mocks
+  const response = {
+    rows: [
+      { key: null, value: 23515 }
+    ]
+  }
+  mockPool
+    .intercept({ path: '/db/_design/ddoc/_view/viewname?startkey=null' })
+    .reply(200, response, JSON_HEADERS)
+
+  // test GET /db/_design/ddoc/_view/viewname
+  const db = nano.db.use('db')
+  const p = await db.view('ddoc', 'viewname', { startkey: null })
+  assert.deepEqual(p, response)
+  mockAgent.assertNoPendingInterceptors()
+})
+
 test('should be able to handle 404 - db.view', async () => {
   // mocks
   const response = {
