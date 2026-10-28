@@ -20,7 +20,6 @@
 
 import { EventEmitter } from "events";
 import { ConnectionOptions } from "tls";
-import type { Dispatcher } from "undici";
 
 /** nano entry function */
 declare function nano(
@@ -28,6 +27,12 @@ declare function nano(
 ): nano.ServerScope;
 
 declare namespace nano {
+  /** Anything that can be passed to `fetch` as its `dispatcher`, e.g. an
+   * undici `Agent`, `Pool` or `MockAgent` instance. Declared structurally
+   * so that consumers don't need undici's type declarations. */
+  interface Dispatcher {
+    dispatch(options: object, handler: object): boolean;
+  }
   /** AgentOptionsConnect options */
   interface AgentOptionsConnect extends ConnectionOptions {
     /** An IPC endpoint, either Unix domain socket or Windows named pipe. 
