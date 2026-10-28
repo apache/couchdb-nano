@@ -20,7 +20,6 @@
 
 import { EventEmitter } from "events";
 import { ConnectionOptions } from "tls";
-import undici from "undici";
 
 /** nano entry function */
 declare function nano(
@@ -28,6 +27,12 @@ declare function nano(
 ): nano.ServerScope;
 
 declare namespace nano {
+  /** Anything that can be passed to `fetch` as its `dispatcher`, e.g. an
+   * undici `Agent`, `Pool` or `MockAgent` instance. Declared structurally
+   * so that consumers don't need undici's type declarations. */
+  interface Dispatcher {
+    dispatch(options: object, handler: object): boolean;
+  }
   /** AgentOptionsConnect options */
   interface AgentOptionsConnect extends ConnectionOptions {
     /** An IPC endpoint, either Unix domain socket or Windows named pipe. 
@@ -94,10 +99,11 @@ declare namespace nano {
     url: string;
     /** For cookie authentication */
     cookie?: string;
-    /** HTTP Agent options
+    /** An undici Dispatcher instance (e.g. `new undici.Agent({ connections: 10 })`
+     * or a `MockAgent`), passed to `fetch` as its `dispatcher`
      * @see README: {@link https://www.npmjs.com/package/nano#pool-size-and-open-sockets}
      */
-    agentOptions?: AgentOptions | typeof undici.Agent | typeof undici.MockAgent | typeof undici.Dispatcher;
+    agentOptions?: Dispatcher;
     /** Logging function 
      * @see README: {@link https://www.npmjs.com/package/nano#logging}
      */
@@ -105,10 +111,11 @@ declare namespace nano {
     /** Set to false to prevent parsing of url 
      * @see README: {@link https://www.npmjs.com/package/nano#configuration}
      */
-    headers?: object;
+    parseUrl?: boolean;
     /** Custom request headers
      * @see README: {@link https://www.npmjs.com/package/nano#configuration}
      */
+    headers?: object;
   }
 
   /** An error triggered by nano */
@@ -121,12 +128,20 @@ declare namespace nano {
     scope?: 'couch'  | 'socket';
     /** Status code returned by the server */
     statusCode?: number; // 404;
-    /** Request sent to Couch */
+    /** Request sent to Couch (the options passed to `fetch`, with credentials scrubbed) */
     request?: {
-      method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+      /** Request URL including the query string */
+      url?: string; // 'http://couchhost:5984/db/tsp2?revs_info=true',
+      /** Lower-case HTTP method */
+      method?: string; // 'get', 'put'
       headers?: { [key: string]: string | number };
-      uri?: string; // 'http://couchhost:5984/db/tsp2',
-      qs?: any; // { revs_info: true }
+      body?: any;
+      credentials?: string; // 'include'
+      redirect?: string; // 'error'
+      signal?: AbortSignal;
+      bodyTimeout?: number;
+      /** The `agentOptions` Dispatcher, if one was configured */
+      dispatcher?: Dispatcher;
     };
     /** Response headers */
     headers?: { [key: string]: string | number };
