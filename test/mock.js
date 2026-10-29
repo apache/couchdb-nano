@@ -1,6 +1,7 @@
 const COUCH_URL = 'http://127.0.0.1:5984'
 const JSON_HEADERS = { headers: { 'content-type': 'application/json' } }
-const { MockAgent, setGlobalDispatcher } = require('undici')
+const { install, MockAgent, setGlobalDispatcher } = require('undici')
+install()
 const mockAgent = new MockAgent()
 mockAgent.disableNetConnect()
 const mockPool = mockAgent.get(COUCH_URL)
