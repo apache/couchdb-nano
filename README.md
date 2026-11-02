@@ -229,11 +229,8 @@ const opts = {
   connections: null,
   maxRedirections: 0
 }
-const { Agent, install } = require('undici')
-// use the installed Undici's fetch to avoid incompatibility with Node.js built-in
-install()
-const agentOptions = new Agent(opts)
-const nano = Nano({ url: 'http://127.0.0.1:5984', agentOptions })
+const { Agent, Dispatcher1Wrapper } = require('undici')
+const nano = Nano({ url: 'http://127.0.0.1:5984', agentOptions: new Dispatcher1Wrapper(new Agent(opts)) })
 ```
 
 The meanings of the `opts` attributes is described [here](https://undici.nodejs.org/#/docs/api/Agent?id=new-undiciagentoptions), [here](https://undici.nodejs.org/#/docs/api/Pool?id=parameter-pooloptions) and [here](https://undici.nodejs.org/#/docs/api/Client?id=parameter-clientoptions)
