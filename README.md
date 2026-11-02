@@ -210,7 +210,7 @@ const db = couch.use('foo');
 
 ### Pool size and open sockets
 
-To specify the number of connections, timeouts and pool size, supply an `agentOptions` object when starting up Nano. 
+To specify the number of connections, timeouts and pool size, supply an undici `Agent` as `agentOptions` when starting up Nano. Nano passes `agentOptions` to _fetch_ as its `dispatcher`, so it must be a dispatcher instance, not a plain object of options.
 
 ```js
 const opts = {
