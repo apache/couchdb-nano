@@ -5,12 +5,12 @@ const Nano = require('../lib/nano')
 const undici = require('undici')
 
 test('should be able to supply a custom agent parameters', async () => {
-  const agentOptions = {
+  const opts = {
     bodyTimeout: 10000
   }
-  const undiciOptions = new undici.Agent(agentOptions)
-  const nano = Nano({ url: COUCH_URL, undiciOptions })
-  assert.equal(nano.config.agent, nano.config.agent)
+  const agentOptions = new undici.Agent(opts)
+  const nano = Nano({ url: COUCH_URL, agentOptions })
+  assert.equal(nano.config.agent, agentOptions)
 })
 
 test('should be able to supply a custom agent', async () => {

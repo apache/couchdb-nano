@@ -210,10 +210,10 @@ const db = couch.use('foo');
 
 ### Pool size and open sockets
 
-To specify the number of connections, timeouts and pool size, supply an `agentOptions` object when starting up Nano. 
+To specify the number of connections, timeouts and pool size, supply an undici `Agent` as `agentOptions` when starting up Nano. Nano passes `agentOptions` to _fetch_ as its `dispatcher`, so it must be a dispatcher instance, not a plain object of options.
 
 ```js
-const agentOptions = {
+const opts = {
   bodyTimeout: 30000,
   headersTimeout: 30000,
   keepAliveMaxTimeout: 600000,
@@ -229,19 +229,11 @@ const agentOptions = {
   connections: null,
   maxRedirections: 0
 }
-const undici = require('undici')
-const undiciOptions = new undici.Agent(agentOptions)
-const nano = Nano({ url: 'http://127.0.0.1:5984', undiciOptions })
+const { Agent, Dispatcher1Wrapper } = require('undici')
+const nano = Nano({ url: 'http://127.0.0.1:5984', agentOptions: new Dispatcher1Wrapper(new Agent(opts)) })
 ```
 
-The meanings of the agentOptions attributes is described [here](https://undici.nodejs.org/#/docs/api/Agent?id=new-undiciagentoptions), [here](https://undici.nodejs.org/#/docs/api/Pool?id=parameter-pooloptions) and [here](https://undici.nodejs.org/#/docs/api/Client?id=parameter-clientoptions)
-
-You may also supply a pre-existing `undici.Agent` e.g.
-
-```js
-const agent = new undici.Agent({bodyTimeout: 30000 })
-const nano = Nano({ url: 'http://127.0.0.1:5984', agentOptions: agent })
-```
+The meanings of the `opts` attributes is described [here](https://undici.nodejs.org/#/docs/api/Agent?id=new-undiciagentoptions), [here](https://undici.nodejs.org/#/docs/api/Pool?id=parameter-pooloptions) and [here](https://undici.nodejs.org/#/docs/api/Client?id=parameter-clientoptions)
 
 > Note `requestDefaults` is no longer supported.
 
